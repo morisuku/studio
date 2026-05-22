@@ -144,6 +144,11 @@ function Calendar({ selectedDate, onSelect, bookings }) {
   );
 }
 
+// 空き状況（予約送信前の簡易チェック用）
+function availByDate(date) {
+  return "ok";
+}
+
 // ───────── BOOKING: FORM ─────────
 function BookingForm({ selectedDate, onBooked }) {
   const [name, setName] = useState2("");
@@ -267,10 +272,6 @@ function BookingForm({ selectedDate, onBooked }) {
   );
 }
 
-function availByDate(date) {
-  return "ok";
-}
-
 function Booking() {
   const [selectedDate, setSelectedDate] = useState2(null);
   const [bookings, setBookings] = useState2(() => {
@@ -303,7 +304,7 @@ function Booking() {
 
       <div className={`toast ${toast?"show":""}`}>
         <span className="check">✓</span>
-        {toast && <span>予約を受付しました（{toast.id}）</span>}
+        {toast && <span>予約を受付しました ({toast.id})</span>}
       </div>
     </section>
   );
