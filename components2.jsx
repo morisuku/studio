@@ -4,7 +4,7 @@ const { useState: useState2, useEffect: useEffect2, useMemo: useMemo2 } = React;
 // ───────── BOOKING: CALENDAR ─────────
 function Calendar({ selectedDate, onSelect, bookings }) {
   const [month, setMonth] = useState2(() => { const d = new Date(); d.setDate(1); d.setHours(0,0,0,0); return d; });
-  const [popup, setPopup] = useState2(null); // { date, items, x, y }
+  const [popup, setPopup] = useState2(null);
   const today = utilTodayISO();
 
   const cells = useMemo2(() => {
@@ -28,7 +28,6 @@ function Calendar({ selectedDate, onSelect, bookings }) {
 
   const monthLabel = `${month.getFullYear()}.${String(month.getMonth()+1).padStart(2,"0")}`;
 
-  // 日付別の予約一覧
   const bookingsByDate = useMemo2(() => {
     const m = {};
     bookings.forEach(b => {
@@ -38,7 +37,6 @@ function Calendar({ selectedDate, onSelect, bookings }) {
     return m;
   }, [bookings]);
 
-  // ポップアップを閉じる
   useEffect2(() => {
     if (!popup) return;
     const h = (e) => {
@@ -84,8 +82,8 @@ function Calendar({ selectedDate, onSelect, bookings }) {
         {["日","月","火","水","木","金","土"].map(w => <div key={w} className="cal-wd">{w}</div>)}
         {cells.map((c, i) => {
           const isPast = c.date < today;
-          const av = availByBookings(iso);
           const iso = utilToISO(c.date);
+          const av = availByBookings(iso);
           const isSel = selectedDate && utilSameDay(c.date, selectedDate);
           const hasBooking = !!bookingsByDate[iso];
           const classes = ["cal-cell"];
@@ -157,12 +155,9 @@ function BookingForm({ selectedDate, onBooked }) {
   const [note, setNote] = useState2("");
   const [kana, setKana] = useState2("");
   const [age, setAge] = useState2("");
-  const [character, setCharacter] = useState2("");
-  const [photographer, setPhotographer] = useState2("none");
-  const [commercial, setCommercial] = useState2(false);
   const [agreed, setAgreed] = useState2(false);
 
-  const av = selectedDate ? availability(selectedDate) : null;
+  const av = selectedDate ? availByDate(selectedDate) : null;
   const canSubmit = selectedDate && av !== "full" && name && kana && age && people && email && phone && agreed;
 
   const submit = (e) => {
@@ -172,12 +167,12 @@ function BookingForm({ selectedDate, onBooked }) {
       id: "B-" + Date.now().toString(36).toUpperCase(),
       date: utilToISO(selectedDate),
       time, plan, people,
-      name, kana, age, character, photographer, commercial,
+      name, kana, age,
       email, phone, note,
       submittedAt: new Date().toISOString(),
     };
     onBooked(booking);
-    setName(""); setKana(""); setAge(""); setCharacter(""); setPhotographer("none"); setCommercial(false);
+    setName(""); setKana(""); setAge("");
     setEmail(""); setPhone(""); setNote(""); setAgreed(false);
   };
 
@@ -191,10 +186,6 @@ function BookingForm({ selectedDate, onBooked }) {
       </p>
 
       <form onSubmit={submit}>
-        <div className="form-note">
-          ✦ プロトタイプ表示です。送信された予約情報は info@rikoruto.jp へ通知、カレンダーに反映されます。
-        </div>
-
         <div className="form-grid-2">
           <div className="form-row">
             <label>開始時刻 <span className="req">*</span></label>
@@ -276,6 +267,10 @@ function BookingForm({ selectedDate, onBooked }) {
   );
 }
 
+function availByDate(date) {
+  return "ok";
+}
+
 function Booking() {
   const [selectedDate, setSelectedDate] = useState2(null);
   const [bookings, setBookings] = useState2(() => {
@@ -304,10 +299,11 @@ function Booking() {
           <Calendar selectedDate={selectedDate} onSelect={setSelectedDate} bookings={bookings} />
           <BookingForm selectedDate={selectedDate} onBooked={onBooked} />
         </div>
+      </div>
 
       <div className={`toast ${toast?"show":""}`}>
         <span className="check">✓</span>
-        {toast && <span>予約を受付しました（{toast.id}）— info@rikoruto.jp へ通知済</span>}
+        {toast && <span>予約を受付しました（{toast.id}）</span>}
       </div>
     </section>
   );
