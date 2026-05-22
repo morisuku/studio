@@ -164,51 +164,56 @@ function BookingForm({ selectedDate, onBooked, bookings }) {
 
   const av = selectedDate ? availByDate(selectedDate) : null;
 
-  // 30分刻みの時間リスト（09:00〜20:00）
-  const allTimes = [];
-  for (let h = 9; h <= 20; h++) {
-    allTimes.push(`${String(h).padStart(2,"0")}:00`);
-    if (h < 20) allTimes.push(`${String(h).padStart(2,"0")}:30`);
-  }
+  // 固定枠（開始時間 → 6h可否 → 予約可否）
+  const FIXED_SLOTS = [
+    { time: "09:00", allow6h: true,  disabled: false },
+    { time: "12:30", allow6h: true,  disabled: false },
+    { time: "16:00", allow6h: true,  disabled: false },
+    { time: "19:30", allow6h: false, disabled: true  },
+  ];
 
-  // プランごとの利用時間（h）
+  // プランごとの利用時間
   const planHours = {
     "weekday-3h": 3, "weekday-6h": 6,
     "weekend-3h": 3, "weekend-6h": 6,
   };
 
-  // 17:00より後の開始は3hのみ選択可能
   const toMin = (t) => { const [h, m] = t.split(":").map(Number); return h * 60 + m; };
 
-  const startMin = toMin(time);
-  const isLateStart = startMin >= toMin("17:00");
+  // 選択中の枠が6h不可かどうか
+  const currentSlot = FIXED_SLOTS.find(s => s.time === time) || FIXED_SLOTS[0];
+  const isLateStart = !currentSlot.allow6h;
 
-  // 時間選択後にプランが6hで遅い時間なら3hに自動切替
+  // 6h不可の枠を選んでいるのに6hプランなら自動で3hに切替
   React.useEffect(() => {
     if (isLateStart && (plan === "weekday-6h" || plan === "weekend-6h")) {
       setPlan(plan === "weekend-6h" ? "weekend-3h" : "weekday-3h");
     }
   }, [time]);
 
-  // その日の予約済み時間帯を計算してdisabledな時間を求める
+  // その日の予約済み枠を求める
   const dayBookings = selectedDate
     ? (bookings || []).filter(b => b.date === utilToISO(selectedDate))
     : [];
 
+  const bookedTimes = new Set(dayBookings.map(b => b.time));
+
+  // 選択中プランの終了時間（清掃込み）と既存予約の重複チェック
   const disabledTimes = new Set();
-  dayBookings.forEach(b => {
-    const bStartMin = toMin(b.time);
-    const hours = planHours[b.plan] || 3;
-    const endMin = bStartMin + hours * 60 + 30; // +30分は清掃時間
-    allTimes.forEach(t => {
-      const tMin = toMin(t);
-      const selectedHours = planHours[plan] || 3;
-      const tEndMin = tMin + selectedHours * 60;
-      if (tMin < endMin && tEndMin > bStartMin) disabledTimes.add(t);
+  FIXED_SLOTS.forEach(slot => {
+    if (slot.disabled) { disabledTimes.add(slot.time); return; }
+    const slotMin = toMin(slot.time);
+    // 既存予約と重なるか確認
+    const overlaps = dayBookings.some(b => {
+      const bStart = toMin(b.time);
+      const bEnd = bStart + (planHours[b.plan] || 3) * 60 + 30;
+      const sEnd = slotMin + (planHours[plan] || 3) * 60;
+      return slotMin < bEnd && sEnd > bStart;
     });
+    if (overlaps) disabledTimes.add(slot.time);
   });
 
-  const canSubmit = selectedDate && av !== "full" && name && kana && age && people && email && phone && agreed && !disabledTimes.has(time);
+  const canSubmit = selectedDate && name && kana && age && people && email && phone && agreed && !disabledTimes.has(time);
 
   const submit = (e) => {
     e.preventDefault();
@@ -240,9 +245,9 @@ function BookingForm({ selectedDate, onBooked, bookings }) {
           <div className="form-row">
             <label>開始時刻 <span className="req">*</span></label>
             <select value={time} onChange={e=>setTime(e.target.value)}>
-              {allTimes.map(t => (
-                <option key={t} value={t} disabled={disabledTimes.has(t)}>
-                  {t}{disabledTimes.has(t) ? " (予約済)" : ""}
+              {FIXED_SLOTS.map(slot => (
+                <option key={slot.time} value={slot.time} disabled={disabledTimes.has(slot.time)}>
+                  {slot.time}{disabledTimes.has(slot.time) ? " (予約済)" : ""}
                 </option>
               ))}
             </select>
