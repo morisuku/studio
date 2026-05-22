@@ -215,6 +215,19 @@ function BookingForm({ selectedDate, onBooked, bookings }) {
     }
   }, [time, dayBookings.length]);
 
+  // 選択日が土日祝かどうか判定（祝日は簡易的に土日のみで判定）
+  const isWeekend = selectedDate ? [0, 6].includes(selectedDate.getDay()) : false;
+
+  // 日付変更時にプランを自動切替
+  React.useEffect(() => {
+    if (!selectedDate) return;
+    if (isWeekend && plan.startsWith("weekday")) {
+      setPlan(plan === "weekday-3h" ? "weekend-3h" : "weekend-6h");
+    } else if (!isWeekend && plan.startsWith("weekend")) {
+      setPlan(plan === "weekend-3h" ? "weekday-3h" : "weekday-6h");
+    }
+  }, [selectedDate]);
+
   const canSubmit = selectedDate && name && kana && age && people && email && phone && agreed
     && SLOTS.find(s => s.time === time) && !SLOTS.find(s => s.time === time)?.disabled;
 
@@ -258,10 +271,10 @@ function BookingForm({ selectedDate, onBooked, bookings }) {
           <div className="form-row">
             <label>プラン <span className="req">*</span></label>
             <select value={plan} onChange={e=>setPlan(e.target.value)}>
-              <option value="weekday-3h">平日 3h / ¥7,000</option>
-              {!isLateStart && <option value="weekday-6h">平日 6h / ¥13,000</option>}
-              <option value="weekend-3h">土日祝 3h / ¥8,500</option>
-              {!isLateStart && <option value="weekend-6h">土日祝 6h / ¥16,000</option>}
+              {!isWeekend && <option value="weekday-3h">平日 3h / ¥7,000</option>}
+              {!isWeekend && !isLateStart && <option value="weekday-6h">平日 6h / ¥13,000</option>}
+              {isWeekend && <option value="weekend-3h">土日祝 3h / ¥8,500</option>}
+              {isWeekend && !isLateStart && <option value="weekend-6h">土日祝 6h / ¥16,000</option>}
             </select>
           </div>
         </div>
