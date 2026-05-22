@@ -190,7 +190,7 @@ function BookingForm({ selectedDate, onBooked, bookings }) {
   dayBookings.forEach(b => {
     const startMin = toMin(b.time);
     const hours = planHours[b.plan] || 3;
-    const endMin = startMin + hours * 60;
+    const endMin = startMin + hours * 60 + 30; // +30分は清掃時間
     // 既存予約の開始〜終了に重なる時間はすべてdisabled
     allTimes.forEach(t => {
       const tMin = toMin(t);
