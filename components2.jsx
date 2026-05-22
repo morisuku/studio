@@ -163,11 +163,45 @@ function BookingForm({ selectedDate, onBooked, bookings }) {
   const [agreed, setAgreed] = useState2(false);
 
   const av = selectedDate ? availByDate(selectedDate) : null;
-  const bookedTimes = selectedDate
-    ? (bookings || []).filter(b => b.date === utilToISO(selectedDate)).map(b => b.time)
+
+  // 30分刻みの時間リスト（09:00〜16:00）
+  const allTimes = [];
+  for (let h = 9; h <= 16; h++) {
+    allTimes.push(`${String(h).padStart(2,"0")}:00`);
+    if (h < 16) allTimes.push(`${String(h).padStart(2,"0")}:30`);
+  }
+
+  // プランごとの利用時間（h）
+  const planHours = {
+    "weekday-3h": 3, "weekday-6h": 6, "weekday-6h-off": 6,
+    "weekend-3h": 3, "weekend-6h": 6,
+  };
+
+  // 時間文字列 → 分に変換
+  const toMin = (t) => { const [h, m] = t.split(":").map(Number); return h * 60 + m; };
+  const fromMin = (m) => `${String(Math.floor(m/60)).padStart(2,"0")}:${String(m%60).padStart(2,"0")}`;
+
+  // その日の予約済み時間帯を計算してdisabledな時間を求める
+  const dayBookings = selectedDate
+    ? (bookings || []).filter(b => b.date === utilToISO(selectedDate))
     : [];
-  const allTimes = ["09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00"];
-  const canSubmit = selectedDate && av !== "full" && name && kana && age && people && email && phone && agreed && !bookedTimes.includes(time);
+
+  const disabledTimes = new Set();
+  dayBookings.forEach(b => {
+    const startMin = toMin(b.time);
+    const hours = planHours[b.plan] || 3;
+    const endMin = startMin + hours * 60;
+    // 既存予約の開始〜終了に重なる時間はすべてdisabled
+    allTimes.forEach(t => {
+      const tMin = toMin(t);
+      const selectedHours = planHours[plan] || 3;
+      const tEndMin = tMin + selectedHours * 60;
+      // 新規予約の時間帯が既存予約と重なるならdisabled
+      if (tMin < endMin && tEndMin > startMin) disabledTimes.add(t);
+    });
+  });
+
+  const canSubmit = selectedDate && av !== "full" && name && kana && age && people && email && phone && agreed && !disabledTimes.has(time);
 
   const submit = (e) => {
     e.preventDefault();
@@ -200,8 +234,8 @@ function BookingForm({ selectedDate, onBooked, bookings }) {
             <label>開始時刻 <span className="req">*</span></label>
             <select value={time} onChange={e=>setTime(e.target.value)}>
               {allTimes.map(t => (
-                <option key={t} value={t} disabled={bookedTimes.includes(t)}>
-                  {t}{bookedTimes.includes(t) ? " (予約済)" : ""}
+                <option key={t} value={t} disabled={disabledTimes.has(t)}>
+                  {t}{disabledTimes.has(t) ? " (予約済)" : ""}
                 </option>
               ))}
             </select>
