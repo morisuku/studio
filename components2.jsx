@@ -312,7 +312,7 @@ function BookingForm({ selectedDate, onBooked, bookings }) {
         <div className="form-grid-2">
           <div className="form-row">
             <label>年齢 <span className="req">*</span></label>
-            <input type="text" value={age} onChange={e=>setAge(e.target.value)} placeholder="22" />
+            <input type="text" value={age} onChange={e=>setAge(e.target.value.replace(/[^0-9]/g, ""))} placeholder="22" inputMode="numeric" />
           </div>
           <div className="form-row">
             <label>ご利用人数 <span className="req">*</span></label>
@@ -329,7 +329,7 @@ function BookingForm({ selectedDate, onBooked, bookings }) {
           </div>
           <div className="form-row">
             <label>電話番号 <span className="req">*</span></label>
-            <input type="tel" value={phone} onChange={e=>setPhone(e.target.value)} placeholder="090-0000-0000" />
+            <input type="tel" value={phone} onChange={e=>setPhone(e.target.value.replace(/[^0-9-]/g, ""))} placeholder="090-0000-0000" inputMode="numeric" />
           </div>
         </div>
 
@@ -385,7 +385,7 @@ function Booking() {
           name: b["お名前"],
           kana: b["フリガナ"],
           age: b["年齢"],
-          email: b["メール"],
+          email: b["メールアドレス"],
           phone: b["電話番号"],
           note: b["メモ"],
           submittedAt: b["送信日時"],
