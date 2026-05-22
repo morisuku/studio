@@ -156,7 +156,7 @@ function BookingForm({ selectedDate, onBooked }) {
   const [agreed, setAgreed] = useState2(false);
 
   const av = selectedDate ? availability(selectedDate) : null;
-  const canSubmit = selectedDate && av !== "full" && name && kana && email && phone && agreed;
+  const canSubmit = selectedDate && av !== "full" && name && kana && age && people && email && phone && agreed;
 
   const submit = (e) => {
     e.preventDefault();
@@ -220,11 +220,11 @@ function BookingForm({ selectedDate, onBooked }) {
 
         <div className="form-grid-2">
           <div className="form-row">
-            <label>年齢</label>
+            <label>年齢 <span className="req">*</span></label>
             <input type="text" value={age} onChange={e=>setAge(e.target.value)} placeholder="22" />
           </div>
           <div className="form-row">
-            <label>ご利用人数</label>
+            <label>ご利用人数 <span className="req">*</span></label>
             <select value={people} onChange={e=>setPeople(+e.target.value)}>
               {[1,2,3,4,5,6,7,8].map(n => <option key={n} value={n}>{n}名{n>=5?` (+¥${(n-4)*1000})`:""}</option>)}
             </select>
@@ -304,7 +304,7 @@ function Booking() {
             <div style={{display:"flex", gap: 10, flexWrap:"wrap"}}>
               {bookings.map(b => (
                 <div key={b.id} style={{padding:"10px 14px", background:"var(--bg-alt)", borderRadius: 12, fontSize: 12}}>
-                  <b>{b.date}</b> {b.time} / {b.booths.join("・")} / {b.name}様
+                  <b>{b.date}</b> {b.time} / {b.name}様
                 </div>
               ))}
             </div>
