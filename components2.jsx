@@ -231,9 +231,11 @@ function BookingForm({ selectedDate, onBooked, bookings }) {
   const canSubmit = selectedDate && name && kana && age && people && email && phone && agreed
     && SLOTS.find(s => s.time === time) && !SLOTS.find(s => s.time === time)?.disabled;
 
-  const submit = (e) => {
+  const [submitting, setSubmitting] = useState2(false);
+
+  const submit = async (e) => {
     e.preventDefault();
-    if (!canSubmit) return;
+    if (!canSubmit || submitting) return;
     const booking = {
       id: "B-" + Date.now().toString(36).toUpperCase(),
       date: utilToISO(selectedDate),
@@ -242,9 +244,22 @@ function BookingForm({ selectedDate, onBooked, bookings }) {
       email, phone, note,
       submittedAt: new Date().toISOString(),
     };
-    onBooked(booking);
-    setName(""); setKana(""); setAge("");
-    setEmail(""); setPhone(""); setNote(""); setAgreed(false);
+    setSubmitting(true);
+    try {
+      await fetch(window.GAS_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(booking),
+      });
+      onBooked(booking);
+      setName(""); setKana(""); setAge("");
+      setEmail(""); setPhone(""); setNote(""); setAgreed(false);
+    } catch(err) {
+      alert("送信に失敗しました。時間をおいて再度お試しください。");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -333,28 +348,64 @@ function BookingForm({ selectedDate, onBooked, bookings }) {
           <p>ご予約前に、利用時間・更衣・靴養生・動画撮影・未成年利用・キャンセル料について必ずご確認ください。</p>
         </div>
 
-        <button className="submit-btn" type="submit" disabled={!canSubmit}>
-          この内容で予約する →
+        <button className="submit-btn" type="submit" disabled={!canSubmit || submitting}>
+          {submitting ? "送信中..." : "この内容で予約する →"}
         </button>
       </form>
     </div>
   );
 }
 
+const GAS_URL = "https://script.google.com/macros/s/AKfycbxyTiseTea6LiLue1T1TFxK_RfkxqQvH-C5Bha9dkVZnRiKCXpEIlx3v9A6ktyILiH8lA/exec";
+window.GAS_URL = GAS_URL;
+
 function Booking() {
   const [selectedDate, setSelectedDate] = useState2(null);
-  const [bookings, setBookings] = useState2(() => {
-    try { return JSON.parse(localStorage.getItem("moriscu_bookings") || "[]"); } catch { return []; }
-  });
+  const [bookings, setBookings] = useState2([]);
+  const [loading, setLoading] = useState2(true);
   const [toast, setToast] = useState2(null);
 
+  // GASから予約データを取得
+  const fetchBookings = async () => {
+    try {
+      const res = await fetch(GAS_URL + "?t=" + Date.now());
+      const data = await res.json();
+      if (data.bookings) {
+        // スプレッドシートのヘッダー名をJSのキーに変換
+        const mapped = data.bookings.map(b => ({
+          id: b["予約ID"],
+          date: b["日付"],
+          time: b["開始時刻"],
+          plan: b["プラン"],
+          people: b["人数"],
+          name: b["お名前"],
+          kana: b["フリガナ"],
+          age: b["年齢"],
+          email: b["メール"],
+          phone: b["電話番号"],
+          note: b["メモ"],
+          submittedAt: b["送信日時"],
+        }));
+        setBookings(mapped);
+      }
+    } catch(err) {
+      console.error("予約データの取得に失敗しました", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect2(() => {
+    fetchBookings();
+  }, []);
+
   const onBooked = (b) => {
-    const next = [...bookings, b];
-    setBookings(next);
-    localStorage.setItem("moriscu_bookings", JSON.stringify(next));
+    setBookings(prev => [...prev, b]);
     setToast(b);
     setSelectedDate(null);
     setTimeout(() => setToast(null), 5000);
+    // 5秒後に最新データを再取得
+    setTimeout(() => fetchBookings(), 5000);
   };
 
   return (
@@ -365,10 +416,14 @@ function Booking() {
           <h2>ご予約</h2>
           <p>カレンダーから日付を選んで、フォームに必要事項をご記入ください。</p>
         </div>
-        <div className="booking-layout">
-          <Calendar selectedDate={selectedDate} onSelect={setSelectedDate} bookings={bookings} />
-          <BookingForm selectedDate={selectedDate} onBooked={onBooked} bookings={bookings} />
-        </div>
+        {loading ? (
+          <div style={{textAlign:"center", padding:"40px", opacity:0.5}}>予約状況を読み込み中...</div>
+        ) : (
+          <div className="booking-layout">
+            <Calendar selectedDate={selectedDate} onSelect={setSelectedDate} bookings={bookings} />
+            <BookingForm selectedDate={selectedDate} onBooked={onBooked} bookings={bookings} />
+          </div>
+        )}
       </div>
 
       <div className={`toast ${toast?"show":""}`}>
