@@ -164,15 +164,6 @@ function BookingForm({ selectedDate, onBooked, bookings }) {
 
   const av = selectedDate ? availByDate(selectedDate) : null;
 
-  // 固定枠（開始時間 → 6h可否 → 予約可否）
-  const FIXED_SLOTS = [
-    { time: "09:00", allow6h: true,  disabled: false },
-    { time: "12:30", allow6h: true,  disabled: false },
-    { time: "16:00", allow6h: true,  disabled: false },
-    { time: "19:30", allow6h: false, disabled: true  },
-  ];
-
-  // プランごとの利用時間
   const planHours = {
     "weekday-3h": 3, "weekday-6h": 6,
     "weekend-3h": 3, "weekend-6h": 6,
@@ -180,40 +171,52 @@ function BookingForm({ selectedDate, onBooked, bookings }) {
 
   const toMin = (t) => { const [h, m] = t.split(":").map(Number); return h * 60 + m; };
 
-  // 選択中の枠が6h不可かどうか
-  const currentSlot = FIXED_SLOTS.find(s => s.time === time) || FIXED_SLOTS[0];
-  const isLateStart = !currentSlot.allow6h;
+  // その日の予約済みを取得
+  const dayBookings = selectedDate
+    ? (bookings || []).filter(b => b.date === utilToISO(selectedDate))
+    : [];
+
+  const booking0900 = dayBookings.find(b => b.time === "09:00");
+  const booking1600 = dayBookings.find(b => b.time === "16:00");
+  const booking1230 = dayBookings.find(b => b.time === "12:30");
+  const booking1930 = dayBookings.find(b => b.time === "19:30");
+
+  // 表示する枠を動的に構築
+  const SLOTS = [];
+
+  // 09:00枠：常に表示、予約済みならdisabled
+  SLOTS.push({ time: "09:00", allow6h: true, disabled: !!booking0900 });
+
+  // 12:30枠：09:00が3h予約済みの場合のみ追加
+  if (booking0900 && (planHours[booking0900.plan] || 3) === 3) {
+    SLOTS.push({ time: "12:30", allow6h: false, disabled: !!booking1230 });
+  }
+
+  // 16:00枠：常に表示、予約済みならdisabled
+  SLOTS.push({ time: "16:00", allow6h: true, disabled: !!booking1600 });
+
+  // 19:30枠：16:00が3h予約済みの場合のみ追加
+  if (booking1600 && (planHours[booking1600.plan] || 3) === 3) {
+    SLOTS.push({ time: "19:30", allow6h: false, disabled: !!booking1930 });
+  }
+
+  // 選択中の枠情報
+  const currentSlot = SLOTS.find(s => s.time === time) || SLOTS[0];
+  const isLateStart = currentSlot ? !currentSlot.allow6h : false;
 
   // 6h不可の枠を選んでいるのに6hプランなら自動で3hに切替
   React.useEffect(() => {
     if (isLateStart && (plan === "weekday-6h" || plan === "weekend-6h")) {
       setPlan(plan === "weekend-6h" ? "weekend-3h" : "weekday-3h");
     }
-  }, [time]);
+    // 選択中の時間が枠リストにない場合は最初の枠に戻す
+    if (!SLOTS.find(s => s.time === time)) {
+      setTime(SLOTS[0]?.time || "09:00");
+    }
+  }, [time, dayBookings.length]);
 
-  // その日の予約済み枠を求める
-  const dayBookings = selectedDate
-    ? (bookings || []).filter(b => b.date === utilToISO(selectedDate))
-    : [];
-
-  const bookedTimes = new Set(dayBookings.map(b => b.time));
-
-  // 選択中プランの終了時間（清掃込み）と既存予約の重複チェック
-  const disabledTimes = new Set();
-  FIXED_SLOTS.forEach(slot => {
-    if (slot.disabled) { disabledTimes.add(slot.time); return; }
-    const slotMin = toMin(slot.time);
-    // 既存予約と重なるか確認
-    const overlaps = dayBookings.some(b => {
-      const bStart = toMin(b.time);
-      const bEnd = bStart + (planHours[b.plan] || 3) * 60 + 30;
-      const sEnd = slotMin + (planHours[plan] || 3) * 60;
-      return slotMin < bEnd && sEnd > bStart;
-    });
-    if (overlaps) disabledTimes.add(slot.time);
-  });
-
-  const canSubmit = selectedDate && name && kana && age && people && email && phone && agreed && !disabledTimes.has(time);
+  const canSubmit = selectedDate && name && kana && age && people && email && phone && agreed
+    && SLOTS.find(s => s.time === time) && !SLOTS.find(s => s.time === time)?.disabled;
 
   const submit = (e) => {
     e.preventDefault();
@@ -245,9 +248,9 @@ function BookingForm({ selectedDate, onBooked, bookings }) {
           <div className="form-row">
             <label>開始時刻 <span className="req">*</span></label>
             <select value={time} onChange={e=>setTime(e.target.value)}>
-              {FIXED_SLOTS.map(slot => (
-                <option key={slot.time} value={slot.time} disabled={disabledTimes.has(slot.time)}>
-                  {slot.time}{disabledTimes.has(slot.time) ? " (予約済)" : ""}
+              {SLOTS.map(slot => (
+                <option key={slot.time} value={slot.time} disabled={slot.disabled}>
+                  {slot.time}{slot.disabled ? " (予約済)" : ""}
                 </option>
               ))}
             </select>
