@@ -61,11 +61,11 @@ function Calendar({ selectedDate, onSelect, bookings }) {
     onSelect(c.date);
   };
 
-  // 予約数に基づく空き状況（1日最大3枠想定）
+  // 予約数に基づく空き状況（1件以上で△、3件以上で×）
   const availByBookings = (iso) => {
     const count = (bookingsByDate[iso] || []).length;
     if (count >= 3) return "full";
-    if (count >= 2) return "few";
+    if (count >= 1) return "few";
     return "ok";
   };
 
@@ -164,22 +164,31 @@ function BookingForm({ selectedDate, onBooked, bookings }) {
 
   const av = selectedDate ? availByDate(selectedDate) : null;
 
-  // 30分刻みの時間リスト（09:00〜16:00）
+  // 30分刻みの時間リスト（09:00〜20:00）
   const allTimes = [];
-  for (let h = 9; h <= 16; h++) {
+  for (let h = 9; h <= 20; h++) {
     allTimes.push(`${String(h).padStart(2,"0")}:00`);
-    if (h < 16) allTimes.push(`${String(h).padStart(2,"0")}:30`);
+    if (h < 20) allTimes.push(`${String(h).padStart(2,"0")}:30`);
   }
 
   // プランごとの利用時間（h）
   const planHours = {
-    "weekday-3h": 3, "weekday-6h": 6, "weekday-6h-off": 6,
+    "weekday-3h": 3, "weekday-6h": 6,
     "weekend-3h": 3, "weekend-6h": 6,
   };
 
-  // 時間文字列 → 分に変換
+  // 17:00より後の開始は3hのみ選択可能
   const toMin = (t) => { const [h, m] = t.split(":").map(Number); return h * 60 + m; };
-  const fromMin = (m) => `${String(Math.floor(m/60)).padStart(2,"0")}:${String(m%60).padStart(2,"0")}`;
+
+  const startMin = toMin(time);
+  const isLateStart = startMin >= toMin("17:00");
+
+  // 時間選択後にプランが6hで遅い時間なら3hに自動切替
+  React.useEffect(() => {
+    if (isLateStart && (plan === "weekday-6h" || plan === "weekend-6h")) {
+      setPlan(plan === "weekend-6h" ? "weekend-3h" : "weekday-3h");
+    }
+  }, [time]);
 
   // その日の予約済み時間帯を計算してdisabledな時間を求める
   const dayBookings = selectedDate
@@ -188,16 +197,14 @@ function BookingForm({ selectedDate, onBooked, bookings }) {
 
   const disabledTimes = new Set();
   dayBookings.forEach(b => {
-    const startMin = toMin(b.time);
+    const bStartMin = toMin(b.time);
     const hours = planHours[b.plan] || 3;
-    const endMin = startMin + hours * 60 + 30; // +30分は清掃時間
-    // 既存予約の開始〜終了に重なる時間はすべてdisabled
+    const endMin = bStartMin + hours * 60 + 30; // +30分は清掃時間
     allTimes.forEach(t => {
       const tMin = toMin(t);
       const selectedHours = planHours[plan] || 3;
       const tEndMin = tMin + selectedHours * 60;
-      // 新規予約の時間帯が既存予約と重なるならdisabled
-      if (tMin < endMin && tEndMin > startMin) disabledTimes.add(t);
+      if (tMin < endMin && tEndMin > bStartMin) disabledTimes.add(t);
     });
   });
 
@@ -244,10 +251,9 @@ function BookingForm({ selectedDate, onBooked, bookings }) {
             <label>プラン <span className="req">*</span></label>
             <select value={plan} onChange={e=>setPlan(e.target.value)}>
               <option value="weekday-3h">平日 3h / ¥7,000</option>
-              <option value="weekday-6h">平日 6h / ¥13,000</option>
-              <option value="weekday-6h-off">平日割 6h / ¥10,000</option>
+              {!isLateStart && <option value="weekday-6h">平日 6h / ¥13,000</option>}
               <option value="weekend-3h">土日祝 3h / ¥8,500</option>
-              <option value="weekend-6h">土日祝 6h / ¥16,000</option>
+              {!isLateStart && <option value="weekend-6h">土日祝 6h / ¥16,000</option>}
             </select>
           </div>
         </div>
