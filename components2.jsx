@@ -160,6 +160,7 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
   const [note, setNote] = useState2("");
   const [kana, setKana] = useState2("");
   const [age, setAge] = useState2("");
+  const [shooting, setShooting] = useState2("none");
   const [agreed, setAgreed] = useState2(false);
 
   const av = selectedDate ? availByDate(selectedDate) : null;
@@ -244,7 +245,7 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
       date: utilToISO(selectedDate),
       time, plan, people,
       name, kana, age,
-      email, phone, note,
+      email, phone, note, shooting,
       submittedAt: new Date().toISOString(),
     };
     setSubmitting(true);
@@ -258,7 +259,7 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
       if (result.status === "ok") {
         onBooked(booking);
         setName(""); setKana(""); setAge("");
-        setEmail(""); setPhone(""); setNote(""); setAgreed(false);
+        setEmail(""); setPhone(""); setNote(""); setShooting("none"); setAgreed(false);
       } else {
         alert("送信に失敗しました: " + (result.message || "不明なエラー"));
       }
@@ -337,8 +338,28 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
         </div>
 
         <div className="form-row">
+          <label>撮影サービス</label>
+          <select value={shooting} onChange={e => setShooting(e.target.value)}>
+            <option value="none">希望しない</option>
+            <option value="photo-1h">写真のみ 1h / ¥7,000</option>
+            <option value="video-1h">動画のみ 1h / ¥7,000</option>
+            <option value="photo-2h">写真のみ 2h / ¥13,000</option>
+            <option value="video-2h">動画のみ 2h / ¥13,000</option>
+            <option value="both-2h">写真＋動画 2h / ¥13,000</option>
+            <option value="photo-3h">写真のみ 3h / ¥18,000</option>
+            <option value="video-3h">動画のみ 3h / ¥18,000</option>
+            <option value="both-3h">写真＋動画 3h / ¥18,000</option>
+          </select>
+          {shooting !== "none" && (
+            <p style={{fontSize:12, color:"var(--sub)", marginTop:6}}>
+              ※撮影サービスの時間はスタジオご利用時間とは別途となります
+            </p>
+          )}
+        </div>
+
+        <div className="form-row">
           <label>ご要望・メッセージ</label>
-          <textarea value={note} onChange={e=>setNote(e.target.value)} placeholder="撮影サービスを希望、機材持ち込みあり、など" />
+          <textarea value={note} onChange={e=>setNote(e.target.value)} placeholder="撮影サービスを希望、商用利用、など" />
         </div>
 
         <div className="terms-check">
