@@ -145,7 +145,6 @@ function BookingForm({ selectedDate, onBooked }) {
   const [email, setEmail] = useState2("");
   const [phone, setPhone] = useState2("");
   const [people, setPeople] = useState2(2);
-  const [booths, setBooths] = useState2([]);
   const [plan, setPlan] = useState2("weekday-3h");
   const [time, setTime] = useState2("10:00");
   const [note, setNote] = useState2("");
@@ -157,11 +156,7 @@ function BookingForm({ selectedDate, onBooked }) {
   const [agreed, setAgreed] = useState2(false);
 
   const av = selectedDate ? availability(selectedDate) : null;
-  const canSubmit = selectedDate && av !== "full" && name && kana && email && phone && booths.length > 0 && agreed;
-
-  const toggleBooth = (id) => {
-    setBooths(bs => bs.includes(id) ? bs.filter(x=>x!==id) : [...bs, id]);
-  };
+  const canSubmit = selectedDate && av !== "full" && name && kana && email && phone && agreed;
 
   const submit = (e) => {
     e.preventDefault();
@@ -170,14 +165,13 @@ function BookingForm({ selectedDate, onBooked }) {
       id: "B-" + Date.now().toString(36).toUpperCase(),
       date: utilToISO(selectedDate),
       time, plan, people,
-      booths: booths.map(id => BOOTHS.find(b=>b.id===id).name),
       name, kana, age, character, photographer, commercial,
       email, phone, note,
       submittedAt: new Date().toISOString(),
     };
     onBooked(booking);
     setName(""); setKana(""); setAge(""); setCharacter(""); setPhotographer("none"); setCommercial(false);
-    setEmail(""); setPhone(""); setNote(""); setBooths([]); setAgreed(false);
+    setEmail(""); setPhone(""); setNote(""); setAgreed(false);
   };
 
   return (
@@ -192,19 +186,6 @@ function BookingForm({ selectedDate, onBooked }) {
       <form onSubmit={submit}>
         <div className="form-note">
           ✦ プロトタイプ表示です。送信された予約情報は info@rikoruto.jp へ通知、カレンダーに反映されます。
-        </div>
-
-        <div className="form-row">
-          <label>ご希望ブース <span className="req">*</span></label>
-          <div className="form-booth-pick">
-            {BOOTHS.map(b => (
-              <div key={b.id}
-                   className={`pick ${booths.includes(b.id)?"on":""}`}
-                   onClick={() => toggleBooth(b.id)}>
-                {b.name}
-              </div>
-            ))}
-          </div>
         </div>
 
         <div className="form-grid-2">
@@ -256,7 +237,7 @@ function BookingForm({ selectedDate, onBooked }) {
             <input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="you@example.com" />
           </div>
           <div className="form-row">
-            <label>電話番号</label>
+            <label>電話番号 <span className="req">*</span></label>
             <input type="tel" value={phone} onChange={e=>setPhone(e.target.value)} placeholder="090-0000-0000" />
           </div>
         </div>
