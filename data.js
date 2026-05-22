@@ -1,0 +1,127 @@
+// booth data + shared utilities for もりすくスタジオ
+
+const BOOTHS = [
+  {
+    id: "chinese",
+    num: "Booth 01",
+    name: "中華ブース",
+    subtitle: "Chinoiserie",
+    desc: "格子窓・提灯・桜飾りを合わせた、やわらかい中華テイストのブース。チャイナドレス、仙侠・武侠風、和中ミックスの衣装にも合わせやすい空間です。",
+    tags: ["中華", "チャイナ", "提灯", "桜"],
+    features: [
+      "月窓・格子モチーフの背景",
+      "淡いピンクとゴールドを基調にした装飾",
+      "座り・立ちどちらも撮りやすい奥行き設計",
+    ],
+    gradient: "linear-gradient(135deg, #FFD3DC 0%, #F7A6B7 52%, #FFE0A8 100%)",
+    accent: "#D97A8F",
+    image: "assets/booth-chinese.png",
+    ph: "BOOTH 01 / CHINOISERIE",
+  },
+  {
+    id: "classic-pink",
+    num: "Booth 02",
+    name: "クラシックピンク",
+    subtitle: "Classic Pink",
+    desc: "シャンデリア、ロココ調ソファ、ピンクの壁面で構成した王道の可愛いブース。姫系・アイドル系・甘め衣装をしっかり引き立てます。",
+    tags: ["洋館", "姫系", "ロココ", "ピンク"],
+    features: [
+      "ピンクのロココ調ソファ",
+      "シャンデリアとキャンドル風ライト",
+      "全身・寄りどちらも映える背景密度",
+    ],
+    gradient: "linear-gradient(135deg, #FFD6E8 0%, #FFB8D1 50%, #F5A8C7 100%)",
+    accent: "#E6729C",
+    image: "assets/booth-classic-pink.png",
+    ph: "BOOTH 02 / CLASSIC PINK",
+  },
+  {
+    id: "neon",
+    num: "Booth 03",
+    name: "ネオンブース",
+    subtitle: "Neon District",
+    desc: "紫・青・ピンクのネオンを中心にした夜景ブース。サイバーパンク、Y2K、ストリート系、ダーク寄りの作品に合います。",
+    tags: ["ネオン", "サイバー", "夜景", "Y2K"],
+    features: [
+      "青・紫・ピンク系ネオン演出",
+      "反射感のある床表現",
+      "暗め衣装や武器小物との相性が良好",
+    ],
+    gradient: "linear-gradient(135deg, #2B1A4A 0%, #FF3FA4 50%, #1FC8F5 100%)",
+    accent: "#FF3FA4",
+    image: "assets/booth-neon.png",
+    ph: "BOOTH 03 / NEON DISTRICT",
+  },
+  {
+    id: "gaming",
+    num: "Booth 04",
+    name: "ゲーミングブース",
+    subtitle: "Gaming Room",
+    desc: "RGBライトとデスク環境を組み合わせた、近未来感のあるゲーミング空間。配信者キャラ、FPS・近未来系、メカ系の撮影に。",
+    tags: ["ゲーミング", "RGB", "近未来", "配信者"],
+    features: [
+      "デスク・モニター・チェア構成",
+      "赤青のRGBライティング",
+      "小物を置いて生活感のある撮影も可能",
+    ],
+    gradient: "linear-gradient(135deg, #0F172A 0%, #0EA5E9 45%, #EF4444 100%)",
+    accent: "#38BDF8",
+    image: "assets/booth-gaming.png",
+    ph: "BOOTH 04 / GAMING ROOM",
+  },
+  {
+    id: "black",
+    num: "Booth 05",
+    name: "黒背景ブース",
+    subtitle: "Black Studio",
+    desc: "黒カーテンとシャンデリアで構成した、重厚感のある黒背景ブース。ダーク系、ヴィラン系、ゴシック系の決めカットに向いています。",
+    tags: ["黒背景", "ゴシック", "重厚感", "決めカット"],
+    features: [
+      "黒カーテンと黒椅子の統一感",
+      "シャンデリアで上品な陰影",
+      "ライティング次第でシンプルにもドラマチックにも",
+    ],
+    gradient: "linear-gradient(135deg, #1A1420 0%, #2B2030 50%, #3D2A3B 100%)",
+    accent: "#C9A8E0",
+    image: "assets/booth-black.png",
+    ph: "BOOTH 05 / BLACK STUDIO",
+  },
+  {
+    id: "paper",
+    num: "Booth 06",
+    name: "カラーペーパーブース",
+    subtitle: "Color Paper",
+    desc: "ピンク・パープル・ブルー・オレンジ・イエローなど、キャラクターカラーに合わせて使える背景紙ブース。シンプルな宣材撮影にも便利です。",
+    tags: ["背景紙", "パステル", "単色", "宣材"],
+    features: [
+      "複数色の背景紙を常設予定",
+      "全身撮影に使いやすい引き出し仕様",
+      "衣装の色を邪魔しないシンプル設計",
+    ],
+    gradient: "linear-gradient(135deg, #FFD6E8 0%, #D6EAFF 33%, #FFF0B8 66%, #FAFAFA 100%)",
+    accent: "#FF8FB8",
+    image: "assets/booth-paper.png",
+    ph: "BOOTH 06 / COLOR PAPER",
+  },
+];
+
+const FAQS = [
+  { q: "初めてでも利用できますか？", a: "もちろんです。初回の方にはスタッフが機材やブースのご案内をいたします。ご不安な点はお気軽にお問い合わせください。" },
+  { q: "衣装や小道具の貸し出しはありますか？", a: "現在、一部のウィッグ・小道具・簡易メイク用品のみご用意しております。衣装のレンタルは行っておりませんので、各自ご持参ください。" },
+  { q: "予約のキャンセルはできますか？", a: "利用日の3日前までのキャンセルは無料です。前日キャンセルは50%、当日キャンセルは100%のキャンセル料を申し受けます。" },
+  { q: "撮影機材の持ち込みは可能ですか？", a: "もちろん可能です。大型の機材をお持ちの場合は、事前にご相談いただけるとスムーズにご案内できます。" },
+  { q: "複数ブースを同時間に使用できますか？", a: "ご利用時間内であれば、全ブースを自由にお使いいただけます。他の利用者と重ならないよう、完全貸切制です。" },
+  { q: "何名まで利用できますか？", a: "基本料金は4名様まで。5名様以降は1名につき+1,000円／最大8名様までご利用いただけます。" },
+  { q: "商用利用は可能ですか？", a: "雑誌・PV・企業撮影など商用でのご利用は事前にご相談ください。別途料金体系でご案内いたします。" },
+];
+
+const FLOW = [
+  { t: "ご予約", p: "カレンダーから空きを確認し、フォームで日時とブースをお申込みください。" },
+  { t: "ご来店", p: "空港通り駅から徒歩8分。駐車場もあります。更衣室・メイクスペース完備。" },
+  { t: "お支払い", p: "ご利用当日に現金にてお支払いください。領収書の発行もご相談ください。" },
+  { t: "撮影・ご退店", p: "ご利用時間内で自由に撮影。チェックアウト前にブースの簡単な原状復帰をお願いします。" },
+];
+
+window.BOOTHS = BOOTHS;
+window.FAQS = FAQS;
+window.FLOW = FLOW;
