@@ -246,15 +246,19 @@ function BookingForm({ selectedDate, onBooked, bookings }) {
     };
     setSubmitting(true);
     try {
-      await fetch(window.GAS_URL, {
+      const res = await fetch(GAS_URL, {
         method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "text/plain" },
         body: JSON.stringify(booking),
       });
-      onBooked(booking);
-      setName(""); setKana(""); setAge("");
-      setEmail(""); setPhone(""); setNote(""); setAgreed(false);
+      const result = await res.json();
+      if (result.status === "ok") {
+        onBooked(booking);
+        setName(""); setKana(""); setAge("");
+        setEmail(""); setPhone(""); setNote(""); setAgreed(false);
+      } else {
+        alert("送信に失敗しました: " + (result.message || "不明なエラー"));
+      }
     } catch(err) {
       alert("送信に失敗しました。時間をおいて再度お試しください。");
     } finally {
