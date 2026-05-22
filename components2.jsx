@@ -376,20 +376,28 @@ function Booking() {
       const data = await res.json();
       if (data.bookings) {
         // スプレッドシートのヘッダー名をJSのキーに変換
-        const mapped = data.bookings.map(b => ({
-          id: b["予約ID"],
-          date: b["日付"],
-          time: b["開始時刻"],
-          plan: b["プラン"],
-          people: b["人数"],
-          name: b["お名前"],
-          kana: b["フリガナ"],
-          age: b["年齢"],
-          email: b["メールアドレス"],
-          phone: b["電話番号"],
-          note: b["メモ"],
-          submittedAt: b["送信日時"],
-        }));
+        const mapped = data.bookings.map(b => {
+          // 時刻を09:00形式に正規化（スプレッドシートが9:00:00で返す場合に対応）
+          let rawTime = String(b["開始時刻"] || "");
+          if (rawTime.includes(":")) {
+            const parts = rawTime.split(":");
+            rawTime = String(parts[0]).padStart(2, "0") + ":" + String(parts[1]).padStart(2, "0");
+          }
+          return {
+            id: b["予約ID"],
+            date: String(b["日付"]).slice(0, 10), // 日付も念のため正規化
+            time: rawTime,
+            plan: b["プラン"],
+            people: b["人数"],
+            name: b["お名前"],
+            kana: b["フリガナ"],
+            age: b["年齢"],
+            email: b["メールアドレス"],
+            phone: b["電話番号"],
+            note: b["メモ"],
+            submittedAt: b["送信日時"],
+          };
+        });
         setBookings(mapped);
       }
     } catch(err) {
