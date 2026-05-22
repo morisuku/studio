@@ -18,7 +18,6 @@
   <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
 
   <script src="data.js?v=photo-fixed-v1"></script>
-  <script type="text/babel" src="tweaks-panel.jsx?v=photo-fixed-v1"></script>
   <script type="text/babel" src="components.jsx?v=photo-fixed-v1"></script>
   <script type="text/babel" src="components2.jsx?v=photo-fixed-v1"></script>
 
@@ -26,11 +25,9 @@
     const { useState, useEffect } = React;
 
     function App() {
-      const [t, setTweak] = useTweaks(window.TWEAK_DEFAULTS);
-
       useEffect(() => {
-        document.documentElement.dataset.theme = t.theme;
-      }, [t.theme]);
+        document.documentElement.dataset.theme = "a";
+      }, []);
 
       // scroll reveal
       useEffect(() => {
@@ -39,12 +36,12 @@
         }, { threshold: 0.12 });
         document.querySelectorAll(".reveal").forEach(el => io.observe(el));
         return () => io.disconnect();
-      }, [t.theme]);
+      }, []);
 
       return (
         <>
           <Nav />
-          <Hero showSparkles={t.showSparkles} />
+          <Hero showSparkles={true} />
           <div className="reveal"><BoothShowcase /></div>
           <div className="reveal"><Pricing /></div>
           <div className="reveal"><Booking /></div>
@@ -53,36 +50,11 @@
           <div className="reveal"><Access /></div>
           <div className="reveal"><SNS /></div>
           <Footer />
-
-          <TweaksPanel>
-            <TweakSection label="デザイン案" />
-            <TweakRadio
-              label="テーマ"
-              value={t.theme}
-              options={[
-                { value: "a", label: "A. ゆめかわポップ" },
-                { value: "b", label: "B. ミニマルガーリー" },
-              ]}
-              onChange={(v) => setTweak("theme", v)}
-            />
-            <TweakSection label="演出" />
-            <TweakToggle
-              label="キラキラ演出"
-              value={t.showSparkles}
-              onChange={(v) => setTweak("showSparkles", v)}
-            />
-            <TweakSection label="ショートカット" />
-            <div style={{display:"flex", flexDirection:"column", gap:6}}>
-              <a href="#booths" style={{fontSize:11, color:"#29261b", padding:"6px 10px", background:"rgba(0,0,0,.05)", borderRadius:8}}>→ ブース</a>
-              <a href="#pricing" style={{fontSize:11, color:"#29261b", padding:"6px 10px", background:"rgba(0,0,0,.05)", borderRadius:8}}>→ 料金</a>
-              <a href="#booking" style={{fontSize:11, color:"#29261b", padding:"6px 10px", background:"rgba(0,0,0,.05)", borderRadius:8}}>→ ご予約</a>
-            </div>
-          </TweaksPanel>
         </>
       );
     }
 
-    document.documentElement.dataset.theme = window.TWEAK_DEFAULTS.theme || "a";
+    document.documentElement.dataset.theme = "a";
     ReactDOM.createRoot(document.getElementById("root")).render(<App />);
   </script>
 </body>
