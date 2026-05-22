@@ -150,7 +150,7 @@ function availByDate(date) {
 }
 
 // ───────── BOOKING: FORM ─────────
-function BookingForm({ selectedDate, onBooked, bookings }) {
+function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
   const [name, setName] = useState2("");
   const [email, setEmail] = useState2("");
   const [phone, setPhone] = useState2("");
@@ -215,8 +215,11 @@ function BookingForm({ selectedDate, onBooked, bookings }) {
     }
   }, [time, dayBookings.length]);
 
-  // 選択日が土日祝かどうか判定（祝日は簡易的に土日のみで判定）
-  const isWeekend = selectedDate ? [0, 6].includes(selectedDate.getDay()) : false;
+  // 選択日が土日または祝日かどうか判定
+  const selectedISO = selectedDate ? utilToISO(selectedDate) : "";
+  const isWeekend = selectedDate
+    ? [0, 6].includes(selectedDate.getDay()) || (holidays || []).includes(selectedISO)
+    : false;
 
   // 日付変更時にプランを自動切替
   React.useEffect(() => {
@@ -366,6 +369,7 @@ window.GAS_URL = GAS_URL;
 function Booking() {
   const [selectedDate, setSelectedDate] = useState2(null);
   const [bookings, setBookings] = useState2([]);
+  const [holidays, setHolidays] = useState2([]);
   const [loading, setLoading] = useState2(true);
   const [toast, setToast] = useState2(null);
 
@@ -400,6 +404,9 @@ function Booking() {
         });
         setBookings(mapped);
       }
+      if (data.holidays) {
+        setHolidays(data.holidays);
+      }
     } catch(err) {
       console.error("予約データの取得に失敗しました", err);
     } finally {
@@ -433,7 +440,7 @@ function Booking() {
         ) : (
           <div className="booking-layout">
             <Calendar selectedDate={selectedDate} onSelect={setSelectedDate} bookings={bookings} />
-            <BookingForm selectedDate={selectedDate} onBooked={onBooked} bookings={bookings} />
+            <BookingForm selectedDate={selectedDate} onBooked={onBooked} bookings={bookings} holidays={holidays} />
           </div>
         )}
       </div>
