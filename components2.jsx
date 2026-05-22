@@ -108,7 +108,7 @@ function Calendar({ selectedDate, onSelect, bookings }) {
         <span><span className="sym" style={{color:"#3BA37A"}}>○</span> 空きあり</span>
         <span><span className="sym" style={{color:"#E09F3E"}}>△</span> 残りわずか</span>
         <span><span className="sym" style={{color:"var(--china)"}}>×</span> 満席</span>
-        <span><span className="sym" style={{background:"var(--blue)", display:"inline-block", width:12, height:12, borderRadius:3}}></span> ご予約済</span>
+        <span><span className="sym" style={{background:"#FF8FB8", display:"inline-block", width:12, height:12, borderRadius:3}}></span> ご予約済</span>
       </div>
 
       {popup && (
@@ -132,7 +132,7 @@ function Calendar({ selectedDate, onSelect, bookings }) {
                 {popup.items.map(b => (
                   <li key={b.id}>
                     <span className="cal-popup-time">{b.time}</span>
-                    <span className="cal-popup-name">{b.name}様予約</span>
+                    <span className="cal-popup-name">{b.plan === "weekday-3h" ? "平日3h" : b.plan === "weekday-6h" ? "平日6h" : b.plan === "weekday-6h-off" ? "平日割6h" : b.plan === "weekend-3h" ? "土日祝3h" : "土日祝6h"}予約</span>
                   </li>
                 ))}
               </ul>
@@ -150,7 +150,7 @@ function availByDate(date) {
 }
 
 // ───────── BOOKING: FORM ─────────
-function BookingForm({ selectedDate, onBooked }) {
+function BookingForm({ selectedDate, onBooked, bookings }) {
   const [name, setName] = useState2("");
   const [email, setEmail] = useState2("");
   const [phone, setPhone] = useState2("");
@@ -163,7 +163,11 @@ function BookingForm({ selectedDate, onBooked }) {
   const [agreed, setAgreed] = useState2(false);
 
   const av = selectedDate ? availByDate(selectedDate) : null;
-  const canSubmit = selectedDate && av !== "full" && name && kana && age && people && email && phone && agreed;
+  const bookedTimes = selectedDate
+    ? (bookings || []).filter(b => b.date === utilToISO(selectedDate)).map(b => b.time)
+    : [];
+  const allTimes = ["09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00"];
+  const canSubmit = selectedDate && av !== "full" && name && kana && age && people && email && phone && agreed && !bookedTimes.includes(time);
 
   const submit = (e) => {
     e.preventDefault();
@@ -195,7 +199,11 @@ function BookingForm({ selectedDate, onBooked }) {
           <div className="form-row">
             <label>開始時刻 <span className="req">*</span></label>
             <select value={time} onChange={e=>setTime(e.target.value)}>
-              {["09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00"].map(t => <option key={t}>{t}</option>)}
+              {allTimes.map(t => (
+                <option key={t} value={t} disabled={bookedTimes.includes(t)}>
+                  {t}{bookedTimes.includes(t) ? " (予約済)" : ""}
+                </option>
+              ))}
             </select>
           </div>
           <div className="form-row">
@@ -298,7 +306,7 @@ function Booking() {
         </div>
         <div className="booking-layout">
           <Calendar selectedDate={selectedDate} onSelect={setSelectedDate} bookings={bookings} />
-          <BookingForm selectedDate={selectedDate} onBooked={onBooked} />
+          <BookingForm selectedDate={selectedDate} onBooked={onBooked} bookings={bookings} />
         </div>
       </div>
 
