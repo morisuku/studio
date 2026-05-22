@@ -63,6 +63,14 @@ function Calendar({ selectedDate, onSelect, bookings }) {
     onSelect(c.date);
   };
 
+  // 予約数に基づく空き状況（1日最大3枠想定）
+  const availByBookings = (iso) => {
+    const count = (bookingsByDate[iso] || []).length;
+    if (count >= 3) return "full";
+    if (count >= 2) return "few";
+    return "ok";
+  };
+
   return (
     <div className="calendar" style={{position:'relative'}}>
       <div className="cal-head">
@@ -76,7 +84,7 @@ function Calendar({ selectedDate, onSelect, bookings }) {
         {["日","月","火","水","木","金","土"].map(w => <div key={w} className="cal-wd">{w}</div>)}
         {cells.map((c, i) => {
           const isPast = c.date < today;
-          const av = availability(c.date);
+          const av = availByBookings(iso);
           const iso = utilToISO(c.date);
           const isSel = selectedDate && utilSameDay(c.date, selectedDate);
           const hasBooking = !!bookingsByDate[iso];
@@ -126,8 +134,7 @@ function Calendar({ selectedDate, onSelect, bookings }) {
                 {popup.items.map(b => (
                   <li key={b.id}>
                     <span className="cal-popup-time">{b.time}</span>
-                    <span className="cal-popup-booth">{b.booths.join("・")}</span>
-                    <span className="cal-popup-name">{b.name}様</span>
+                    <span className="cal-popup-name">{b.name}様予約</span>
                   </li>
                 ))}
               </ul>
@@ -297,20 +304,6 @@ function Booking() {
           <Calendar selectedDate={selectedDate} onSelect={setSelectedDate} bookings={bookings} />
           <BookingForm selectedDate={selectedDate} onBooked={onBooked} />
         </div>
-
-        {bookings.length > 0 && (
-          <div style={{marginTop: 30, padding: 20, background: "white", borderRadius: 20, border: "1px solid color-mix(in srgb, var(--ink) 8%, transparent)"}}>
-            <h4 style={{fontFamily:"var(--font-head)", fontSize: 14, marginBottom: 10, letterSpacing: "0.1em"}}>MY BOOKINGS ({bookings.length})</h4>
-            <div style={{display:"flex", gap: 10, flexWrap:"wrap"}}>
-              {bookings.map(b => (
-                <div key={b.id} style={{padding:"10px 14px", background:"var(--bg-alt)", borderRadius: 12, fontSize: 12}}>
-                  <b>{b.date}</b> {b.time} / {b.name}様
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
 
       <div className={`toast ${toast?"show":""}`}>
         <span className="check">✓</span>
