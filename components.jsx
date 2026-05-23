@@ -226,7 +226,8 @@ function Pricing() {
               <div key={i} style={{
                 display:"flex", alignItems:"center", gap:12,
                 background:"#F0F4FF", borderRadius:10, padding:"10px 16px",
-                marginBottom:8, border:"1px solid #D8E4FF"
+                marginBottom:8, border:"2px solid #8899DD", flex:1,
+                minHeight:48
               }}>
                 <span style={{
                   width:28, height:28, borderRadius:"50%",
@@ -237,8 +238,6 @@ function Pricing() {
                 <span style={{fontWeight:"bold", color:"#3a3a3a", fontSize:15, letterSpacing:"0.05em"}}>{t}</span>
               </div>
             ))}
-            {/* 空白スペースで平日と高さを揃える */}
-            <div style={{flex:1}} />
             <div style={{
               marginTop:16, background:"#F0F4FF", borderRadius:12,
               padding:"14px 8px", border:"1px solid #C8D8F8", textAlign:"center"
