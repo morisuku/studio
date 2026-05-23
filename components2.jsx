@@ -177,35 +177,33 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
     ? (bookings || []).filter(b => b.date === utilToISO(selectedDate))
     : [];
 
-  const booking0900 = dayBookings.find(b => b.time === "09:00");
-  const booking1600 = dayBookings.find(b => b.time === "16:00");
-  const booking1230 = dayBookings.find(b => b.time === "12:30");
-  const booking1930 = dayBookings.find(b => b.time === "19:30");
+  // 選択日が土日または祝日かどうか判定（先に定義）
+  const selectedISO = selectedDate ? utilToISO(selectedDate) : "";
+  const isWeekend = selectedDate
+    ? [0, 6].includes(selectedDate.getDay()) || (holidays || []).includes(selectedISO)
+    : false;
 
-  // 表示する枠を動的に構築
-  const SLOTS = [];
+  // 平日：09:00 / 12:30 / 16:00 / 19:30の4択
+  // 土日祝：09:00 / 14:30の2択
+  const bookedTimes = new Set(dayBookings.map(b => b.time));
 
-  // 09:00枠：常に表示、予約済みならdisabled
-  SLOTS.push({ time: "09:00", allow6h: true, disabled: !!booking0900 });
-
-  // 12:30枠：09:00が3h予約済みの場合のみ追加
-  if (booking0900 && (planHours[booking0900.plan] || 3) === 3) {
-    SLOTS.push({ time: "12:30", allow6h: false, disabled: !!booking1230 });
-  }
-
-  // 16:00枠：常に表示、予約済みならdisabled
-  SLOTS.push({ time: "16:00", allow6h: true, disabled: !!booking1600 });
-
-  // 19:30枠：16:00が3h予約済みの場合のみ追加
-  if (booking1600 && (planHours[booking1600.plan] || 3) === 3) {
-    SLOTS.push({ time: "19:30", allow6h: false, disabled: !!booking1930 });
-  }
+  const SLOTS = isWeekend
+    ? [
+        { time: "09:00", allow6h: false, disabled: bookedTimes.has("09:00") },
+        { time: "14:30", allow6h: false, disabled: bookedTimes.has("14:30") },
+      ]
+    : [
+        { time: "09:00", allow6h: true,  disabled: bookedTimes.has("09:00") },
+        { time: "12:30", allow6h: true,  disabled: bookedTimes.has("12:30") },
+        { time: "16:00", allow6h: true,  disabled: bookedTimes.has("16:00") },
+        { time: "19:30", allow6h: false, disabled: bookedTimes.has("19:30") },
+      ];
 
   // 選択中の枠情報
   const currentSlot = SLOTS.find(s => s.time === time) || SLOTS[0];
   const isLateStart = currentSlot ? !currentSlot.allow6h : false;
 
-  // 6h不可の枠を選んでいるのに6hプランなら自動で3hに切替
+  // 2連枠不可の枠を選んでいるのに2連枠プランなら1枠に切替
   React.useEffect(() => {
     if (isLateStart && plan === "weekday-2slot") {
       setPlan("weekday-1slot");
@@ -213,13 +211,7 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
     if (!SLOTS.find(s => s.time === time)) {
       setTime(SLOTS[0]?.time || "09:00");
     }
-  }, [time, dayBookings.length]);
-
-  // 選択日が土日または祝日かどうか判定
-  const selectedISO = selectedDate ? utilToISO(selectedDate) : "";
-  const isWeekend = selectedDate
-    ? [0, 6].includes(selectedDate.getDay()) || (holidays || []).includes(selectedISO)
-    : false;
+  }, [time, isWeekend, dayBookings.length]);
 
   // 日付変更時にプランを自動切替
   React.useEffect(() => {
@@ -339,11 +331,9 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
           <label>撮影サービス</label>
           <select value={shooting} onChange={e => setShooting(e.target.value)}>
             <option value="none">希望しない</option>
-            <option value="photo-1h">写真のみ 1h / ¥4,000</option>
-            <option value="photo-2h">写真のみ 2h / ¥7,000</option>
-            <option value="both-2h">写真＋動画 2h / ¥7,000</option>
-            <option value="photo-3h">写真のみ 3h / ¥10,000</option>
-            <option value="both-3h">写真＋動画 3h / ¥10,000</option>
+            <option value="photo-1h">写真 1h / ¥4,000</option>
+            <option value="photo-2h">写真 2h / ¥7,000</option>
+            <option value="photo-3h">写真 3h / ¥10,000</option>
             <option value="video-1h">動画（編集込）1h / ¥8,000</option>
             <option value="video-2h">動画（編集込）2h / ¥12,000</option>
           </select>
