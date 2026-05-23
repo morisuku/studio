@@ -163,45 +163,22 @@ function Pricing() {
           <p>完全貸切制・基本4名まで・全ブース自由に使い放題。</p>
         </div>
 
-        {/* メインタイトルリボン */}
-        <div style={{textAlign:"center", marginBottom:32, position:"relative"}}>
-          <div style={{
-            display:"inline-block", background:"linear-gradient(135deg,#FFB8D1,#FF8FB8)",
-            color:"#fff", padding:"10px 48px", borderRadius:40,
-            fontSize:16, fontWeight:"bold", letterSpacing:"0.12em",
-            boxShadow:"0 4px 16px rgba(255,143,184,0.3)",
-            position:"relative"
-          }}>
-            スタジオ利用料金プラン
-            {/* リボン装飾 */}
-            <span style={{position:"absolute", left:-18, top:"50%", transform:"translateY(-50%)", fontSize:18}}>✦</span>
-            <span style={{position:"absolute", right:-18, top:"50%", transform:"translateY(-50%)", fontSize:18}}>✦</span>
-          </div>
-          {/* リボン下の蝶々 */}
-          <div style={{fontSize:22, marginTop:8}}>🎀</div>
-        </div>
-
         {/* 平日・休日カード */}
-        <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:24, marginBottom:40}}>
+        <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:24, marginBottom:40, alignItems:"stretch"}}>
 
           {/* 平日枠 */}
           <div style={{
-            background:"#fff", borderRadius:20, padding:"28px 24px",
-            border:"2px solid #FFD6E8", boxShadow:"0 4px 20px rgba(255,143,184,0.12)",
-            position:"relative"
+            background:"#ffffff", borderRadius:20, padding:"28px 24px",
+            border:"2px solid #FFD6E8", boxShadow:"0 4px 20px rgba(255,143,184,0.1)",
+            display:"flex", flexDirection:"column"
           }}>
-            {/* キラキラ装飾 */}
-            <span style={{position:"absolute", top:12, left:12, fontSize:14, opacity:0.5}}>✦</span>
-            <span style={{position:"absolute", top:12, right:12, fontSize:14, opacity:0.5}}>✦</span>
             <div style={{textAlign:"center", marginBottom:20}}>
               <div style={{fontSize:22, fontWeight:"900", color:"#D97A8F", letterSpacing:"0.05em"}}>平日枠</div>
               <div style={{fontSize:13, color:"#E6A0B8", fontStyle:"italic", fontFamily:"serif"}}>Weekday</div>
             </div>
-            {/* 時間枠リスト */}
             {[
-              {t:"09:00-12:00"}, {t:"12:30-15:30"},
-              {t:"16:00-19:00"}, {t:"19:30-22:30"}
-            ].map((s,i) => (
+              "09:00-12:00", "12:30-15:30", "16:00-19:00", "19:30-22:30"
+            ].map((t,i) => (
               <div key={i} style={{
                 display:"flex", alignItems:"center", gap:12,
                 background:"#FFF5F8", borderRadius:10, padding:"10px 16px",
@@ -211,21 +188,22 @@ function Pricing() {
                   width:28, height:28, borderRadius:"50%",
                   background:"linear-gradient(135deg,#FF8FB8,#FFB8D1)",
                   display:"flex", alignItems:"center", justifyContent:"center",
-                  fontSize:14, flexShrink:0
+                  fontSize:13, flexShrink:0
                 }}>🕐</span>
-                <span style={{fontWeight:"bold", color:"#3a3a3a", fontSize:15, letterSpacing:"0.05em"}}>{s.t}</span>
+                <span style={{fontWeight:"bold", color:"#3a3a3a", fontSize:15, letterSpacing:"0.05em"}}>{t}</span>
               </div>
             ))}
-            {/* 料金 */}
             <div style={{
-              display:"grid", gridTemplateColumns:"1fr 1fr", gap:12, marginTop:16,
-              background:"#FFF0F5", borderRadius:12, padding:16, border:"1px solid #FFD6E8"
+              display:"grid", gridTemplateColumns:"1fr 1fr", gap:0,
+              marginTop:"auto", paddingTop:16,
+              background:"#FFF0F5", borderRadius:12,
+              border:"1px solid #FFD6E8"
             }}>
-              <div style={{textAlign:"center"}}>
+              <div style={{textAlign:"center", padding:"14px 8px"}}>
                 <div style={{fontSize:11, color:"#D97A8F", marginBottom:4}}>1枠</div>
                 <div style={{fontSize:26, fontWeight:"900", color:"#FF5C8D"}}>¥6,000</div>
               </div>
-              <div style={{textAlign:"center", borderLeft:"1px dashed #FFB8D1"}}>
+              <div style={{textAlign:"center", padding:"14px 8px", borderLeft:"1px dashed #FFB8D1"}}>
                 <div style={{fontSize:11, color:"#D97A8F", marginBottom:4}}>2連枠</div>
                 <div style={{fontSize:26, fontWeight:"900", color:"#FF5C8D"}}>¥9,000</div>
               </div>
@@ -234,20 +212,17 @@ function Pricing() {
 
           {/* 休日枠 */}
           <div style={{
-            background:"#fff", borderRadius:20, padding:"28px 24px",
-            border:"2px solid #C8D8F8", boxShadow:"0 4px 20px rgba,100,150,220,0.1)",
-            position:"relative"
+            background:"#ffffff", borderRadius:20, padding:"28px 24px",
+            border:"2px solid #C8D8F8", boxShadow:"0 4px 20px rgba(100,150,220,0.08)",
+            display:"flex", flexDirection:"column"
           }}>
-            <span style={{position:"absolute", top:12, left:12, fontSize:14, opacity:0.5, color:"#8899CC"}}>✦</span>
-            <span style={{position:"absolute", top:12, right:12, fontSize:14, opacity:0.5, color:"#8899CC"}}>✦</span>
             <div style={{textAlign:"center", marginBottom:20}}>
               <div style={{fontSize:22, fontWeight:"900", color:"#6677BB", letterSpacing:"0.05em"}}>休日枠</div>
               <div style={{fontSize:13, color:"#8899CC", fontStyle:"italic", fontFamily:"serif"}}>Holiday</div>
             </div>
-            {/* 時間枠リスト */}
             {[
-              {t:"09:00-14:00"}, {t:"14:30-19:30"}
-            ].map((s,i) => (
+              "09:00-14:00", "14:30-19:30"
+            ].map((t,i) => (
               <div key={i} style={{
                 display:"flex", alignItems:"center", gap:12,
                 background:"#F0F4FF", borderRadius:10, padding:"10px 16px",
@@ -257,48 +232,51 @@ function Pricing() {
                   width:28, height:28, borderRadius:"50%",
                   background:"linear-gradient(135deg,#8899DD,#AABBEE)",
                   display:"flex", alignItems:"center", justifyContent:"center",
-                  fontSize:14, flexShrink:0
+                  fontSize:13, flexShrink:0
                 }}>🕐</span>
-                <span style={{fontWeight:"bold", color:"#3a3a3a", fontSize:15, letterSpacing:"0.05em"}}>{s.t}</span>
+                <span style={{fontWeight:"bold", color:"#3a3a3a", fontSize:15, letterSpacing:"0.05em"}}>{t}</span>
               </div>
             ))}
-            {/* 料金 */}
+            {/* 空白スペースで平日と高さを揃える */}
+            <div style={{flex:1}} />
             <div style={{
               marginTop:16, background:"#F0F4FF", borderRadius:12,
-              padding:16, border:"1px solid #C8D8F8", textAlign:"center"
+              padding:"14px 8px", border:"1px solid #C8D8F8", textAlign:"center"
             }}>
               <div style={{fontSize:11, color:"#6677BB", marginBottom:4}}>1枠</div>
-              <div style={{fontSize:32, fontWeight:"900", color:"#4455AA"}}>¥12,000</div>
+              <div style={{fontSize:26, fontWeight:"900", color:"#4455AA"}}>¥12,000</div>
             </div>
           </div>
         </div>
 
         {/* 撮影サービス */}
-        <div style={{textAlign:"center", marginBottom:20, position:"relative"}}>
+        <div style={{textAlign:"center", marginBottom:20}}>
           <span style={{fontSize:13, color:"#D97A8F", letterSpacing:"0.1em"}}>✦ 撮影サービス ✦</span>
         </div>
 
         <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:20, marginBottom:24}}>
           {/* 写真 */}
           <div style={{
-            background:"#fff", borderRadius:16, padding:"20px 20px",
+            background:"#ffffff", borderRadius:16, padding:"20px",
             border:"2px solid #FFD6E8", boxShadow:"0 2px 12px rgba(255,143,184,0.1)"
           }}>
             <div style={{display:"flex", alignItems:"center", gap:10, marginBottom:16}}>
-              <span style={{
+              <div style={{
                 width:36, height:36, borderRadius:"50%",
                 background:"linear-gradient(135deg,#FF8FB8,#FFB8D1)",
-                display:"flex", alignItems:"center", justifyContent:"center", fontSize:18
-              }}>📷</span>
-              <div>
-                <div style={{fontWeight:"bold", color:"#D97A8F", fontSize:14}}>撮影サービス（写真）</div>
-              </div>
+                display:"flex", alignItems:"center", justifyContent:"center",
+                fontSize:18, flexShrink:0
+              }}>📷</div>
+              <div style={{fontWeight:"bold", color:"#D97A8F", fontSize:14}}>撮影サービス（写真）</div>
             </div>
-            <div style={{display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:8}}>
-              {[{h:"1h",p:"¥4,000"},{h:"2h",p:"¥7,000"},{h:"3h",p:"¥10,000"}].map((i,k) => (
-                <div key={k} style={{textAlign:"center", borderRight: k<2 ? "1px dashed #FFD6E8":"none", paddingRight: k<2?8:0}}>
-                  <div style={{fontSize:11, color:"#D97A8F", marginBottom:4}}>{i.h}</div>
-                  <div style={{fontSize:17, fontWeight:"900", color:"#FF5C8D"}}>{i.p}</div>
+            <div style={{display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:0}}>
+              {[{h:"1h",p:"¥4,000"},{h:"2h",p:"¥7,000"},{h:"3h",p:"¥10,000"}].map((item,k) => (
+                <div key={k} style={{
+                  textAlign:"center", padding:"8px 4px",
+                  borderRight: k < 2 ? "1px dashed #FFD6E8" : "none"
+                }}>
+                  <div style={{fontSize:11, color:"#D97A8F", marginBottom:4}}>{item.h}</div>
+                  <div style={{fontSize:17, fontWeight:"900", color:"#FF5C8D"}}>{item.p}</div>
                 </div>
               ))}
             </div>
@@ -306,36 +284,35 @@ function Pricing() {
 
           {/* 動画 */}
           <div style={{
-            background:"#fff", borderRadius:16, padding:"20px 20px",
+            background:"#ffffff", borderRadius:16, padding:"20px",
             border:"2px solid #C8D8F8", boxShadow:"0 2px 12px rgba(100,150,220,0.08)"
           }}>
             <div style={{display:"flex", alignItems:"center", gap:10, marginBottom:16}}>
-              <span style={{
+              <div style={{
                 width:36, height:36, borderRadius:"50%",
                 background:"linear-gradient(135deg,#8899DD,#AABBEE)",
-                display:"flex", alignItems:"center", justifyContent:"center", fontSize:18
-              }}>🎬</span>
-              <div>
-                <div style={{fontWeight:"bold", color:"#6677BB", fontSize:14}}>撮影サービス（動画編集込）</div>
-              </div>
+                display:"flex", alignItems:"center", justifyContent:"center",
+                fontSize:18, flexShrink:0
+              }}>🎬</div>
+              <div style={{fontWeight:"bold", color:"#6677BB", fontSize:14}}>撮影サービス（動画編集込）</div>
             </div>
-            <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:8}}>
-              {[{h:"1h",p:"¥8,000"},{h:"2h",p:"¥12,000"}].map((i,k) => (
-                <div key={k} style={{textAlign:"center", borderRight: k<1 ? "1px dashed #C8D8F8":"none", paddingRight: k<1?8:0}}>
-                  <div style={{fontSize:11, color:"#6677BB", marginBottom:4}}>{i.h}</div>
-                  <div style={{fontSize:17, fontWeight:"900", color:"#4455AA"}}>{i.p}</div>
+            <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:0}}>
+              {[{h:"1h",p:"¥8,000"},{h:"2h",p:"¥12,000"}].map((item,k) => (
+                <div key={k} style={{
+                  textAlign:"center", padding:"8px 4px",
+                  borderRight: k < 1 ? "1px dashed #C8D8F8" : "none"
+                }}>
+                  <div style={{fontSize:11, color:"#6677BB", marginBottom:4}}>{item.h}</div>
+                  <div style={{fontSize:17, fontWeight:"900", color:"#4455AA"}}>{item.p}</div>
                 </div>
               ))}
             </div>
           </div>
         </div>
 
-        <div style={{
-          textAlign:"center", fontSize:12, color:"var(--sub)",
-          background:"#FFF5F8", borderRadius:20, padding:"10px 24px",
-          display:"inline-block", margin:"0 auto", display:"block"
-        }}>
-          ※料金はすべて税込価格です。　最大8名様まで　／　商用利用は事前にご相談ください。
+        <div style={{textAlign:"center", fontSize:12, color:"var(--sub)", lineHeight:2}}>
+          ※料金はすべて税込価格です。<br />
+          7名様以上は1名につき+¥1,000（最大8名様まで）　／　商用利用は事前にご相談ください。
         </div>
       </div>
     </section>
