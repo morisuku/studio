@@ -67,14 +67,14 @@ function Hero({ showSparkles }) {
           </h1>
           <p className="lead">
             パステルピンクの洋館から、ネオンきらめく夜の街、朱色の中華門まで。
-            ひとつのスタジオで、6つの世界観を自由に行き来できるコスプレ専用スタジオです。
+            ひとつのスタジオで、5つの世界観を自由に行き来できるコスプレ専用スタジオです。
           </p>
           <div className="hero-ctas">
             <a href="#booking" className="btn btn-primary">予約カレンダーを見る →</a>
             <a href="#booths" className="btn btn-outline">ブースを覗く</a>
           </div>
           <div className="stats">
-            <div className="stat"><div className="num">6</div><div className="lbl">個性派ブース</div></div>
+            <div className="stat"><div className="num">5</div><div className="lbl">個性派ブース</div></div>
             <div className="stat"><div className="num">~8</div><div className="lbl">名まで利用可</div></div>
             <div className="stat"><div className="num">3h<span style={{fontSize:16}}>〜</span></div><div className="lbl">からご利用</div></div>
           </div>
@@ -106,8 +106,8 @@ function BoothShowcase() {
       <div className="wrap">
         <div className="sec-head">
           <div className="kicker">— Booths —</div>
-          <h2>6つの世界観を、<br />自由に行き来する。</h2>
-          <p>どれもフル装飾・小道具付き。4時間のご利用でも、全ブースを回れます。</p>
+          <h2>5つの世界観を、<br />自由に行き来する。</h2>
+          <p>どれもフル装飾・小道具付き。5つのブースを自由にお使いいただけます。</p>
         </div>
 
         <div className="booth-tabs">
