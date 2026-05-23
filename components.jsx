@@ -164,7 +164,7 @@ function Pricing() {
         </div>
 
         {/* 平日・休日カード */}
-        <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:24, marginBottom:40, alignItems:"stretch"}}>
+        <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:24, marginBottom:40, alignItems:"start"}}>
 
           {/* 平日枠 */}
           <div style={{
@@ -226,8 +226,8 @@ function Pricing() {
               <div key={i} style={{
                 display:"flex", alignItems:"center", gap:12,
                 background:"#F0F4FF", borderRadius:10, padding:"10px 16px",
-                marginBottom:8, border:"2px solid #8899DD", flex:1,
-                minHeight:48
+                marginBottom:8, border:"2px solid #8899DD",
+                height:48
               }}>
                 <span style={{
                   width:28, height:28, borderRadius:"50%",
@@ -240,10 +240,13 @@ function Pricing() {
             ))}
             <div style={{
               marginTop:16, background:"#F0F4FF", borderRadius:12,
-              padding:"14px 8px", border:"1px solid #C8D8F8", textAlign:"center"
+              padding:"14px 8px", border:"1px solid #C8D8F8", textAlign:"center",
+              display:"grid", gridTemplateColumns:"1fr"
             }}>
-              <div style={{fontSize:11, color:"#6677BB", marginBottom:4}}>1枠</div>
-              <div style={{fontSize:26, fontWeight:"900", color:"#4455AA"}}>¥12,000</div>
+              <div style={{textAlign:"center", padding:"14px 8px"}}>
+                <div style={{fontSize:11, color:"#6677BB", marginBottom:4}}>1枠</div>
+                <div style={{fontSize:26, fontWeight:"900", color:"#4455AA"}}>¥12,000</div>
+              </div>
             </div>
           </div>
         </div>
