@@ -168,37 +168,48 @@ function Pricing() {
             <span className="tag">WEEKDAY / 平日</span>
             <h3>平日プラン</h3>
             <div className="price-rows">
-              <div className="price-row"><span className="dur">3時間</span><span className="amt">¥7,000</span></div>
-              <div className="price-row"><span className="dur">6時間</span><span className="amt">¥13,000</span></div>
-              <div className="price-row"><span className="dur"><b>平日割 6時間</b><br /><small>※限定枠</small></span><span className="amt">¥10,000</span></div>
+              <div className="price-row"><span className="dur">1枠（3h）</span><span className="amt">¥6,000</span></div>
+              <div className="price-row"><span className="dur">2連枠（6h）</span><span className="amt">¥9,000</span></div>
             </div>
-            <div className="price-note">平日のご利用がお得！毎月限定枠でさらに ¥3,000 OFF。</div>
+            <div className="price-note">
+              2連枠は通常より¥3,000お得！<br />
+              平日枠：09:00 / 12:30 / 16:00 / 19:30スタート
+            </div>
           </div>
 
           <div className="price-card">
             <span className="tag" style={{background:"#4A7DC7"}}>WEEKEND / 土日祝</span>
             <h3>土日祝プラン</h3>
             <div className="price-rows">
-              <div className="price-row"><span className="dur">3時間</span><span className="amt">¥8,500</span></div>
-              <div className="price-row"><span className="dur">6時間</span><span className="amt">¥16,000</span></div>
-              <div className="price-row"><span className="dur">延長 30分</span><span className="amt">¥2,000</span></div>
+              <div className="price-row"><span className="dur">1枠（5h）</span><span className="amt">¥12,000</span></div>
             </div>
-            <div className="price-note">土日祝は予約が埋まりやすいので、お早めに。</div>
+            <div className="price-note">
+              土日祝枠：09:00 / 16:00スタート<br />
+              土日祝は予約が埋まりやすいので、お早めに。
+            </div>
           </div>
         </div>
 
         <div className="addons">
           <div className="addon-item">
-            <div className="addon-lbl">撮影サービス 1h</div>
+            <div className="addon-lbl">撮影サービス（写真）1h</div>
+            <div className="addon-val">¥4,000</div>
+          </div>
+          <div className="addon-item">
+            <div className="addon-lbl">撮影サービス（写真）2h</div>
             <div className="addon-val">¥7,000</div>
           </div>
           <div className="addon-item">
-            <div className="addon-lbl">撮影サービス 2h</div>
-            <div className="addon-val">¥13,000</div>
+            <div className="addon-lbl">撮影サービス（写真）3h</div>
+            <div className="addon-val">¥10,000</div>
           </div>
           <div className="addon-item">
-            <div className="addon-lbl">撮影サービス 3h</div>
-            <div className="addon-val">¥18,000</div>
+            <div className="addon-lbl">撮影サービス（動画編集込）1h</div>
+            <div className="addon-val">¥8,000</div>
+          </div>
+          <div className="addon-item">
+            <div className="addon-lbl">撮影サービス（動画編集込）2h</div>
+            <div className="addon-val">¥12,000</div>
           </div>
           <div className="addon-item">
             <div className="addon-lbl">5名様〜 / 1名</div>
@@ -207,7 +218,7 @@ function Pricing() {
         </div>
 
         <div style={{marginTop:20, fontSize:12, color:"var(--sub)", textAlign:"center"}}>
-          平日延長 30分 ¥1,500／土日祝延長 30分 ¥2,000 ／ 最大8名様まで ／ 商用利用は事前にご相談ください。
+          最大8名様まで ／ 商用利用は事前にご相談ください。
         </div>
       </div>
     </section>

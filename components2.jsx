@@ -166,8 +166,8 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
   const av = selectedDate ? availByDate(selectedDate) : null;
 
   const planHours = {
-    "weekday-3h": 3, "weekday-6h": 6,
-    "weekend-3h": 3, "weekend-6h": 6,
+    "weekday-1slot": 3, "weekday-2slot": 6,
+    "weekend-1slot": 5,
   };
 
   const toMin = (t) => { const [h, m] = t.split(":").map(Number); return h * 60 + m; };
@@ -207,10 +207,9 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
 
   // 6h不可の枠を選んでいるのに6hプランなら自動で3hに切替
   React.useEffect(() => {
-    if (isLateStart && (plan === "weekday-6h" || plan === "weekend-6h")) {
-      setPlan(plan === "weekend-6h" ? "weekend-3h" : "weekday-3h");
+    if (isLateStart && plan === "weekday-2slot") {
+      setPlan("weekday-1slot");
     }
-    // 選択中の時間が枠リストにない場合は最初の枠に戻す
     if (!SLOTS.find(s => s.time === time)) {
       setTime(SLOTS[0]?.time || "09:00");
     }
@@ -226,9 +225,9 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
   React.useEffect(() => {
     if (!selectedDate) return;
     if (isWeekend && plan.startsWith("weekday")) {
-      setPlan(plan === "weekday-3h" ? "weekend-3h" : "weekend-6h");
+      setPlan("weekend-1slot");
     } else if (!isWeekend && plan.startsWith("weekend")) {
-      setPlan(plan === "weekend-3h" ? "weekday-3h" : "weekday-6h");
+      setPlan("weekday-1slot");
     }
   }, [selectedDate]);
 
@@ -294,10 +293,9 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
           <div className="form-row">
             <label>プラン <span className="req">*</span></label>
             <select value={plan} onChange={e=>setPlan(e.target.value)}>
-              {!isWeekend && <option value="weekday-3h">平日 3h / ¥7,000</option>}
-              {!isWeekend && !isLateStart && <option value="weekday-6h">平日 6h / ¥13,000</option>}
-              {isWeekend && <option value="weekend-3h">土日祝 3h / ¥8,500</option>}
-              {isWeekend && !isLateStart && <option value="weekend-6h">土日祝 6h / ¥16,000</option>}
+              {!isWeekend && <option value="weekday-1slot">平日 1枠（3h）/ ¥6,000</option>}
+              {!isWeekend && !isLateStart && <option value="weekday-2slot">平日 2連枠（6h）/ ¥9,000</option>}
+              {isWeekend && <option value="weekend-1slot">土日祝 1枠（5h）/ ¥12,000</option>}
             </select>
           </div>
         </div>
@@ -341,14 +339,13 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
           <label>撮影サービス</label>
           <select value={shooting} onChange={e => setShooting(e.target.value)}>
             <option value="none">希望しない</option>
-            <option value="photo-1h">写真のみ 1h / ¥7,000</option>
-            <option value="video-1h">動画のみ 1h / ¥7,000</option>
-            <option value="photo-2h">写真のみ 2h / ¥13,000</option>
-            <option value="video-2h">動画のみ 2h / ¥13,000</option>
-            <option value="both-2h">写真＋動画 2h / ¥13,000</option>
-            <option value="photo-3h">写真のみ 3h / ¥18,000</option>
-            <option value="video-3h">動画のみ 3h / ¥18,000</option>
-            <option value="both-3h">写真＋動画 3h / ¥18,000</option>
+            <option value="photo-1h">写真のみ 1h / ¥4,000</option>
+            <option value="photo-2h">写真のみ 2h / ¥7,000</option>
+            <option value="both-2h">写真＋動画 2h / ¥7,000</option>
+            <option value="photo-3h">写真のみ 3h / ¥10,000</option>
+            <option value="both-3h">写真＋動画 3h / ¥10,000</option>
+            <option value="video-1h">動画（編集込）1h / ¥8,000</option>
+            <option value="video-2h">動画（編集込）2h / ¥12,000</option>
           </select>
           {shooting !== "none" && (
             <p style={{fontSize:12, color:"var(--sub)", marginTop:6}}>
