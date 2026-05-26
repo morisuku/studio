@@ -225,7 +225,7 @@ function Pricing() {
                 display:"flex", alignItems:"center", gap:12,
                 background:"#F0F4FF", borderRadius:10, padding:"10px 16px",
                 marginBottom:8, border:"1px solid #C8D8F8",
-                minHeight:48
+                minHeight:96
               }}>
                 <span style={{
                   width:28, height:28, borderRadius:"50%",
@@ -237,9 +237,9 @@ function Pricing() {
               </div>
             ))}
             <div style={{
+              display:"grid", gridTemplateColumns:"1fr",
               marginTop:16, background:"#F0F4FF", borderRadius:12,
-              padding:"14px 8px", border:"1px solid #C8D8F8", textAlign:"center",
-              display:"grid", gridTemplateColumns:"1fr"
+              border:"1px solid #C8D8F8"
             }}>
               <div style={{textAlign:"center", padding:"14px 8px"}}>
                 <div style={{fontSize:11, color:"#6677BB", marginBottom:4}}>1枠</div>
