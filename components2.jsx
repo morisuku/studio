@@ -311,7 +311,14 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
           <div className="form-row">
             <label>ご利用人数 <span className="req">*</span></label>
             <select value={people} onChange={e=>setPeople(+e.target.value)}>
-              {[1,2,3,4,5,6,7,8].map(n => <option key={n} value={n}>{n}名{n>=5?` (+¥${(n-4)*1000})`:""}</option>)}
+              <option value={1}>1名</option>
+              <option value={2}>2名</option>
+              <option value={3}>3名</option>
+              <option value={4}>4名</option>
+              <option value={5}>5名</option>
+              <option value={6}>6名</option>
+              <option value={7}>7名 (+¥7,000)</option>
+              <option value={8}>8名 (+¥8,000)</option>
             </select>
           </div>
         </div>
