@@ -102,9 +102,9 @@ function BoothShowcase() {
   return (
     <section id="booths">
       <div className="wrap">
-        <div className="sec-head" style={{paddingLeft:"0.15em"}}>
+        <div className="sec-head" style={{paddingLeft:"0.3em"}}>
           <div className="kicker">— Booths —</div>
-          <h2>5つの世界観を、<br />自由に行き来する。</h2>
+          <h2 style={{textIndent:"0.3em"}}>5つの世界観を、<br />自由に行き来する。</h2>
           <p>どれもフル装飾・小道具付き。<br />5つのブースを自由にお使いいただけます。</p>
         </div>
 
