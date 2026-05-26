@@ -70,8 +70,8 @@ function Hero({ showSparkles }) {
             ひとつのスタジオで、5つの世界観を自由に行き来できるコスプレ専用スタジオです。
           </p>
           <div className="hero-ctas">
-            <a href="#booking" className="btn btn-primary">予約カレンダーを見る →</a>
             <a href="#booths" className="btn btn-outline">ブースを覗く</a>
+            <a href="#booking" className="btn btn-primary">予約カレンダーを見る →</a>
           </div>
           <div className="stats">
             <div className="stat"><div className="num">5</div><div className="lbl">個性派ブース</div></div>
@@ -85,9 +85,7 @@ function Hero({ showSparkles }) {
           <div className="hero-card c3 hero-card-photo"><img src="assets/booth-paper.png" alt="カラーペーパーブースのサンプル" /></div>
           {showSparkles && (
             <>
-              <div className="sparkle" style={{top:"5%", left:"-5%", fontSize:28}}>✦</div>
-              <div className="sparkle" style={{top:"60%", right:"-5%", fontSize:24, animationDelay:"1s"}}>✧</div>
-              <div className="sparkle" style={{bottom:"0%", left:"30%", fontSize:20, animationDelay:"2s"}}>✦</div>
+              <div className="sparkle" style={{top:"5%", left:"5%", fontSize:28}}>✦</div>
             </>
           )}
         </div>
@@ -104,10 +102,10 @@ function BoothShowcase() {
   return (
     <section id="booths">
       <div className="wrap">
-        <div className="sec-head">
+        <div className="sec-head" style={{paddingLeft:"0.15em"}}>
           <div className="kicker">— Booths —</div>
           <h2>5つの世界観を、<br />自由に行き来する。</h2>
-          <p>どれもフル装飾・小道具付き。5つのブースを自由にお使いいただけます。</p>
+          <p>どれもフル装飾・小道具付き。<br />5つのブースを自由にお使いいただけます。</p>
         </div>
 
         <div className="booth-tabs">
@@ -160,11 +158,11 @@ function Pricing() {
         <div className="sec-head">
           <div className="kicker">— Pricing —</div>
           <h2>わかりやすい、<br />シンプル料金。</h2>
-          <p>完全貸切制・基本4名まで・全ブース自由に使い放題。</p>
+          <p>完全貸切制・基本6名まで。<br />全ブース自由に使い放題。</p>
         </div>
 
         {/* 平日・休日カード */}
-        <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:24, marginBottom:40, alignItems:"stretch"}}>
+        <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:24, marginBottom:40, alignItems:"stretch", overflow:"hidden"}}>
 
           {/* 平日枠 */}
           <div style={{
@@ -226,7 +224,7 @@ function Pricing() {
               <div key={i} style={{
                 display:"flex", alignItems:"center", gap:12,
                 background:"#F0F4FF", borderRadius:10, padding:"10px 16px",
-                marginBottom:8, border:"2px solid #8899DD", flex:1,
+                marginBottom:8, border:"1px solid #C8D8F8",
                 minHeight:48
               }}>
                 <span style={{
@@ -256,11 +254,12 @@ function Pricing() {
           <span style={{fontSize:13, color:"#D97A8F", letterSpacing:"0.1em"}}>✦ 撮影サービス ✦</span>
         </div>
 
-        <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:20, marginBottom:24}}>
+        <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:20, marginBottom:24, alignItems:"stretch"}}>
           {/* 写真 */}
           <div style={{
             background:"#ffffff", borderRadius:16, padding:"20px",
-            border:"2px solid #FFD6E8", boxShadow:"0 2px 12px rgba(255,143,184,0.1)"
+            border:"2px solid #FFD6E8", boxShadow:"0 2px 12px rgba(255,143,184,0.1)",
+            display:"flex", flexDirection:"column"
           }}>
             <div style={{display:"flex", alignItems:"center", gap:10, marginBottom:16}}>
               <div style={{
@@ -271,7 +270,7 @@ function Pricing() {
               }}>📷</div>
               <div style={{fontWeight:"bold", color:"#D97A8F", fontSize:14}}>撮影サービス（写真）</div>
             </div>
-            <div style={{display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:0}}>
+            <div style={{display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:0, marginTop:"auto"}}>
               {[{h:"1h",p:"¥4,000"},{h:"2h",p:"¥7,000"},{h:"3h",p:"¥10,000"}].map((item,k) => (
                 <div key={k} style={{
                   textAlign:"center", padding:"8px 4px",
@@ -287,7 +286,8 @@ function Pricing() {
           {/* 動画 */}
           <div style={{
             background:"#ffffff", borderRadius:16, padding:"20px",
-            border:"2px solid #C8D8F8", boxShadow:"0 2px 12px rgba(100,150,220,0.08)"
+            border:"2px solid #C8D8F8", boxShadow:"0 2px 12px rgba(100,150,220,0.08)",
+            display:"flex", flexDirection:"column"
           }}>
             <div style={{display:"flex", alignItems:"center", gap:10, marginBottom:16}}>
               <div style={{
@@ -298,7 +298,7 @@ function Pricing() {
               }}>🎬</div>
               <div style={{fontWeight:"bold", color:"#6677BB", fontSize:14}}>撮影サービス（動画編集込）</div>
             </div>
-            <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:0}}>
+            <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:0, marginTop:"auto"}}>
               {[{h:"1h",p:"¥8,000"},{h:"2h",p:"¥12,000"}].map((item,k) => (
                 <div key={k} style={{
                   textAlign:"center", padding:"8px 4px",
@@ -314,7 +314,7 @@ function Pricing() {
 
         <div style={{textAlign:"center", fontSize:12, color:"var(--sub)", lineHeight:2}}>
           ※料金はすべて税込価格です。<br />
-          7名様以上は1名につき+¥1,000（最大8名様まで）　／　商用利用は事前にご相談ください。
+          7名様以上は1名につき+¥1,000<br />（最大8名様まで）　／　商用利用は事前にご相談ください。
         </div>
       </div>
     </section>
