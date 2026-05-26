@@ -309,11 +309,11 @@ function Pricing() {
               }}>🎬</div>
               <div style={{fontWeight:"bold", color:"#6677BB", fontSize:14, whiteSpace:"nowrap"}}>撮影サービス（動画編集込）</div>
             </div>
-            <div style={{display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:0, width:"100%", marginTop:"auto"}}>
-              {[{h:"1h",p:"¥8,000"},{h:"2h",p:"¥12,000"},{h:"3h",p:""}].map((item,k) => (
+            <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:0, width:"100%", marginTop:"auto"}}>
+              {[{h:"1h",p:"¥8,000"},{h:"2h",p:"¥12,000"}].map((item,k) => (
                 <div key={k} style={{
                   textAlign:"center", padding:"8px 4px",
-                  borderRight: k < 2 ? "1px dashed #C8D8F8" : "none"
+                  borderRight: k < 1 ? "1px dashed #C8D8F8" : "none"
                 }}>
                   <div style={{fontSize:11, color:"#6677BB", marginBottom:4}}>{item.h}</div>
                   <div style={{fontSize:17, fontWeight:"900", color:"#4455AA"}}>{item.p}</div>
