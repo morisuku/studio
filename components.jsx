@@ -162,7 +162,11 @@ function Pricing() {
         </div>
 
         {/* 平日・休日カード */}
-        <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:24, marginBottom:40, alignItems:"stretch", overflow:"hidden"}}>
+        <div style={{
+          display:"grid",
+          gridTemplateColumns:"repeat(auto-fit, minmax(280px, 1fr))",
+          gap:24, marginBottom:40, alignItems:"start"
+        }}>
 
           {/* 平日枠 */}
           <div style={{
@@ -180,7 +184,7 @@ function Pricing() {
               <div key={i} style={{
                 display:"flex", alignItems:"center", gap:12,
                 background:"#FFF5F8", borderRadius:10, padding:"10px 16px",
-                marginBottom:8, border:"1px solid #FFE0EC"
+                marginBottom:8, border:"1px solid #FFE0EC", height:52
               }}>
                 <span style={{
                   width:28, height:28, borderRadius:"50%",
@@ -193,9 +197,9 @@ function Pricing() {
             ))}
             <div style={{
               display:"grid", gridTemplateColumns:"1fr 1fr", gap:0,
-              marginTop:"auto", paddingTop:16,
+              marginTop:8,
               background:"#FFF0F5", borderRadius:12,
-              border:"1px solid #FFD6E8"
+              border:"1px solid #FFD6E8", height:80
             }}>
               <div style={{textAlign:"center", padding:"14px 8px"}}>
                 <div style={{fontSize:11, color:"#D97A8F", marginBottom:4}}>1枠</div>
@@ -218,14 +222,16 @@ function Pricing() {
               <div style={{fontSize:22, fontWeight:"900", color:"#6677BB", letterSpacing:"0.05em"}}>休日枠</div>
               <div style={{fontSize:13, color:"#8899CC", fontStyle:"italic", fontFamily:"serif"}}>Holiday</div>
             </div>
+            {/* 平日2枠分の高さ（52px×2 + gap8px = 112px）に揃える */}
             {[
-              "09:00-14:00", "14:30-19:30"
-            ].map((t,i) => (
+              {t:"09:00-14:00", h:112},
+              {t:"14:30-19:30", h:112},
+            ].map(({t,h},i) => (
               <div key={i} style={{
                 display:"flex", alignItems:"center", gap:12,
                 background:"#F0F4FF", borderRadius:10, padding:"10px 16px",
                 marginBottom:8, border:"1px solid #C8D8F8",
-                minHeight:96
+                height:h
               }}>
                 <span style={{
                   width:28, height:28, borderRadius:"50%",
@@ -236,10 +242,11 @@ function Pricing() {
                 <span style={{fontWeight:"bold", color:"#3a3a3a", fontSize:15, letterSpacing:"0.05em"}}>{t}</span>
               </div>
             ))}
+            {/* 平日料金枠と同じ高さ（80px）に揃える */}
             <div style={{
               display:"grid", gridTemplateColumns:"1fr",
-              marginTop:16, background:"#F0F4FF", borderRadius:12,
-              border:"1px solid #C8D8F8"
+              marginTop:8, background:"#F0F4FF", borderRadius:12,
+              border:"1px solid #C8D8F8", height:80
             }}>
               <div style={{textAlign:"center", padding:"14px 8px"}}>
                 <div style={{fontSize:11, color:"#6677BB", marginBottom:4}}>1枠</div>
