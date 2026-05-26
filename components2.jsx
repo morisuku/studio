@@ -287,7 +287,7 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
             <select value={plan} onChange={e=>setPlan(e.target.value)}>
               {!isWeekend && <option value="weekday-1slot">平日 1枠（3h）/ ¥6,000</option>}
               {!isWeekend && !isLateStart && <option value="weekday-2slot">平日 2連枠（6h）/ ¥9,000</option>}
-              {isWeekend && <option value="weekend-1slot">土日祝 1枠（5h）/ ¥12,000</option>}
+              {isWeekend && <option value="weekend-1slot">土日祝 1枠（5h）/ ¥14,000</option>}
             </select>
           </div>
         </div>
@@ -529,16 +529,19 @@ function Access() {
         </div>
         <div className="access-grid">
           <div className="access-map">
-            <div className="pin"></div>
-            <div className="placeholder-label">※ Google Map 埋め込み予定</div>
+            <iframe
+              src="https://maps.google.com/maps?q=香川県高松市一宮町151-1&output=embed&hl=ja"
+              width="100%" height="100%" style={{border:0, borderRadius:16}} allowFullScreen loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            ></iframe>
           </div>
           <div className="access-details">
             <h3>もりすくスタジオ</h3>
             <div className="studio-sub">morisuku studio</div>
             <div className="access-table">
-              <div className="access-row"><span className="k">ADDRESS</span><span>香川県高松市<br />（詳細はご予約確定後にご案内）</span></div>
-              <div className="access-row"><span className="k">ACCESS</span><span>空港通り駅 徒歩8分／駐車場あり</span></div>
-              <div className="access-row"><span className="k">HOURS</span><span>9:00 – 22:00（完全予約制）</span></div>
+              <div className="access-row"><span className="k">ADDRESS</span><span>〒761-8084<br />香川県高松市一宮町151-1</span></div>
+              <div className="access-row"><span className="k">ACCESS</span><span>駐車場8台あり</span></div>
+              <div className="access-row"><span className="k">HOURS</span><span>09:00 – 22:30（完全予約制）</span></div>
               <div className="access-row"><span className="k">OPEN</span><span>2026年7月 オープン予定</span></div>
               <div className="access-row"><span className="k">CONTACT</span><span>info@rikoruto.jp</span></div>
             </div>
@@ -597,7 +600,7 @@ function Footer() {
       <div className="footer-inner">
         <div>
           <div className="footer-logo">もりすくスタジオ</div>
-          <div className="footer-tag">香川県・高松市のコスプレ専用スタジオ。<br />2026年7月オープン予定。</div>
+          <div className="footer-tag">〒761-8084 香川県高松市一宮町151-1<br />2026年7月オープン予定。</div>
           <div style={{marginTop: 20, fontSize: 11, opacity: 0.6}}>
             利用規約 · プライバシーポリシー · 特定商取引法に基づく表記
           </div>

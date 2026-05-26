@@ -58,7 +58,7 @@ function Hero({ showSparkles }) {
       <div className="hero-inner">
         <div className="hero-copy">
           <div className="hero-eyebrow">
-            <span>morisuku studio · 2026.7 OPEN — 香川県高松市</span>
+            <span>morisuku studio · 2026.7 OPEN — 香川県高松市一宮町151-1</span>
           </div>
           <h1>
             ときめきを<br />
@@ -252,7 +252,7 @@ function Pricing() {
             }}>
               <div style={{textAlign:"center", padding:"0 8px"}}>
                 <div style={{fontSize:11, color:"#6677BB", marginBottom:6}}>1枠</div>
-                <div style={{fontSize:26, fontWeight:"900", color:"#4455AA"}}>¥12,000</div>
+                <div style={{fontSize:26, fontWeight:"900", color:"#4455AA"}}>¥14,000</div>
               </div>
             </div>
           </div>
