@@ -70,25 +70,8 @@ const BOOTHS = [
     ph: "BOOTH 04 / GAMING ROOM",
   },
   {
-    id: "black",
-    num: "Booth 05",
-    name: "黒背景ブース",
-    subtitle: "Black Studio",
-    desc: "黒カーテンとシャンデリアで構成した、重厚感のある黒背景ブース。ダーク系、ヴィラン系、ゴシック系の決めカットに向いています。",
-    tags: ["黒背景", "ゴシック", "重厚感", "決めカット"],
-    features: [
-      "黒カーテンと黒椅子の統一感",
-      "シャンデリアで上品な陰影",
-      "ライティング次第でシンプルにもドラマチックにも",
-    ],
-    gradient: "linear-gradient(135deg, #1A1420 0%, #2B2030 50%, #3D2A3B 100%)",
-    accent: "#C9A8E0",
-    image: "assets/booth-black.png",
-    ph: "BOOTH 05 / BLACK STUDIO",
-  },
-  {
     id: "paper",
-    num: "Booth 06",
+    num: "Booth 05",
     name: "カラーペーパーブース",
     subtitle: "Color Paper",
     desc: "ピンク・パープル・ブルー・オレンジ・イエローなど、キャラクターカラーに合わせて使える背景紙ブース。シンプルな宣材撮影にも便利です。",
@@ -101,7 +84,7 @@ const BOOTHS = [
     gradient: "linear-gradient(135deg, #FFD6E8 0%, #D6EAFF 33%, #FFF0B8 66%, #FAFAFA 100%)",
     accent: "#FF8FB8",
     image: "assets/booth-paper.png",
-    ph: "BOOTH 06 / COLOR PAPER",
+    ph: "BOOTH 05 / COLOR PAPER",
   },
 ];
 
