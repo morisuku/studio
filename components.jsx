@@ -327,7 +327,7 @@ function Pricing() {
 
         <div style={{textAlign:"center", fontSize:12, color:"var(--sub)", lineHeight:2}}>
           ※料金はすべて税込価格です。<br />
-          7名様以上は1名につき+¥1,000<br />（最大8名様まで）　／　商用利用は事前にご相談ください。
+          7名様 +¥7,000　／　8名様 +¥8,000<br />（最大8名様まで・推奨5名様以下）　／　商用利用は事前にご相談ください。
         </div>
       </div>
     </section>
