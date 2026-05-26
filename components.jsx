@@ -182,7 +182,7 @@ function Pricing() {
               "09:00-12:00", "12:30-15:30", "16:00-19:00", "19:30-22:30"
             ].map((t,i) => (
               <div key={i} style={{
-                display:"flex", alignItems:"center", gap:12,
+                display:"flex", alignItems:"center", justifyContent:"center", gap:12,
                 background:"#FFF5F8", borderRadius:10, padding:"10px 16px",
                 marginBottom:8, border:"1px solid #FFE0EC", height:52
               }}>
@@ -228,7 +228,7 @@ function Pricing() {
               {t:"14:30-19:30", h:112},
             ].map(({t,h},i) => (
               <div key={i} style={{
-                display:"flex", alignItems:"center", gap:12,
+                display:"flex", alignItems:"center", justifyContent:"center", gap:12,
                 background:"#F0F4FF", borderRadius:10, padding:"10px 16px",
                 marginBottom:8, border:"1px solid #C8D8F8",
                 height:h
@@ -239,7 +239,7 @@ function Pricing() {
                   display:"flex", alignItems:"center", justifyContent:"center",
                   fontSize:13, flexShrink:0
                 }}>🕐</span>
-                <span style={{fontWeight:"bold", color:"#3a3a3a", fontSize:15, letterSpacing:"0.05em"}}>{t}</span>
+                <span style={{fontWeight:"bold", color:"#3a3a3a", fontSize:22, letterSpacing:"0.05em"}}>{t}</span>
               </div>
             ))}
             {/* 平日料金枠と同じ高さ（80px）に揃える */}
@@ -261,7 +261,11 @@ function Pricing() {
           <span style={{fontSize:13, color:"#D97A8F", letterSpacing:"0.1em"}}>✦ 撮影サービス ✦</span>
         </div>
 
-        <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:20, marginBottom:24, alignItems:"stretch"}}>
+        <div style={{
+          display:"grid",
+          gridTemplateColumns:"repeat(auto-fit, minmax(280px, 1fr))",
+          gap:20, marginBottom:24
+        }}>
           {/* 写真 */}
           <div style={{
             background:"#ffffff", borderRadius:16, padding:"20px",
@@ -303,13 +307,13 @@ function Pricing() {
                 display:"flex", alignItems:"center", justifyContent:"center",
                 fontSize:18, flexShrink:0
               }}>🎬</div>
-              <div style={{fontWeight:"bold", color:"#6677BB", fontSize:14}}>撮影サービス（動画編集込）</div>
+              <div style={{fontWeight:"bold", color:"#6677BB", fontSize:14, whiteSpace:"nowrap"}}>撮影サービス（動画編集込）</div>
             </div>
-            <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:0, marginTop:"auto"}}>
-              {[{h:"1h",p:"¥8,000"},{h:"2h",p:"¥12,000"}].map((item,k) => (
+            <div style={{display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:0, marginTop:"auto"}}>
+              {[{h:"1h",p:"¥8,000"},{h:"2h",p:"¥12,000"},{h:"",p:""}].map((item,k) => (
                 <div key={k} style={{
                   textAlign:"center", padding:"8px 4px",
-                  borderRight: k < 1 ? "1px dashed #C8D8F8" : "none"
+                  borderRight: k < 2 ? "1px dashed #C8D8F8" : "none"
                 }}>
                   <div style={{fontSize:11, color:"#6677BB", marginBottom:4}}>{item.h}</div>
                   <div style={{fontSize:17, fontWeight:"900", color:"#4455AA"}}>{item.p}</div>
