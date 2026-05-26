@@ -102,9 +102,9 @@ function BoothShowcase() {
   return (
     <section id="booths">
       <div className="wrap">
-        <div className="sec-head" style={{paddingLeft:"0.3em"}}>
+        <div className="sec-head">
           <div className="kicker">— Booths —</div>
-          <h2 style={{textIndent:"0.3em"}}>5つの世界観を、<br />自由に行き来する。</h2>
+          <h2>5つの世界観を<br />自由に行き来する</h2>
           <p>どれもフル装飾・小道具付き。<br />5つのブースを自由にお使いいただけます。</p>
         </div>
 
@@ -157,7 +157,7 @@ function Pricing() {
       <div className="wrap">
         <div className="sec-head">
           <div className="kicker">— Pricing —</div>
-          <h2>わかりやすい、<br />シンプル料金。</h2>
+          <h2>わかりやすい<br />シンプル料金</h2>
           <p>完全貸切制・基本6名まで。<br />全ブース自由に使い放題。</p>
         </div>
 
