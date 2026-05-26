@@ -199,14 +199,15 @@ function Pricing() {
               display:"grid", gridTemplateColumns:"1fr 1fr", gap:0,
               marginTop:8,
               background:"#FFF0F5", borderRadius:12,
-              border:"1px solid #FFD6E8", height:80
+              border:"1px solid #FFD6E8", height:80,
+              alignItems:"center"
             }}>
-              <div style={{textAlign:"center", padding:"14px 8px"}}>
-                <div style={{fontSize:11, color:"#D97A8F", marginBottom:4}}>1枠</div>
+              <div style={{textAlign:"center", padding:"0 8px"}}>
+                <div style={{fontSize:11, color:"#D97A8F", marginBottom:6}}>1枠</div>
                 <div style={{fontSize:26, fontWeight:"900", color:"#FF5C8D"}}>¥6,000</div>
               </div>
-              <div style={{textAlign:"center", padding:"14px 8px", borderLeft:"1px dashed #FFB8D1"}}>
-                <div style={{fontSize:11, color:"#D97A8F", marginBottom:4}}>2連枠</div>
+              <div style={{textAlign:"center", padding:"0 8px", borderLeft:"1px dashed #FFB8D1"}}>
+                <div style={{fontSize:11, color:"#D97A8F", marginBottom:6}}>2連枠</div>
                 <div style={{fontSize:26, fontWeight:"900", color:"#FF5C8D"}}>¥9,000</div>
               </div>
             </div>
@@ -246,10 +247,11 @@ function Pricing() {
             <div style={{
               display:"grid", gridTemplateColumns:"1fr",
               marginTop:8, background:"#F0F4FF", borderRadius:12,
-              border:"1px solid #C8D8F8", height:80
+              border:"1px solid #C8D8F8", height:80,
+              alignItems:"center"
             }}>
-              <div style={{textAlign:"center", padding:"14px 8px"}}>
-                <div style={{fontSize:11, color:"#6677BB", marginBottom:4}}>1枠</div>
+              <div style={{textAlign:"center", padding:"0 8px"}}>
+                <div style={{fontSize:11, color:"#6677BB", marginBottom:6}}>1枠</div>
                 <div style={{fontSize:26, fontWeight:"900", color:"#4455AA"}}>¥12,000</div>
               </div>
             </div>
