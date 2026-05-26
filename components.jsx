@@ -270,7 +270,7 @@ function Pricing() {
           <div style={{
             background:"#ffffff", borderRadius:16, padding:"20px",
             border:"2px solid #FFD6E8", boxShadow:"0 2px 12px rgba(255,143,184,0.1)",
-            display:"flex", flexDirection:"column"
+            display:"flex", flexDirection:"column", alignItems:"center"
           }}>
             <div style={{display:"flex", alignItems:"center", gap:10, marginBottom:16}}>
               <div style={{
@@ -281,7 +281,7 @@ function Pricing() {
               }}>📷</div>
               <div style={{fontWeight:"bold", color:"#D97A8F", fontSize:14}}>撮影サービス（写真）</div>
             </div>
-            <div style={{display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:0, marginTop:"auto"}}>
+            <div style={{display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:0, width:"100%", marginTop:"auto"}}>
               {[{h:"1h",p:"¥4,000"},{h:"2h",p:"¥7,000"},{h:"3h",p:"¥10,000"}].map((item,k) => (
                 <div key={k} style={{
                   textAlign:"center", padding:"8px 4px",
@@ -298,7 +298,7 @@ function Pricing() {
           <div style={{
             background:"#ffffff", borderRadius:16, padding:"20px",
             border:"2px solid #C8D8F8", boxShadow:"0 2px 12px rgba(100,150,220,0.08)",
-            display:"flex", flexDirection:"column"
+            display:"flex", flexDirection:"column", alignItems:"center"
           }}>
             <div style={{display:"flex", alignItems:"center", gap:10, marginBottom:16}}>
               <div style={{
@@ -309,8 +309,8 @@ function Pricing() {
               }}>🎬</div>
               <div style={{fontWeight:"bold", color:"#6677BB", fontSize:14, whiteSpace:"nowrap"}}>撮影サービス（動画編集込）</div>
             </div>
-            <div style={{display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:0, marginTop:"auto"}}>
-              {[{h:"1h",p:"¥8,000"},{h:"2h",p:"¥12,000"},{h:"",p:""}].map((item,k) => (
+            <div style={{display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:0, width:"100%", marginTop:"auto"}}>
+              {[{h:"1h",p:"¥8,000"},{h:"2h",p:"¥12,000"},{h:"3h",p:""}].map((item,k) => (
                 <div key={k} style={{
                   textAlign:"center", padding:"8px 4px",
                   borderRight: k < 2 ? "1px dashed #C8D8F8" : "none"
