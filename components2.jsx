@@ -602,7 +602,11 @@ function Footer() {
           <div className="footer-logo">もりすくスタジオ</div>
           <div className="footer-tag">〒761-8084 香川県高松市一宮町151-1<br />2026年7月オープン予定。</div>
           <div style={{marginTop: 20, fontSize: 11, opacity: 0.6}}>
-            利用規約 · プライバシーポリシー · 特定商取引法に基づく表記
+            <a href="privacy.html" style={{color:"inherit"}}>プライバシーポリシー</a>
+            {" · "}
+            <a href="tokutei.html" style={{color:"inherit"}}>特定商取引法に基づく表記</a>
+            {" · "}
+            <a href="terms.html" style={{color:"inherit"}}>利用規約</a>
           </div>
         </div>
         <div className="footer-col">
