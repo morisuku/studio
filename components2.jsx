@@ -543,7 +543,7 @@ function Access() {
               <div className="access-row"><span className="k">ACCESS</span><span>駐車場8台あり</span></div>
               <div className="access-row"><span className="k">HOURS</span><span>09:00 – 22:30（完全予約制）</span></div>
               <div className="access-row"><span className="k">OPEN</span><span>2026年7月 オープン予定</span></div>
-              <div className="access-row"><span className="k">CONTACT</span><span>info@rikoruto.jp</span></div>
+              <div className="access-row"><span className="k">CONTACT</span><span>info@morisuku-studio.com</span></div>
             </div>
             <a href="#booking" className="btn btn-pink">今すぐ予約する →</a>
           </div>
@@ -628,7 +628,7 @@ function Footer() {
         <div className="footer-col">
           <h5>CONTACT</h5>
           <ul>
-            <li>info@rikoruto.jp</li>
+            <li>info@morisuku-studio.com</li>
             <li>Instagram @morisuku_studio</li>
             <li>X @morisuku_studio</li>
           </ul>
