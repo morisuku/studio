@@ -97,7 +97,20 @@ function Hero({ showSparkles }) {
 // ───────── BOOTHS ─────────
 function BoothShowcase() {
   const [active, setActive] = useState(0);
+  const [photoIdx, setPhotoIdx] = useState(0);
   const booth = BOOTHS[active];
+
+  // ブースを切り替えたら写真も1枚目に戻す
+  const selectBooth = (i) => {
+    setActive(i);
+    setPhotoIdx(0);
+  };
+
+  // 表示する写真リスト（photos配列を使用。撮影前でもレイアウト確認できるよう常に5枚分）
+  const photos = (booth.photos && booth.photos.length > 0)
+    ? booth.photos
+    : [booth.image, booth.image, booth.image, booth.image, booth.image];
+  const mainImage = photos[photoIdx] || booth.image;
 
   return (
     <section id="booths">
@@ -110,7 +123,7 @@ function BoothShowcase() {
 
         <div className="booth-tabs">
           {BOOTHS.map((b, i) => (
-            <button key={b.id} className={`booth-tab ${i===active?"active":""}`} onClick={() => setActive(i)}>
+            <button key={b.id} className={`booth-tab ${i===active?"active":""}`} onClick={() => selectBooth(i)}>
               {b.name}
             </button>
           ))}
@@ -118,7 +131,8 @@ function BoothShowcase() {
 
         <div className="booth-showcase">
           <div className="booth-visual booth-photo-visual" style={{"--booth-accent": booth.accent}}>
-            <img src={booth.image} alt={`${booth.name}のサンプル写真`} />
+            <img src={mainImage} alt={`${booth.name}のサンプル写真 ${photoIdx+1}`}
+                 onError={(e) => { if (e.target.src.indexOf(booth.image) === -1) e.target.src = booth.image; }} />
           </div>
           <div className="booth-info">
             <h3>
@@ -135,13 +149,15 @@ function BoothShowcase() {
           </div>
         </div>
 
+        {/* 選択中ブースのサンプル写真5枚（クリックでメイン画像切替） */}
         <div className="booth-grid-mini">
-          {BOOTHS.map((b, i) => (
-            <div key={b.id}
-                 className={`booth-mini booth-mini-photo ${i===active?"active":""}`}
-                 onClick={() => setActive(i)}>
-              <img src={b.image} alt={`${b.name}のサムネイル`} />
-              <span className="booth-mini-label">{b.name}</span>
+          {photos.map((p, i) => (
+            <div key={i}
+                 className={`booth-mini booth-mini-photo ${i===photoIdx?"active":""}`}
+                 onClick={() => setPhotoIdx(i)}>
+              <img src={p} alt={`${booth.name}のサンプル写真 ${i+1}`}
+                   onError={(e) => { if (e.target.src.indexOf(booth.image) === -1) e.target.src = booth.image; }} />
+              <span className="booth-mini-label">PHOTO {i+1}</span>
             </div>
           ))}
         </div>

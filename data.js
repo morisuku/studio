@@ -16,6 +16,7 @@ const BOOTHS = [
     gradient: "linear-gradient(135deg, #FFD3DC 0%, #F7A6B7 52%, #FFE0A8 100%)",
     accent: "#D97A8F",
     image: "assets/booth-chinese.png",
+    photos: ["assets/booth-chinese-1.png", "assets/booth-chinese-2.png", "assets/booth-chinese-3.png", "assets/booth-chinese-4.png", "assets/booth-chinese-5.png"],
     ph: "BOOTH 01 / CHINOISERIE",
   },
   {
@@ -33,6 +34,7 @@ const BOOTHS = [
     gradient: "linear-gradient(135deg, #FFD6E8 0%, #FFB8D1 50%, #F5A8C7 100%)",
     accent: "#E6729C",
     image: "assets/booth-classic-pink.png",
+    photos: ["assets/booth-classic-pink-1.png", "assets/booth-classic-pink-2.png", "assets/booth-classic-pink-3.png", "assets/booth-classic-pink-4.png", "assets/booth-classic-pink-5.png"],
     ph: "BOOTH 02 / CLASSIC PINK",
   },
   {
@@ -50,6 +52,7 @@ const BOOTHS = [
     gradient: "linear-gradient(135deg, #2B1A4A 0%, #FF3FA4 50%, #1FC8F5 100%)",
     accent: "#FF3FA4",
     image: "assets/booth-neon.png",
+    photos: ["assets/booth-neon-1.png", "assets/booth-neon-2.png", "assets/booth-neon-3.png", "assets/booth-neon-4.png", "assets/booth-neon-5.png"],
     ph: "BOOTH 03 / NEON DISTRICT",
   },
   {
@@ -67,6 +70,7 @@ const BOOTHS = [
     gradient: "linear-gradient(135deg, #0F172A 0%, #0EA5E9 45%, #EF4444 100%)",
     accent: "#38BDF8",
     image: "assets/booth-gaming.png",
+    photos: ["assets/booth-gaming-1.png", "assets/booth-gaming-2.png", "assets/booth-gaming-3.png", "assets/booth-gaming-4.png", "assets/booth-gaming-5.png"],
     ph: "BOOTH 04 / GAMING ROOM",
   },
   {
@@ -84,6 +88,7 @@ const BOOTHS = [
     gradient: "linear-gradient(135deg, #FFD6E8 0%, #D6EAFF 33%, #FFF0B8 66%, #FAFAFA 100%)",
     accent: "#FF8FB8",
     image: "assets/booth-paper.png",
+    photos: ["assets/booth-paper-1.png", "assets/booth-paper-2.png", "assets/booth-paper-3.png", "assets/booth-paper-4.png", "assets/booth-paper-5.png"],
     ph: "BOOTH 05 / COLOR PAPER",
   },
 ];
