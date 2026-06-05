@@ -578,8 +578,8 @@ function SNS() {
           <p>Instagram・X で最新の撮影事例を発信中です。</p>
         </div>
         <div style={{display:"flex", gap:14, justifyContent:"center", marginBottom: 12}}>
-          <a href="#" className="btn btn-outline" style={{fontSize:13}}>Instagram @morisuku_studio</a>
-          <a href="#" className="btn btn-outline" style={{fontSize:13}}>X @morisuku_studio</a>
+          <a href="https://www.instagram.com/morisuku_studio/" target="_blank" rel="noopener noreferrer" className="btn btn-outline" style={{fontSize:13}}>Instagram @morisuku_studio</a>
+          <a href="https://x.com/morisuku_studio" target="_blank" rel="noopener noreferrer" className="btn btn-outline" style={{fontSize:13}}>X @morisuku_studio</a>
         </div>
         <div className="sns-grid">
           {colors.map((bg, i) => (
@@ -628,9 +628,9 @@ function Footer() {
         <div className="footer-col">
           <h5>CONTACT</h5>
           <ul>
-            <li>info@morisuku-studio.com</li>
-            <li>Instagram @morisuku_studio</li>
-            <li>X @morisuku_studio</li>
+            <li><a href="mailto:info@morisuku-studio.com" style={{color:"inherit"}}>info@morisuku-studio.com</a></li>
+            <li><a href="https://www.instagram.com/morisuku_studio/" target="_blank" rel="noopener noreferrer" style={{color:"inherit"}}>Instagram @morisuku_studio</a></li>
+            <li><a href="https://x.com/morisuku_studio" target="_blank" rel="noopener noreferrer" style={{color:"inherit"}}>X @morisuku_studio</a></li>
           </ul>
         </div>
       </div>
