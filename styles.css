@@ -475,8 +475,8 @@ button { font-family: inherit; cursor: pointer; border: 0; background: 0; }
 }
 
 /* ───────── SECTION ───────── */
-section { padding: 100px 0; position: relative; }
-.sec-head { text-align: center; margin-bottom: 60px; }
+section { padding: 72px 0; position: relative; }
+.sec-head { text-align: center; margin-bottom: 44px; }
 .sec-head .kicker {
   font-family: var(--font-accent);
   color: var(--pink-deep);
@@ -592,9 +592,10 @@ section { padding: 100px 0; position: relative; }
 
 .booth-grid-mini {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap: 12px;
   margin-top: 44px;
+  justify-content: center;
 }
 @media (max-width: 880px) {
   .booth-grid-mini { grid-template-columns: repeat(3, 1fr); }
@@ -1091,9 +1092,10 @@ footer {
 .footer-logo {
   font-family: var(--font-head);
   font-weight: 700;
-  font-size: 24px;
+  font-size: 20px;
   color: var(--bg);
   margin-bottom: 8px;
+  white-space: nowrap;
 }
 .footer-tag { font-size: 13px; }
 .footer-col h5 {

@@ -58,7 +58,7 @@ function Hero({ showSparkles }) {
       <div className="hero-inner">
         <div className="hero-copy">
           <div className="hero-eyebrow">
-            <span>morisuku studio · 2026.7 OPEN — 香川県高松市一宮町151-1</span>
+            <span>morisuku studio · 2026.7 OPEN<br />香川県高松市一宮町151-1</span>
           </div>
           <h1>
             ときめきを<br />
@@ -106,10 +106,10 @@ function BoothShowcase() {
     setPhotoIdx(0);
   };
 
-  // 表示する写真リスト（photos配列を使用。撮影前でもレイアウト確認できるよう常に5枚分）
+  // 表示する写真リスト（photos配列を使用。撮影前でもレイアウト確認できるよう常に6枚分）
   const photos = (booth.photos && booth.photos.length > 0)
     ? booth.photos
-    : [booth.image, booth.image, booth.image, booth.image, booth.image];
+    : [booth.image, booth.image, booth.image, booth.image, booth.image, booth.image];
   const mainImage = photos[photoIdx] || booth.image;
 
   return (
@@ -343,7 +343,7 @@ function Pricing() {
 
         <div style={{textAlign:"center", fontSize:12, color:"var(--sub)", lineHeight:2}}>
           ※料金はすべて税込価格です。<br />
-          7名様 +¥7,000　／　8名様 +¥8,000<br />（最大8名様まで・推奨5名様以下）　／　商用利用は事前にご相談ください。
+          7名様 +¥7,000　／　8名様 +¥8,000<br />（最大8名様まで・推奨5名様以下）<br />商用利用は事前にご相談ください。
         </div>
       </div>
     </section>

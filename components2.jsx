@@ -448,7 +448,7 @@ function Booking() {
         <div className="sec-head">
           <div className="kicker">— Booking —</div>
           <h2>ご予約</h2>
-          <p>カレンダーから日付を選んで、フォームに必要事項をご記入ください。</p>
+          <p>カレンダーから日付を選んで、<br />フォームに必要事項をご記入ください。</p>
         </div>
         {loading ? (
           <div style={{textAlign:"center", padding:"40px", opacity:0.5}}>予約状況を読み込み中...</div>
