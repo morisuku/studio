@@ -271,7 +271,7 @@ function Pricing() {
 
         {/* 撮影サービス */}
         <div style={{textAlign:"center", marginBottom:20}}>
-          <span style={{fontSize:13, color:"#D97A8F", letterSpacing:"0.1em"}}>✦ 撮影サービス ✦</span>
+          <span style={{fontSize:16, color:"#D97A8F", letterSpacing:"0.1em", fontWeight:"bold"}}>✦ 撮影サービス ✦</span>
         </div>
 
         <div style={{
@@ -336,7 +336,7 @@ function Pricing() {
           </div>
         </div>
 
-        <div style={{textAlign:"center", fontSize:12, color:"var(--sub)", lineHeight:2}}>
+        <div style={{textAlign:"center", fontSize:14, color:"var(--sub)", lineHeight:2}}>
           ※料金はすべて税込価格です。<br />
           7名様 +¥7,000　／　8名様 +¥8,000<br />（最大8名様まで・推奨5名様以下）<br />商用利用は事前にご相談ください。
         </div>
