@@ -540,7 +540,7 @@ function Access() {
             <div className="studio-sub">morisuku studio</div>
             <div className="access-table">
               <div className="access-row"><span className="k">ADDRESS</span><span>〒761-8084<br />香川県高松市一宮町151-1</span></div>
-              <div className="access-row"><span className="k">ACCESS</span><span>駐車場8台あり</span></div>
+              <div className="access-row"><span className="k">ACCESS</span><span>琴電空港通駅から徒歩7分<br />駐車場8台あり</span></div>
               <div className="access-row"><span className="k">HOURS</span><span>09:00 – 22:30（完全予約制）</span></div>
               <div className="access-row"><span className="k">OPEN</span><span>2026年7月 オープン予定</span></div>
               <div className="access-row"><span className="k">CONTACT</span><span>info@morisuku-studio.com</span></div>

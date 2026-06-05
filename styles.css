@@ -972,9 +972,11 @@ section { padding: 100px 0; position: relative; }
 }
 .access-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 40px;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 56px;
   align-items: center;
+  max-width: 1000px;
+  margin: 0 auto;
 }
 @media (max-width: 820px) { .access-grid { grid-template-columns: 1fr; } }
 
