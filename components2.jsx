@@ -185,7 +185,27 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
 
   // 平日：09:00 / 12:30 / 16:00 / 19:30の4択
   // 土日祝：09:00 / 14:30の2択
-  const bookedTimes = new Set(dayBookings.map(b => b.time));
+  const WEEKDAY_SLOTS = ["09:00", "12:30", "16:00", "19:30"];
+
+  // 予約が占有する全スロットを集計
+  // 平日2連枠(weekday-2slot)は開始スロット＋次のスロットの2つを占有する
+  const bookedTimes = new Set();
+  dayBookings.forEach(b => {
+    bookedTimes.add(b.time);
+    if (b.plan === "weekday-2slot") {
+      const idx = WEEKDAY_SLOTS.indexOf(b.time);
+      if (idx !== -1 && idx + 1 < WEEKDAY_SLOTS.length) {
+        bookedTimes.add(WEEKDAY_SLOTS[idx + 1]);
+      }
+    }
+  });
+
+  // 2連枠は「次のスロットも空いている」場合のみ可能
+  const canDouble = (t) => {
+    const idx = WEEKDAY_SLOTS.indexOf(t);
+    if (idx === -1 || idx + 1 >= WEEKDAY_SLOTS.length) return false; // 19:30は次がない
+    return !bookedTimes.has(WEEKDAY_SLOTS[idx + 1]); // 次スロットが空いていればOK
+  };
 
   const SLOTS = isWeekend
     ? [
@@ -193,10 +213,10 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
         { time: "14:30", allow6h: false, disabled: bookedTimes.has("14:30") },
       ]
     : [
-        { time: "09:00", allow6h: true,  disabled: bookedTimes.has("09:00") },
-        { time: "12:30", allow6h: true,  disabled: bookedTimes.has("12:30") },
-        { time: "16:00", allow6h: true,  disabled: bookedTimes.has("16:00") },
-        { time: "19:30", allow6h: false, disabled: bookedTimes.has("19:30") },
+        { time: "09:00", allow6h: canDouble("09:00"), disabled: bookedTimes.has("09:00") },
+        { time: "12:30", allow6h: canDouble("12:30"), disabled: bookedTimes.has("12:30") },
+        { time: "16:00", allow6h: canDouble("16:00"), disabled: bookedTimes.has("16:00") },
+        { time: "19:30", allow6h: false,              disabled: bookedTimes.has("19:30") },
       ];
 
   // 選択中の枠情報
