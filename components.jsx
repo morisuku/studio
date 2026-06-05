@@ -83,11 +83,6 @@ function Hero({ showSparkles }) {
           <div className="hero-card c1 hero-card-photo"><img src="assets/booth-classic-pink.png" alt="クラシックピンクのサンプル" /></div>
           <div className="hero-card c2 hero-card-photo"><img src="assets/booth-neon.png" alt="ネオンブースのサンプル" /></div>
           <div className="hero-card c3 hero-card-photo"><img src="assets/booth-paper.png" alt="カラーペーパーブースのサンプル" /></div>
-          {showSparkles && (
-            <>
-              <div className="sparkle" style={{top:"5%", left:"5%", fontSize:28}}>✦</div>
-            </>
-          )}
         </div>
       </div>
     </section>
