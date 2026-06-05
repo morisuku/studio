@@ -592,7 +592,7 @@ section { padding: 100px 0; position: relative; }
 
 .booth-grid-mini {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 12px;
   margin-top: 44px;
 }
