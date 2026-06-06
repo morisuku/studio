@@ -123,7 +123,7 @@ function Calendar({ selectedDate, onSelect, bookings }) {
             <div className="cal-popup-empty">
               <div className="cal-popup-empty-mark">○</div>
               <div>この日の予約はまだありません</div>
-              <div className="cal-popup-hint">右のフォームから予約できます</div>
+              <div className="cal-popup-hint">下のフォームから予約できます</div>
             </div>
           ) : (
             <>
@@ -132,7 +132,7 @@ function Calendar({ selectedDate, onSelect, bookings }) {
                 {popup.items.map(b => (
                   <li key={b.id}>
                     <span className="cal-popup-time">{b.time}</span>
-                    <span className="cal-popup-name">{b.plan === "weekday-3h" ? "平日3h" : b.plan === "weekday-6h" ? "平日6h" : b.plan === "weekday-6h-off" ? "平日割6h" : b.plan === "weekend-3h" ? "土日祝3h" : "土日祝6h"}予約</span>
+                    <span className="cal-popup-name">{b.plan === "weekday-1slot" ? "平日3h" : b.plan === "weekday-2slot" ? "平日6h" : b.plan === "weekend-1slot" ? "土日祝5h" : "予約"}</span>
                   </li>
                 ))}
               </ul>
