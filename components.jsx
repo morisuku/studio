@@ -219,7 +219,7 @@ function Pricing() {
               </div>
               <div style={{textAlign:"center", padding:"0 8px", borderLeft:"1px dashed #FFB8D1"}}>
                 <div style={{fontSize:11, color:"#D97A8F", marginBottom:6}}>2連枠</div>
-                <div style={{fontSize:26, fontWeight:"900", color:"#FF5C8D"}}>¥9,000</div>
+                <div style={{fontSize:26, fontWeight:"900", color:"#FF5C8D"}}>¥11,000</div>
               </div>
             </div>
           </div>

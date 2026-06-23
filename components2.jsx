@@ -112,7 +112,7 @@ function Calendar({ selectedDate, onSelect, bookings }) {
       </div>
 
       {popup && (
-        <div className="cal-popup" style={{ left: popup.x, top: popup.y }}
+        <div className="cal-popup"
              onClick={(e) => e.stopPropagation()}>
           <button className="cal-popup-close" onClick={() => setPopup(null)} aria-label="close">×</button>
           <div className="cal-popup-date">
@@ -155,7 +155,7 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
   const [email, setEmail] = useState2("");
   const [phone, setPhone] = useState2("");
   const [people, setPeople] = useState2(2);
-  const [plan, setPlan] = useState2("weekday-3h");
+  const [plan, setPlan] = useState2("weekday-1slot");
   const [time, setTime] = useState2("10:00");
   const [note, setNote] = useState2("");
   const [kana, setKana] = useState2("");
@@ -306,7 +306,7 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
             <label>プラン <span className="req">*</span></label>
             <select value={plan} onChange={e=>setPlan(e.target.value)}>
               {!isWeekend && <option value="weekday-1slot">平日 1枠（3h）/ ¥6,000</option>}
-              {!isWeekend && !isLateStart && <option value="weekday-2slot">平日 2連枠（6h）/ ¥9,000</option>}
+              {!isWeekend && !isLateStart && <option value="weekday-2slot">平日 2連枠（6h）/ ¥11,000</option>}
               {isWeekend && <option value="weekend-1slot">土日祝 1枠（5h）/ ¥14,000</option>}
             </select>
           </div>
