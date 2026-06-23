@@ -398,7 +398,7 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
   );
 }
 
-const GAS_URL = "https://script.google.com/macros/s/AKfycbz7kq4iR0GlyAaWhJNy0llOpbPmpCKLo8Ul1PMU-q-Evu8_lNusJ7HEDnkhalbKyopvGw/exec?action=dashboard";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbxyTiseTea6LiLue1T1TFxK_RfkxqQvH-C5Bha9dkVZnRiKCXpEIlx3v9A6ktyILiH8lA/exec";
 window.GAS_URL = GAS_URL;
 
 function Booking() {
