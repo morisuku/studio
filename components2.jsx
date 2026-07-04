@@ -1,6 +1,13 @@
 // Booking (Calendar + Form), Flow, FAQ, Access, SNS, Footer
 const { useState: useState2, useEffect: useEffect2, useMemo: useMemo2 } = React;
 
+// ───────── プレオープン設定 ─────────
+// 予約受付開始日（この日より前は予約不可）。本オープン後に通常運用へ戻す際はこの値を調整。
+const BOOKING_START_ISO = "2026-07-20";
+// プレオープン特典（無料撮影サービス）の対象期間。この期間の予約だけ無料撮影の選択肢を表示。
+const PREOPEN_START_ISO = "2026-07-20";
+const PREOPEN_END_ISO   = "2026-07-26";
+
 // ───────── BOOKING: CALENDAR ─────────
 function Calendar({ selectedDate, onSelect, bookings, holidays }) {
   const [month, setMonth] = useState2(() => { const d = new Date(); d.setDate(1); d.setHours(0,0,0,0); return d; });
@@ -81,8 +88,9 @@ function Calendar({ selectedDate, onSelect, bookings, holidays }) {
       <div className="cal-grid">
         {["日","月","火","水","木","金","土"].map(w => <div key={w} className="cal-wd">{w}</div>)}
         {cells.map((c, i) => {
-          const isPast = c.date < today;
           const iso = utilToISO(c.date);
+          // 今日より前、または予約受付開始日より前は予約不可
+          const isPast = (iso < today) || (iso < BOOKING_START_ISO);
           const av = availByBookings(iso);
           const isSel = selectedDate && utilSameDay(c.date, selectedDate);
           const hasBooking = !!bookingsByDate[iso];
@@ -181,6 +189,8 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
 
   // 選択日が土日または祝日かどうか判定（先に定義）
   const selectedISO = selectedDate ? utilToISO(selectedDate) : "";
+  // プレオープン特典期間（無料撮影サービス対象）かどうか
+  const isPreopen = selectedISO >= PREOPEN_START_ISO && selectedISO <= PREOPEN_END_ISO;
   const isWeekend = selectedDate
     ? [0, 6].includes(selectedDate.getDay()) || (holidays || []).includes(selectedISO)
     : false;
@@ -242,6 +252,10 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
       setPlan("weekend-1slot");
     } else if (!isWeekend && plan.startsWith("weekend")) {
       setPlan("weekday-1slot");
+    }
+    // プレオープン期間外の日で無料撮影が選ばれていたら解除
+    if (!isPreopen && shooting === "free-photo-3h") {
+      setShooting("none");
     }
   }, [selectedDate]);
 
@@ -360,12 +374,18 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
           <label>撮影サービス</label>
           <select value={shooting} onChange={e => setShooting(e.target.value)}>
             <option value="none">希望しない</option>
+            {isPreopen && <option value="free-photo-3h">無料撮影サービス（写真3h）/ ¥0</option>}
             <option value="photo-1h">写真 1h / ¥4,000</option>
             <option value="photo-2h">写真 2h / ¥7,000</option>
             <option value="photo-3h">写真 3h / ¥10,000</option>
             <option value="video-1h">動画（編集込）1h / ¥8,000</option>
             <option value="video-2h">動画（編集込）2h / ¥12,000</option>
           </select>
+          {isPreopen && (
+            <p style={{fontSize:12, color:"var(--pink-deep)", marginTop:6, fontWeight:"bold"}}>
+              ※各日先着1組様限定。2組目以降のお申込みは通常料金でのご案内となります。
+            </p>
+          )}
           {shooting !== "none" && (
             <p style={{fontSize:12, color:"var(--sub)", marginTop:6}}>
               ※撮影サービスの時間はスタジオご利用時間とは別途となります
