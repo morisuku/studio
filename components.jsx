@@ -95,6 +95,10 @@ function BoothShowcase() {
   const [photoIdx, setPhotoIdx] = useState(0);
   const booth = BOOTHS[active];
 
+  // スワイプ検出用
+  const touchStartX = useRef(0);
+  const touchEndX = useRef(0);
+
   // ブースを切り替えたら写真も1枚目に戻す
   const selectBooth = (i) => {
     setActive(i);
@@ -106,6 +110,21 @@ function BoothShowcase() {
     ? booth.photos
     : [booth.image, booth.image, booth.image, booth.image, booth.image, booth.image];
   const mainImage = photos[photoIdx] || booth.image;
+
+  // 前後の写真へ
+  const nextPhoto = () => setPhotoIdx((prev) => (prev + 1) % photos.length);
+  const prevPhoto = () => setPhotoIdx((prev) => (prev - 1 + photos.length) % photos.length);
+
+  // タッチイベント（スワイプ）
+  const onTouchStart = (e) => { touchStartX.current = e.touches[0].clientX; touchEndX.current = e.touches[0].clientX; };
+  const onTouchMove  = (e) => { touchEndX.current = e.touches[0].clientX; };
+  const onTouchEnd   = () => {
+    const diff = touchStartX.current - touchEndX.current;
+    if (Math.abs(diff) > 40) {         // 40px以上の移動でスワイプと判定
+      if (diff > 0) nextPhoto();       // 左へスワイプ → 次
+      else prevPhoto();                // 右へスワイプ → 前
+    }
+  };
 
   return (
     <section id="booths">
@@ -125,9 +144,21 @@ function BoothShowcase() {
         </div>
 
         <div className="booth-showcase">
-          <div className="booth-visual booth-photo-visual" style={{"--booth-accent": booth.accent}}>
+          <div className="booth-visual booth-photo-visual" style={{"--booth-accent": booth.accent}}
+               onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
             <img src={mainImage} alt={`${booth.name}のサンプル写真 ${photoIdx+1}`}
                  onError={(e) => { if (e.target.src.indexOf(booth.image) === -1) e.target.src = booth.image; }} />
+            {/* 左右の切り替え矢印 */}
+            <button className="booth-arrow booth-arrow-prev" onClick={prevPhoto} aria-label="前の写真">‹</button>
+            <button className="booth-arrow booth-arrow-next" onClick={nextPhoto} aria-label="次の写真">›</button>
+            {/* ドットインジケーター */}
+            <div className="booth-dots">
+              {photos.map((_, i) => (
+                <span key={i}
+                      className={`booth-dot ${i===photoIdx?"active":""}`}
+                      onClick={() => setPhotoIdx(i)}></span>
+              ))}
+            </div>
           </div>
           <div className="booth-info">
             <h3>
