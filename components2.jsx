@@ -2,7 +2,7 @@
 const { useState: useState2, useEffect: useEffect2, useMemo: useMemo2 } = React;
 
 // ───────── BOOKING: CALENDAR ─────────
-function Calendar({ selectedDate, onSelect, bookings }) {
+function Calendar({ selectedDate, onSelect, bookings, holidays }) {
   const [month, setMonth] = useState2(() => { const d = new Date(); d.setDate(1); d.setHours(0,0,0,0); return d; });
   const [popup, setPopup] = useState2(null);
   const today = utilTodayISO();
@@ -86,12 +86,14 @@ function Calendar({ selectedDate, onSelect, bookings }) {
           const av = availByBookings(iso);
           const isSel = selectedDate && utilSameDay(c.date, selectedDate);
           const hasBooking = !!bookingsByDate[iso];
+          const isHoliday = (holidays || []).includes(iso);
           const classes = ["cal-cell"];
           if (c.outMonth) classes.push("out-month");
           else classes.push("in-month");
           if (isPast) classes.push("past");
           if (isSel) classes.push("selected");
           if (hasBooking) classes.push("has-booking");
+          if (isHoliday) classes.push("holiday");
           return (
             <div key={i} className={classes.join(" ")}
                  onClick={(e) => handleCellClick(e, c, isPast, iso)}>
@@ -474,7 +476,7 @@ function Booking() {
           <div style={{textAlign:"center", padding:"40px", opacity:0.5}}>予約状況を読み込み中...</div>
         ) : (
           <div className="booking-layout">
-            <Calendar selectedDate={selectedDate} onSelect={setSelectedDate} bookings={bookings} />
+            <Calendar selectedDate={selectedDate} onSelect={setSelectedDate} bookings={bookings} holidays={holidays} />
             <BookingForm selectedDate={selectedDate} onBooked={onBooked} bookings={bookings} holidays={holidays} />
           </div>
         )}

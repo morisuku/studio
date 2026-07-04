@@ -777,6 +777,7 @@ section { padding: 72px 0; position: relative; }
   font-weight: 600;
 }
 .cal-cell .day-num { font-size: 12px; font-family: var(--font-accent); }
+.cal-cell.holiday.in-month .day-num { color: #E0607A; font-weight: bold; }
 .cal-cell .avail.ok { color: #3BA37A; }
 .cal-cell .avail.few { color: #E09F3E; }
 .cal-cell .avail.full { color: var(--china); }
