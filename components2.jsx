@@ -9,7 +9,7 @@ const PREOPEN_START_ISO = "2026-07-20";
 const PREOPEN_END_ISO   = "2026-07-26";
 
 // ───────── BOOKING: CALENDAR ─────────
-function Calendar({ selectedDate, onSelect, bookings, holidays }) {
+function Calendar({ selectedDate, onSelect, bookings, holidays, closedDays }) {
   const [month, setMonth] = useState2(() => { const d = new Date(); d.setDate(1); d.setHours(0,0,0,0); return d; });
   const [popup, setPopup] = useState2(null);
   const today = utilTodayISO();
@@ -89,9 +89,10 @@ function Calendar({ selectedDate, onSelect, bookings, holidays }) {
         {["日","月","火","水","木","金","土"].map(w => <div key={w} className="cal-wd">{w}</div>)}
         {cells.map((c, i) => {
           const iso = utilToISO(c.date);
-          // 今日より前、または予約受付開始日より前は予約不可
-          const isPast = (iso < today) || (iso < BOOKING_START_ISO);
-          const av = availByBookings(iso);
+          const isClosed = (closedDays || []).includes(iso);
+          // 今日より前、予約受付開始日より前、または休業日は予約不可
+          const isPast = (iso < today) || (iso < BOOKING_START_ISO) || isClosed;
+          const av = isClosed ? "full" : availByBookings(iso);
           const isSel = selectedDate && utilSameDay(c.date, selectedDate);
           const hasBooking = !!bookingsByDate[iso];
           const isHoliday = (holidays || []).includes(iso);
@@ -99,6 +100,7 @@ function Calendar({ selectedDate, onSelect, bookings, holidays }) {
           if (c.outMonth) classes.push("out-month");
           else classes.push("in-month");
           if (isPast) classes.push("past");
+          if (isClosed) classes.push("closed");
           if (isSel) classes.push("selected");
           if (hasBooking) classes.push("has-booking");
           if (isHoliday) classes.push("holiday");
@@ -106,7 +108,7 @@ function Calendar({ selectedDate, onSelect, bookings, holidays }) {
             <div key={i} className={classes.join(" ")}
                  onClick={(e) => handleCellClick(e, c, isPast, iso)}>
               <span className="day-num">{c.date.getDate()}</span>
-              {!c.outMonth && !isPast && (
+              {!c.outMonth && (isClosed || (iso >= today && iso >= BOOKING_START_ISO)) && (
                 <span className={`avail ${av}`}>{av==="ok"?"○":av==="few"?"△":"×"}</span>
               )}
               {hasBooking && <span className="booking-dot" aria-hidden="true"></span>}
@@ -427,6 +429,7 @@ function Booking() {
   const [selectedDate, setSelectedDate] = useState2(null);
   const [bookings, setBookings] = useState2([]);
   const [holidays, setHolidays] = useState2([]);
+  const [closedDays, setClosedDays] = useState2([]);
   const [loading, setLoading] = useState2(true);
   const [toast, setToast] = useState2(null);
 
@@ -464,6 +467,9 @@ function Booking() {
       if (data.holidays) {
         setHolidays(data.holidays);
       }
+      if (data.closedDays) {
+        setClosedDays(data.closedDays);
+      }
     } catch(err) {
       console.error("予約データの取得に失敗しました", err);
     } finally {
@@ -496,7 +502,7 @@ function Booking() {
           <div style={{textAlign:"center", padding:"40px", opacity:0.5}}>予約状況を読み込み中...</div>
         ) : (
           <div className="booking-layout">
-            <Calendar selectedDate={selectedDate} onSelect={setSelectedDate} bookings={bookings} holidays={holidays} />
+            <Calendar selectedDate={selectedDate} onSelect={setSelectedDate} bookings={bookings} holidays={holidays} closedDays={closedDays} />
             <BookingForm selectedDate={selectedDate} onBooked={onBooked} bookings={bookings} holidays={holidays} />
           </div>
         )}
