@@ -1,12 +1,13 @@
 // Booking (Calendar + Form), Flow, FAQ, Access, SNS, Footer
 const { useState: useState2, useEffect: useEffect2, useMemo: useMemo2 } = React;
 
-// ───────── プレオープン設定 ─────────
-// 予約受付開始日（この日より前は予約不可）。本オープン後に通常運用へ戻す際はこの値を調整。
-const BOOKING_START_ISO = "2026-07-20";
+// ───────── 予約設定 ─────────
+// 予約受付開始日（この日より前は予約不可）。
+const BOOKING_START_ISO = "2026-08-01";
 // プレオープン特典（無料撮影サービス）の対象期間。この期間の予約だけ無料撮影の選択肢を表示。
-const PREOPEN_START_ISO = "2026-07-20";
-const PREOPEN_END_ISO   = "2026-07-26";
+// ※現在は無効（過去日を設定して特典を非表示にしている）。再度使う場合は対象期間を設定する。
+const PREOPEN_START_ISO = "2000-01-01";
+const PREOPEN_END_ISO   = "2000-01-01";
 
 // ───────── BOOKING: CALENDAR ─────────
 function Calendar({ selectedDate, onSelect, bookings, holidays, closedDays }) {
