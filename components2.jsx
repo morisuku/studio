@@ -12,7 +12,8 @@ const PREOPEN_END_ISO   = "2026-07-26";
 function Calendar({ selectedDate, onSelect, bookings, holidays, closedDays }) {
   const [month, setMonth] = useState2(() => { const d = new Date(); d.setDate(1); d.setHours(0,0,0,0); return d; });
   const [popup, setPopup] = useState2(null);
-  const today = utilTodayISO();
+  const today = utilTodayISO();               // Dateオブジェクト（既存処理用に残す）
+  const todayStr = utilToISO(today);          // yyyy-MM-dd 文字列（日付比較用）
 
   const cells = useMemo2(() => {
     const first = new Date(month.getFullYear(), month.getMonth(), 1);
@@ -91,7 +92,7 @@ function Calendar({ selectedDate, onSelect, bookings, holidays, closedDays }) {
           const iso = utilToISO(c.date);
           const isClosed = (closedDays || []).includes(iso);
           // 今日より前、予約受付開始日より前、または休業日は予約不可
-          const isPast = (iso < today) || (iso < BOOKING_START_ISO) || isClosed;
+          const isPast = (iso < todayStr) || (iso < BOOKING_START_ISO) || isClosed;
           const av = isClosed ? "full" : availByBookings(iso);
           const isSel = selectedDate && utilSameDay(c.date, selectedDate);
           const hasBooking = !!bookingsByDate[iso];
@@ -108,7 +109,7 @@ function Calendar({ selectedDate, onSelect, bookings, holidays, closedDays }) {
             <div key={i} className={classes.join(" ")}
                  onClick={(e) => handleCellClick(e, c, isPast, iso)}>
               <span className="day-num">{c.date.getDate()}</span>
-              {!c.outMonth && (isClosed || (iso >= today && iso >= BOOKING_START_ISO)) && (
+              {!c.outMonth && (isClosed || (iso >= todayStr && iso >= BOOKING_START_ISO)) && (
                 <span className={`avail ${av}`}>{av==="ok"?"○":av==="few"?"△":"×"}</span>
               )}
               {hasBooking && <span className="booking-dot" aria-hidden="true"></span>}
