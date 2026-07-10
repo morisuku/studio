@@ -154,7 +154,13 @@ button { font-family: inherit; cursor: pointer; border: 0; background: 0; }
 .nav-cta:hover { transform: translateY(-2px); }
 
 @media (max-width: 820px) {
-  .nav-links a:not(.nav-cta) { display: none; }
+  .nav-links a:not(.nav-cta):not(.nav-terms) { display: none; }
+  .nav-links { gap:7px; }
+  .nav-terms {
+    display:inline-flex; align-items:center; padding:8px 12px;
+    border:1px solid color-mix(in srgb, var(--ink) 25%, transparent);
+    border-radius:999px; font-size:12px;
+  }
 }
 
 /* ───────── HERO ───────── */
@@ -1561,7 +1567,7 @@ footer {
   display:flex !important; grid-template-columns:none !important; justify-content:flex-start;
   gap:0; margin:0; padding:8px 5px 14px; overflow-x:hidden; overflow-y:hidden;
   scroll-snap-type:none; scrollbar-width:none; -ms-overflow-style:none;
-  cursor:grab; user-select:none; touch-action:pan-y;
+  cursor:grab; user-select:none; touch-action:pan-y; overscroll-behavior-x:none;
 }
 .booth-grid-mini:active { cursor:grabbing; }
 .booth-grid-mini::-webkit-scrollbar { display:none; }

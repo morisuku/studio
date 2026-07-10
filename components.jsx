@@ -43,7 +43,7 @@ function Nav() {
           <a href="#flow">ご利用の流れ</a>
           <a href="#faq">FAQ</a>
           <a href="#access">アクセス</a>
-          <a href="terms.html">規約</a>
+          <a href="terms.html" className="nav-terms">規約</a>
           <a href="#booking" className="nav-cta">ご予約</a>
         </div>
       </div>
@@ -97,7 +97,6 @@ function BoothShowcase() {
   const thumbDraggingRef = useRef(false);
   const thumbDragLastXRef = useRef(0);
   const thumbDragDistanceRef = useRef(0);
-  const thumbDragMovedRef = useRef(false);
   const booth = BOOTHS[active];
 
   // スワイプ検出用
@@ -128,14 +127,15 @@ function BoothShowcase() {
       const setWidth = firstSet ? firstSet.getBoundingClientRect().width : 0;
       if (!setWidth) return;
       const maxScroll = rail.scrollWidth - rail.clientWidth;
-      if (rail.scrollLeft >= maxScroll - 1) rail.scrollLeft = Math.max(1, rail.scrollLeft - setWidth);
-      if (rail.scrollLeft <= 1) rail.scrollLeft = Math.min(maxScroll - 1, rail.scrollLeft + setWidth);
+      const upperLoop = Math.min(setWidth * 4, maxScroll - 1);
+      if (rail.scrollLeft >= upperLoop) rail.scrollLeft -= setWidth * 2;
+      if (rail.scrollLeft <= setWidth) rail.scrollLeft += setWidth * 2;
     };
     const initialize = () => {
       const firstSet = rail.querySelector(".booth-thumb-set");
       const setWidth = firstSet ? firstSet.getBoundingClientRect().width : 0;
       const maxScroll = rail.scrollWidth - rail.clientWidth;
-      if (setWidth && maxScroll > 2) rail.scrollLeft = Math.min(setWidth, maxScroll - 1);
+      if (setWidth && maxScroll > 2) rail.scrollLeft = Math.min(setWidth * 2, maxScroll - 1);
     };
     initialize();
     const timer = setInterval(() => {
@@ -150,7 +150,6 @@ function BoothShowcase() {
     const rail = thumbRailRef.current;
     if (!rail) return;
     thumbDraggingRef.current = true;
-    thumbDragMovedRef.current = false;
     thumbDragDistanceRef.current = 0;
     thumbDragLastXRef.current = e.clientX;
     rail.setPointerCapture?.(e.pointerId);
@@ -161,15 +160,20 @@ function BoothShowcase() {
     const delta = e.clientX - thumbDragLastXRef.current;
     thumbDragLastXRef.current = e.clientX;
     thumbDragDistanceRef.current += Math.abs(delta);
-    if (thumbDragDistanceRef.current > 4) thumbDragMovedRef.current = true;
     rail.scrollLeft -= delta;
     const firstSet = rail.querySelector(".booth-thumb-set");
     const setWidth = firstSet ? firstSet.getBoundingClientRect().width : 0;
     const maxScroll = rail.scrollWidth - rail.clientWidth;
-    if (setWidth && rail.scrollLeft >= maxScroll - 1) rail.scrollLeft = Math.max(1, rail.scrollLeft - setWidth);
-    if (setWidth && rail.scrollLeft <= 1) rail.scrollLeft = Math.min(maxScroll - 1, rail.scrollLeft + setWidth);
+    const upperLoop = Math.min(setWidth * 4, maxScroll - 1);
+    if (setWidth && rail.scrollLeft >= upperLoop) rail.scrollLeft -= setWidth * 2;
+    if (setWidth && rail.scrollLeft <= setWidth) rail.scrollLeft += setWidth * 2;
   };
   const endThumbDrag = (e) => {
+    const selected = e.target.closest?.(".booth-mini[data-photo-index]");
+    if (selected && thumbDragDistanceRef.current <= 12) {
+      const index = Number(selected.dataset.photoIndex);
+      if (Number.isInteger(index)) setPhotoIdx(index);
+    }
     thumbDraggingRef.current = false;
     thumbRailRef.current?.releasePointerCapture?.(e.pointerId);
   };
@@ -239,16 +243,14 @@ function BoothShowcase() {
             <div className="booth-grid-mini" ref={thumbRailRef}
                  onPointerDown={startThumbDrag} onPointerMove={moveThumbDrag}
                  onPointerUp={endThumbDrag} onPointerCancel={endThumbDrag}>
-              {[0, 1, 2].map(copy => (
-                <div className="booth-thumb-set" key={copy} aria-hidden={copy !== 1 ? "true" : undefined}>
+              {[0, 1, 2, 3, 4].map(copy => (
+                <div className="booth-thumb-set" key={copy}>
                   {photos.map((p, i) => (
                     <div key={`${copy}-${i}`}
+                         data-photo-index={i}
                          className={`booth-mini booth-mini-photo ${i===photoIdx?"active":""}`}
-                         onClick={() => {
-                           if (thumbDragMovedRef.current) { thumbDragMovedRef.current = false; return; }
-                           setPhotoIdx(i);
-                         }}>
-                      <img src={p} alt={copy === 1 ? `${booth.name}のサンプル写真 ${i+1}` : ""} draggable="false"
+                    >
+                      <img src={p} alt={copy === 2 ? `${booth.name}のサンプル写真 ${i+1}` : ""} draggable="false"
                            onError={(e) => { if (e.target.src.indexOf(booth.image) === -1) e.target.src = booth.image; }} />
                       <span className="booth-mini-label">PHOTO {i+1}</span>
                     </div>
