@@ -95,8 +95,8 @@ function BoothShowcase() {
   const [photoIdx, setPhotoIdx] = useState(0);
   const thumbRailRef = useRef(null);
   const thumbDraggingRef = useRef(false);
-  const thumbDragStartXRef = useRef(0);
-  const thumbDragStartScrollRef = useRef(0);
+  const thumbDragLastXRef = useRef(0);
+  const thumbDragDistanceRef = useRef(0);
   const thumbDragMovedRef = useRef(false);
   const booth = BOOTHS[active];
 
@@ -123,27 +123,27 @@ function BoothShowcase() {
   useEffect(() => {
     const rail = thumbRailRef.current;
     if (!rail || photos.length < 2) return;
-    let frame;
-    let previousTime;
-    let initialized = false;
-    const animate = (time) => {
-      const elapsed = previousTime == null ? 0 : Math.min(32, time - previousTime);
-      previousTime = time;
+    const normalizeLoop = () => {
       const firstSet = rail.querySelector(".booth-thumb-set");
       const setWidth = firstSet ? firstSet.getBoundingClientRect().width : 0;
-      if (!initialized && setWidth) {
-        rail.scrollLeft = setWidth;
-        initialized = true;
-      }
-      if (!thumbDraggingRef.current) {
-        rail.scrollLeft += elapsed * 0.04;
-        if (setWidth && rail.scrollLeft >= setWidth * 2) rail.scrollLeft -= setWidth;
-        if (setWidth && rail.scrollLeft < setWidth * 0.5) rail.scrollLeft += setWidth;
-      }
-      frame = requestAnimationFrame(animate);
+      if (!setWidth) return;
+      const maxScroll = rail.scrollWidth - rail.clientWidth;
+      if (rail.scrollLeft >= maxScroll - 1) rail.scrollLeft = Math.max(1, rail.scrollLeft - setWidth);
+      if (rail.scrollLeft <= 1) rail.scrollLeft = Math.min(maxScroll - 1, rail.scrollLeft + setWidth);
     };
-    frame = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(frame);
+    const initialize = () => {
+      const firstSet = rail.querySelector(".booth-thumb-set");
+      const setWidth = firstSet ? firstSet.getBoundingClientRect().width : 0;
+      const maxScroll = rail.scrollWidth - rail.clientWidth;
+      if (setWidth && maxScroll > 2) rail.scrollLeft = Math.min(setWidth, maxScroll - 1);
+    };
+    initialize();
+    const timer = setInterval(() => {
+      if (thumbDraggingRef.current) return;
+      rail.scrollLeft += 1;
+      normalizeLoop();
+    }, 30);
+    return () => clearInterval(timer);
   }, [active, photos.length]);
 
   const startThumbDrag = (e) => {
@@ -151,20 +151,23 @@ function BoothShowcase() {
     if (!rail) return;
     thumbDraggingRef.current = true;
     thumbDragMovedRef.current = false;
-    thumbDragStartXRef.current = e.clientX;
-    thumbDragStartScrollRef.current = rail.scrollLeft;
+    thumbDragDistanceRef.current = 0;
+    thumbDragLastXRef.current = e.clientX;
     rail.setPointerCapture?.(e.pointerId);
   };
   const moveThumbDrag = (e) => {
     const rail = thumbRailRef.current;
     if (!rail || !thumbDraggingRef.current) return;
-    const delta = e.clientX - thumbDragStartXRef.current;
-    if (Math.abs(delta) > 4) thumbDragMovedRef.current = true;
-    rail.scrollLeft = thumbDragStartScrollRef.current - delta;
+    const delta = e.clientX - thumbDragLastXRef.current;
+    thumbDragLastXRef.current = e.clientX;
+    thumbDragDistanceRef.current += Math.abs(delta);
+    if (thumbDragDistanceRef.current > 4) thumbDragMovedRef.current = true;
+    rail.scrollLeft -= delta;
     const firstSet = rail.querySelector(".booth-thumb-set");
     const setWidth = firstSet ? firstSet.getBoundingClientRect().width : 0;
-    if (setWidth && rail.scrollLeft >= setWidth * 2) rail.scrollLeft -= setWidth;
-    if (setWidth && rail.scrollLeft < setWidth * 0.5) rail.scrollLeft += setWidth;
+    const maxScroll = rail.scrollWidth - rail.clientWidth;
+    if (setWidth && rail.scrollLeft >= maxScroll - 1) rail.scrollLeft = Math.max(1, rail.scrollLeft - setWidth);
+    if (setWidth && rail.scrollLeft <= 1) rail.scrollLeft = Math.min(maxScroll - 1, rail.scrollLeft + setWidth);
   };
   const endThumbDrag = (e) => {
     thumbDraggingRef.current = false;
