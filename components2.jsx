@@ -280,10 +280,10 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
   };
 
   // 2連枠は「次のスロットも空いている」場合のみ可能
-  const canDouble = (t) => {
+  const canDouble = (t, candidatePlan = plan) => {
     const idx = WEEKDAY_SLOTS.indexOf(t);
     if (idx === -1 || idx + 1 >= WEEKDAY_SLOTS.length) return false; // 19:30は次がない
-    return !slotBlockedForPlan(WEEKDAY_SLOTS[idx + 1], plan);
+    return !slotBlockedForPlan(t, candidatePlan) && !slotBlockedForPlan(WEEKDAY_SLOTS[idx + 1], candidatePlan);
   };
 
   const SLOTS = isWeekend
@@ -304,9 +304,6 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
 
   // 2連枠不可の枠を選んでいるのに2連枠プランなら1枠に切替
   React.useEffect(() => {
-    if (isLateStart && plan.endsWith("weekday-2slot")) {
-      setPlan(isPrivatePlan(plan) ? "private-weekday-1slot" : "shared-weekday-1slot");
-    }
     if (!SLOTS.find(s => s.time === time)) {
       setTime(SLOTS[0]?.time || "09:00");
     }
@@ -346,7 +343,17 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
 
   const canSubmit = selectedDate && name && kana && age && people && email && phone && agreed
     && (isPrivatePlan(plan) || (booths.length >= 1 && booths.length <= 2))
-    && SLOTS.find(s => s.time === time) && !SLOTS.find(s => s.time === time)?.disabled;
+    && SLOTS.find(s => s.time === time) && !SLOTS.find(s => s.time === time)?.disabled
+    && (!plan.endsWith("weekday-2slot") || currentSlot?.allow6h);
+
+  const changePlan = (nextPlan) => {
+    setPlan(nextPlan);
+    if (nextPlan.endsWith("weekday-2slot")) {
+      const availableStart = WEEKDAY_SLOTS.find(t => canDouble(t, nextPlan));
+      if (availableStart) setTime(availableStart);
+    }
+    if (isPrivatePlan(nextPlan)) setBooths([]);
+  };
 
   const [submitting, setSubmitting] = useState2(false);
 
@@ -407,12 +414,12 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
           </div>
           <div className="form-row">
             <label>プラン <span className="req">*</span></label>
-            <select value={plan} onChange={e=>setPlan(e.target.value)}>
+            <select value={plan} onChange={e=>changePlan(e.target.value)}>
               {!isWeekend && people <= 4 && <option value="shared-weekday-1slot">2ブース確保・平日3h / ¥7,000</option>}
-              {!isWeekend && people <= 4 && !isLateStart && <option value="shared-weekday-2slot">2ブース確保・平日6h / ¥12,000</option>}
+              {!isWeekend && people <= 4 && <option value="shared-weekday-2slot">2ブース確保・平日6h / ¥12,000</option>}
               {isWeekend && people <= 4 && <option value="shared-weekend-1slot">2ブース確保・休日5h / ¥14,000</option>}
               {!isWeekend && <option value="private-weekday-1slot">完全貸切・平日3h / ¥12,000</option>}
-              {!isWeekend && !isLateStart && <option value="private-weekday-2slot">完全貸切・平日6h / ¥20,000</option>}
+              {!isWeekend && <option value="private-weekday-2slot">完全貸切・平日6h / ¥20,000</option>}
               {isWeekend && <option value="private-weekend-1slot">完全貸切・休日5h / ¥24,000</option>}
             </select>
           </div>
