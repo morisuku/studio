@@ -416,10 +416,10 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
             <label>プラン <span className="req">*</span></label>
             <select value={plan} onChange={e=>changePlan(e.target.value)}>
               {!isWeekend && people <= 4 && <option value="shared-weekday-1slot">2ブース確保・平日3h / ¥7,000</option>}
-              {!isWeekend && people <= 4 && <option value="shared-weekday-2slot">2ブース確保・平日6h / ¥12,000</option>}
+              {!isWeekend && time !== "19:30" && people <= 4 && <option value="shared-weekday-2slot">2ブース確保・平日6h / ¥12,000</option>}
               {isWeekend && people <= 4 && <option value="shared-weekend-1slot">2ブース確保・休日5h / ¥14,000</option>}
               {!isWeekend && <option value="private-weekday-1slot">完全貸切・平日3h / ¥12,000</option>}
-              {!isWeekend && <option value="private-weekday-2slot">完全貸切・平日6h / ¥20,000</option>}
+              {!isWeekend && time !== "19:30" && <option value="private-weekday-2slot">完全貸切・平日6h / ¥20,000</option>}
               {isWeekend && <option value="private-weekend-1slot">完全貸切・休日5h / ¥24,000</option>}
             </select>
           </div>
