@@ -284,6 +284,41 @@ button { font-family: inherit; cursor: pointer; border: 0; background: 0; }
   display: none;
 }
 
+@media (max-width: 640px) {
+  .hero {
+    padding: 122px 0 64px;
+  }
+  .hero-inner {
+    width: 100%;
+    padding-left: 28px;
+    padding-right: 28px;
+    overflow: hidden;
+  }
+  .hero-eyebrow {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  .hero h1 {
+    font-size: clamp(38px, 12vw, 54px);
+  }
+  .hero p.lead {
+    max-width: 100%;
+  }
+  .hero-ctas {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    width: 100%;
+  }
+  .hero-ctas .btn {
+    justify-content: center;
+    width: 100%;
+    padding-left: 18px;
+    padding-right: 18px;
+    text-align: center;
+  }
+}
+
 /* === Hero Sozai (リファレンス再現) === */
 .hero-sozai {
   aspect-ratio: 1/1;
