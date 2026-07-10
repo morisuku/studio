@@ -8,6 +8,23 @@ const BOOKING_START_ISO = "2026-08-01";
 // ※現在は無効（過去日を設定して特典を非表示にしている）。再度使う場合は対象期間を設定する。
 const PREOPEN_START_ISO = "2000-01-01";
 const PREOPEN_END_ISO   = "2000-01-01";
+const SELECTABLE_BOOTHS = [
+  { id:"chinese", label:"中華ブース" },
+  { id:"pink", label:"ピンクブース" },
+  { id:"gaming", label:"ゲーミングブース" },
+  { id:"neon", label:"ネオンブース" },
+];
+const isPrivatePlan = (plan) => String(plan || "").startsWith("private-");
+const isSharedPlan = (plan) => String(plan || "").startsWith("shared-");
+const occupiedSlotTimes = (booking) => {
+  const times = [booking.time];
+  if (String(booking.plan || "").endsWith("weekday-2slot")) {
+    const weekday = ["09:00", "12:30", "16:00", "19:30"];
+    const index = weekday.indexOf(booking.time);
+    if (index >= 0 && index + 1 < weekday.length) times.push(weekday[index + 1]);
+  }
+  return times;
+};
 
 // ───────── BOOKING: CALENDAR ─────────
 function Calendar({ selectedDate, onSelect, bookings, holidays, closedDays }) {
@@ -70,11 +87,19 @@ function Calendar({ selectedDate, onSelect, bookings, holidays, closedDays }) {
     onSelect(c.date);
   };
 
-  // 予約数に基づく空き状況（1件以上で△、3件以上で×）
+  // 新制度では同時間帯最大2組。貸切予約がある日は満席扱い。
   const availByBookings = (iso) => {
-    const count = (bookingsByDate[iso] || []).length;
-    if (count >= 3) return "full";
-    if (count >= 1) return "few";
+    const items = bookingsByDate[iso] || [];
+    if (!items.length) return "ok";
+    const d = new Date(iso + "T00:00:00");
+    const weekend = [0, 6].includes(d.getDay()) || (holidays || []).includes(iso);
+    const slots = weekend ? ["09:00", "14:30"] : ["09:00", "12:30", "16:00", "19:30"];
+    const allBlocked = slots.every(slot => {
+      const inSlot = items.filter(b => occupiedSlotTimes(b).includes(slot));
+      return inSlot.some(b => isPrivatePlan(b.plan) || (!isPrivatePlan(b.plan) && !isSharedPlan(b.plan))) || inSlot.length >= 2;
+    });
+    if (allBlocked) return "full";
+    if (items.length) return "few";
     return "ok";
   };
 
@@ -146,7 +171,7 @@ function Calendar({ selectedDate, onSelect, bookings, holidays, closedDays }) {
                 {popup.items.map(b => (
                   <li key={b.id}>
                     <span className="cal-popup-time">{b.time}</span>
-                    <span className="cal-popup-name">{b.plan === "weekday-1slot" ? "平日3h" : b.plan === "weekday-2slot" ? "平日6h" : b.plan === "weekend-1slot" ? "土日祝5h" : "予約"}</span>
+                    <span className="cal-popup-name">{isPrivatePlan(b.plan) ? "完全貸切" : isSharedPlan(b.plan) ? "2ブース確保" : "予約"}</span>
                   </li>
                 ))}
               </ul>
@@ -169,19 +194,20 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
   const [email, setEmail] = useState2("");
   const [phone, setPhone] = useState2("");
   const [people, setPeople] = useState2(2);
-  const [plan, setPlan] = useState2("weekday-1slot");
+  const [plan, setPlan] = useState2("shared-weekday-1slot");
   const [time, setTime] = useState2("10:00");
   const [note, setNote] = useState2("");
   const [kana, setKana] = useState2("");
   const [age, setAge] = useState2("");
   const [shooting, setShooting] = useState2("none");
+  const [booths, setBooths] = useState2([]);
   const [agreed, setAgreed] = useState2(false);
 
   const av = selectedDate ? availByDate(selectedDate) : null;
 
   const planHours = {
-    "weekday-1slot": 3, "weekday-2slot": 6,
-    "weekend-1slot": 5,
+    "shared-weekday-1slot": 3, "shared-weekday-2slot": 6, "shared-weekend-1slot": 5,
+    "private-weekday-1slot": 3, "private-weekday-2slot": 6, "private-weekend-1slot": 5,
   };
 
   const toMin = (t) => { const [h, m] = t.split(":").map(Number); return h * 60 + m; };
@@ -206,33 +232,32 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
   // 予約が占有する全スロットを集計
   // 平日2連枠(weekday-2slot)は開始スロット＋次のスロットの2つを占有する
   const bookedTimes = new Set();
-  dayBookings.forEach(b => {
-    bookedTimes.add(b.time);
-    if (b.plan === "weekday-2slot") {
-      const idx = WEEKDAY_SLOTS.indexOf(b.time);
-      if (idx !== -1 && idx + 1 < WEEKDAY_SLOTS.length) {
-        bookedTimes.add(WEEKDAY_SLOTS[idx + 1]);
-      }
-    }
-  });
+  dayBookings.forEach(b => occupiedSlotTimes(b).forEach(t => bookedTimes.add(t)));
+
+  const bookingsAt = (slotTime) => dayBookings.filter(b => occupiedSlotTimes(b).includes(slotTime));
+  const slotBlockedForPlan = (slotTime, candidatePlan) => {
+    const items = bookingsAt(slotTime);
+    if (isPrivatePlan(candidatePlan)) return items.length > 0;
+    return items.some(b => isPrivatePlan(b.plan) || (!isPrivatePlan(b.plan) && !isSharedPlan(b.plan))) || items.length >= 2;
+  };
 
   // 2連枠は「次のスロットも空いている」場合のみ可能
   const canDouble = (t) => {
     const idx = WEEKDAY_SLOTS.indexOf(t);
     if (idx === -1 || idx + 1 >= WEEKDAY_SLOTS.length) return false; // 19:30は次がない
-    return !bookedTimes.has(WEEKDAY_SLOTS[idx + 1]); // 次スロットが空いていればOK
+    return !slotBlockedForPlan(WEEKDAY_SLOTS[idx + 1], plan);
   };
 
   const SLOTS = isWeekend
     ? [
-        { time: "09:00", allow6h: false, disabled: bookedTimes.has("09:00") },
-        { time: "14:30", allow6h: false, disabled: bookedTimes.has("14:30") },
+        { time: "09:00", allow6h: false, disabled: slotBlockedForPlan("09:00", plan) },
+        { time: "14:30", allow6h: false, disabled: slotBlockedForPlan("14:30", plan) },
       ]
     : [
-        { time: "09:00", allow6h: canDouble("09:00"), disabled: bookedTimes.has("09:00") },
-        { time: "12:30", allow6h: canDouble("12:30"), disabled: bookedTimes.has("12:30") },
-        { time: "16:00", allow6h: canDouble("16:00"), disabled: bookedTimes.has("16:00") },
-        { time: "19:30", allow6h: false,              disabled: bookedTimes.has("19:30") },
+        { time: "09:00", allow6h: canDouble("09:00"), disabled: slotBlockedForPlan("09:00", plan) },
+        { time: "12:30", allow6h: canDouble("12:30"), disabled: slotBlockedForPlan("12:30", plan) },
+        { time: "16:00", allow6h: canDouble("16:00"), disabled: slotBlockedForPlan("16:00", plan) },
+        { time: "19:30", allow6h: false, disabled: slotBlockedForPlan("19:30", plan) },
       ];
 
   // 選択中の枠情報
@@ -241,8 +266,8 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
 
   // 2連枠不可の枠を選んでいるのに2連枠プランなら1枠に切替
   React.useEffect(() => {
-    if (isLateStart && plan === "weekday-2slot") {
-      setPlan("weekday-1slot");
+    if (isLateStart && plan.endsWith("weekday-2slot")) {
+      setPlan(isPrivatePlan(plan) ? "private-weekday-1slot" : "shared-weekday-1slot");
     }
     if (!SLOTS.find(s => s.time === time)) {
       setTime(SLOTS[0]?.time || "09:00");
@@ -252,10 +277,11 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
   // 日付変更時にプランを自動切替
   React.useEffect(() => {
     if (!selectedDate) return;
-    if (isWeekend && plan.startsWith("weekday")) {
-      setPlan("weekend-1slot");
-    } else if (!isWeekend && plan.startsWith("weekend")) {
-      setPlan("weekday-1slot");
+    const prefix = isPrivatePlan(plan) ? "private" : "shared";
+    if (isWeekend && plan.includes("weekday")) {
+      setPlan(prefix + "-weekend-1slot");
+    } else if (!isWeekend && plan.includes("weekend")) {
+      setPlan(prefix + "-weekday-1slot");
     }
     // プレオープン期間外の日で無料撮影が選ばれていたら解除
     if (!isPreopen && shooting === "free-photo-3h") {
@@ -263,7 +289,28 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
     }
   }, [selectedDate]);
 
+  React.useEffect(() => {
+    if (people > 4 && !isPrivatePlan(plan)) {
+      setPlan(isWeekend ? "private-weekend-1slot" : "private-weekday-1slot");
+      setBooths([]);
+    }
+  }, [people]);
+
+  const relevantTimes = plan.endsWith("weekday-2slot")
+    ? [time, WEEKDAY_SLOTS[WEEKDAY_SLOTS.indexOf(time) + 1]].filter(Boolean)
+    : [time];
+  const reservedBooths = new Set(dayBookings
+    .filter(b => relevantTimes.some(t => occupiedSlotTimes(b).includes(t)))
+    .flatMap(b => b.booths || []));
+  const toggleBooth = (boothId) => {
+    if (reservedBooths.has(boothId)) return;
+    setBooths(current => current.includes(boothId)
+      ? current.filter(id => id !== boothId)
+      : current.length < 2 ? [...current, boothId] : current);
+  };
+
   const canSubmit = selectedDate && name && kana && age && people && email && phone && agreed
+    && (isPrivatePlan(plan) || (booths.length >= 1 && booths.length <= 2))
     && SLOTS.find(s => s.time === time) && !SLOTS.find(s => s.time === time)?.disabled;
 
   const [submitting, setSubmitting] = useState2(false);
@@ -276,7 +323,7 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
       date: utilToISO(selectedDate),
       time, plan, people,
       name, kana, age,
-      email, phone, note, shooting,
+      email, phone, note, shooting, booths,
       submittedAt: new Date().toISOString(),
     };
     setSubmitting(true);
@@ -290,7 +337,7 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
       if (result.status === "ok") {
         onBooked(booking);
         setName(""); setKana(""); setAge("");
-        setEmail(""); setPhone(""); setNote(""); setShooting("none"); setAgreed(false);
+        setEmail(""); setPhone(""); setNote(""); setShooting("none"); setBooths([]); setAgreed(false);
       } else {
         alert("送信に失敗しました: " + (result.message || "不明なエラー"));
       }
@@ -325,12 +372,34 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
           <div className="form-row">
             <label>プラン <span className="req">*</span></label>
             <select value={plan} onChange={e=>setPlan(e.target.value)}>
-              {!isWeekend && <option value="weekday-1slot">平日 1枠（3h）/ ¥6,000</option>}
-              {!isWeekend && !isLateStart && <option value="weekday-2slot">平日 2連枠（6h）/ ¥11,000</option>}
-              {isWeekend && <option value="weekend-1slot">土日祝 1枠（5h）/ ¥14,000</option>}
+              {!isWeekend && people <= 4 && <option value="shared-weekday-1slot">2ブース確保・平日3h / ¥7,000</option>}
+              {!isWeekend && people <= 4 && !isLateStart && <option value="shared-weekday-2slot">2ブース確保・平日6h / ¥12,000</option>}
+              {isWeekend && people <= 4 && <option value="shared-weekend-1slot">2ブース確保・休日5h / ¥14,000</option>}
+              {!isWeekend && <option value="private-weekday-1slot">完全貸切・平日3h / ¥12,000</option>}
+              {!isWeekend && !isLateStart && <option value="private-weekday-2slot">完全貸切・平日6h / ¥20,000</option>}
+              {isWeekend && <option value="private-weekend-1slot">完全貸切・休日5h / ¥24,000</option>}
             </select>
           </div>
         </div>
+
+        {isSharedPlan(plan) && (
+          <div className="form-row">
+            <label>確保するブース <span className="req">*</span></label>
+            <div className="booth-checkbox-grid">
+              {SELECTABLE_BOOTHS.map(booth => {
+                const unavailable = reservedBooths.has(booth.id);
+                return (
+                  <label key={booth.id} className={`booth-checkbox ${unavailable ? "disabled" : ""}`}>
+                    <input type="checkbox" checked={booths.includes(booth.id)} disabled={unavailable}
+                      onChange={() => toggleBooth(booth.id)} />
+                    <span>{booth.label}{unavailable ? "（予約済）" : ""}</span>
+                  </label>
+                );
+              })}
+            </div>
+            <p className="form-help">1〜2ブースを選択してください。選択したブースは予約時間中、他グループと共用しません。背景紙ブースは共用です。</p>
+          </div>
+        )}
 
         <div className="form-grid-2">
           <div className="form-row">
@@ -357,9 +426,10 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
               <option value={4}>4名</option>
               <option value={5}>5名</option>
               <option value={6}>6名</option>
-              <option value={7}>7名 (+¥7,000)</option>
-              <option value={8}>8名 (+¥8,000)</option>
+              <option value={7}>7名</option>
+              <option value={8}>8名</option>
             </select>
+            <p className="form-help">カメラマン、アシスタント、見学者、付き添いを含む全員の人数です。5名以上は完全貸切になります。</p>
           </div>
         </div>
 
@@ -453,7 +523,8 @@ function Booking() {
             id: b["予約ID"],
             date: String(b["日付"]).slice(0, 10), // 日付も念のため正規化
             time: rawTime,
-            plan: b["プラン"],
+            plan: b["プランコード"] || b["プラン"],
+            booths: String(b["選択ブース"] || "").split(",").map(v => v.trim()).filter(Boolean),
             people: b["人数"],
             name: b["お名前"],
             kana: b["フリガナ"],

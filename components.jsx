@@ -199,105 +199,47 @@ function Pricing() {
       <div className="wrap">
         <div className="sec-head">
           <div className="kicker">— Pricing —</div>
-          <h2>わかりやすい<br />シンプル料金</h2>
-          <p>完全貸切制・基本6名まで。<br />全ブース自由に使い放題。</p>
+          <h2>選べる2つの<br />スタジオ利用プラン</h2>
+          <p>もりすくスタジオでは、撮影内容や利用人数に合わせて選べる2つのプランをご用意しています。<br />
+          少人数で利用する場合は、4つのコンセプトブースからお好きな2ブースを確保できる「2ブース確保プラン」。<br />
+          全ブースを自由に利用したい場合や、5名以上で利用する場合は「完全貸切プラン」をご利用ください。</p>
         </div>
 
-        {/* 平日・休日カード */}
-        <div style={{
-          display:"grid",
-          gridTemplateColumns:"repeat(auto-fit, minmax(280px, 1fr))",
-          gap:24, marginBottom:40, alignItems:"start"
-        }}>
+        <div className="pricing-plan-grid">
+          <article className="pricing-plan-card shared">
+            <div className="pricing-plan-badge">同時間帯 最大2組</div>
+            <h3>2ブース確保プラン</h3>
+            <p>中華・ピンク・ゲーミング・ネオンの4ブースから、予約時に1〜2ブースを選択。確保したブースは予約時間中、そのグループ専用です。</p>
+            <div className="pricing-price-list">
+              <div><span>平日3時間</span><b>¥7,000</b></div>
+              <div><span>平日6時間</span><b>¥12,000</b></div>
+              <div><span>休日5時間</span><b>¥14,000</b></div>
+            </div>
+            <p className="pricing-people">1〜4名／1グループあたり</p>
+          </article>
+          <article className="pricing-plan-card private">
+            <div className="pricing-plan-badge">全ブース使用可能</div>
+            <h3>完全貸切プラン</h3>
+            <p>スタジオ全体を1グループで貸し切り。背景紙を含む全5ブースを自由に利用でき、他グループとの同時利用はありません。</p>
+            <div className="pricing-price-list">
+              <div><span>平日貸切3時間</span><b>¥12,000</b></div>
+              <div><span>平日貸切6時間</span><b>¥20,000</b></div>
+              <div><span>休日貸切5時間</span><b>¥24,000</b></div>
+            </div>
+            <p className="pricing-people">1〜8名／5名以上はこちら</p>
+          </article>
+        </div>
 
-          {/* 平日枠 */}
-          <div style={{
-            background:"#ffffff", borderRadius:20, padding:"28px 24px",
-            border:"2px solid #FFD6E8", boxShadow:"0 4px 20px rgba(255,143,184,0.1)",
-            display:"flex", flexDirection:"column"
-          }}>
-            <div style={{textAlign:"center", marginBottom:20}}>
-              <div style={{fontSize:22, fontWeight:"900", color:"#D97A8F", letterSpacing:"0.05em"}}>平日枠</div>
-              <div style={{fontSize:13, color:"#E6A0B8", fontStyle:"italic", fontFamily:"serif"}}>Weekday</div>
-            </div>
-            {[
-              "09:00-12:00", "12:30-15:30", "16:00-19:00", "19:30-22:30"
-            ].map((t,i) => (
-              <div key={i} style={{
-                display:"flex", alignItems:"center", justifyContent:"center", gap:12,
-                background:"#FFF5F8", borderRadius:10, padding:"10px 16px",
-                marginBottom:8, border:"1px solid #FFE0EC", height:52
-              }}>
-                <span style={{
-                  width:28, height:28, borderRadius:"50%",
-                  background:"linear-gradient(135deg,#FF8FB8,#FFB8D1)",
-                  display:"flex", alignItems:"center", justifyContent:"center",
-                  fontSize:13, flexShrink:0
-                }}>🕐</span>
-                <span style={{fontWeight:"bold", color:"#3a3a3a", fontSize:15, letterSpacing:"0.05em"}}>{t}</span>
-              </div>
-            ))}
-            <div style={{
-              display:"grid", gridTemplateColumns:"1fr 1fr", gap:0,
-              marginTop:8,
-              background:"#FFF0F5", borderRadius:12,
-              border:"1px solid #FFD6E8", height:80,
-              alignItems:"center"
-            }}>
-              <div style={{textAlign:"center", padding:"0 8px"}}>
-                <div style={{fontSize:11, color:"#D97A8F", marginBottom:6}}>1枠</div>
-                <div style={{fontSize:26, fontWeight:"900", color:"#FF5C8D"}}>¥6,000</div>
-              </div>
-              <div style={{textAlign:"center", padding:"0 8px", borderLeft:"1px dashed #FFB8D1"}}>
-                <div style={{fontSize:11, color:"#D97A8F", marginBottom:6}}>2連枠</div>
-                <div style={{fontSize:26, fontWeight:"900", color:"#FF5C8D"}}>¥11,000</div>
-              </div>
-            </div>
+        <div className="booth-use-example" aria-label="2ブース確保プランの利用例">
+          <h3>2ブース確保プランの利用例</h3>
+          <div className="booth-example-flow">
+            <div><b>A組</b><span>中華＋ピンク</span></div>
+            <span className="booth-example-arrow">→</span>
+            <div><b>B組</b><span>ゲーミング＋ネオン</span></div>
+            <span className="booth-example-arrow">→</span>
+            <div className="paper-shared"><b>A組・B組</b><span>背景紙ブースは共用</span></div>
           </div>
-
-          {/* 休日枠 */}
-          <div style={{
-            background:"#ffffff", borderRadius:20, padding:"28px 24px",
-            border:"2px solid #C8D8F8", boxShadow:"0 4px 20px rgba(100,150,220,0.08)",
-            display:"flex", flexDirection:"column"
-          }}>
-            <div style={{textAlign:"center", marginBottom:20}}>
-              <div style={{fontSize:22, fontWeight:"900", color:"#6677BB", letterSpacing:"0.05em"}}>休日枠</div>
-              <div style={{fontSize:13, color:"#8899CC", fontStyle:"italic", fontFamily:"serif"}}>Holiday</div>
-            </div>
-            {/* 平日2枠分の高さ（52px×2 + gap8px = 112px）に揃える */}
-            {[
-              {t:"09:00-14:00", h:112},
-              {t:"14:30-19:30", h:112},
-            ].map(({t,h},i) => (
-              <div key={i} style={{
-                display:"flex", alignItems:"center", justifyContent:"center", gap:12,
-                background:"#F0F4FF", borderRadius:10, padding:"10px 16px",
-                marginBottom:8, border:"1px solid #C8D8F8",
-                height:h
-              }}>
-                <span style={{
-                  width:28, height:28, borderRadius:"50%",
-                  background:"linear-gradient(135deg,#8899DD,#AABBEE)",
-                  display:"flex", alignItems:"center", justifyContent:"center",
-                  fontSize:13, flexShrink:0
-                }}>🕐</span>
-                <span style={{fontWeight:"bold", color:"#3a3a3a", fontSize:22, letterSpacing:"0.05em"}}>{t}</span>
-              </div>
-            ))}
-            {/* 平日料金枠と同じ高さ（80px）に揃える */}
-            <div style={{
-              display:"grid", gridTemplateColumns:"1fr",
-              marginTop:8, background:"#F0F4FF", borderRadius:12,
-              border:"1px solid #C8D8F8", height:80,
-              alignItems:"center"
-            }}>
-              <div style={{textAlign:"center", padding:"0 8px"}}>
-                <div style={{fontSize:11, color:"#6677BB", marginBottom:6}}>1枠</div>
-                <div style={{fontSize:26, fontWeight:"900", color:"#4455AA"}}>¥14,000</div>
-              </div>
-            </div>
-          </div>
+          <p>背景紙ブースは共用です。他グループの利用希望がある場合は、1回30分を目安に交代をお願いいたします。他に利用希望がない場合は、続けてご利用いただけます。</p>
         </div>
 
         {/* 撮影サービス */}
@@ -369,7 +311,9 @@ function Pricing() {
 
         <div style={{textAlign:"center", fontSize:14, color:"var(--sub)", lineHeight:2}}>
           ※料金はすべて税込価格です。<br />
-          7名様 +¥7,000　／　8名様 +¥8,000<br />（最大8名様まで・推奨5名様以下）<br />商用利用は事前にご相談ください。
+          2ブース確保プランは同時間帯最大2組です。予約したブースを他グループと共用することはありません。<br />
+          人数にはコスプレイヤー、カメラマン、アシスタント、見学者、付き添いをすべて含みます。<br />
+          5名以上は完全貸切プランをご利用ください（最大8名）。商用利用は事前にご相談ください。
         </div>
       </div>
     </section>
