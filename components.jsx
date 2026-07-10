@@ -93,6 +93,7 @@ function Hero({ showSparkles }) {
 function BoothShowcase() {
   const [active, setActive] = useState(0);
   const [photoIdx, setPhotoIdx] = useState(0);
+  const thumbRailRef = useRef(null);
   const booth = BOOTHS[active];
 
   // スワイプ検出用
@@ -103,17 +104,29 @@ function BoothShowcase() {
   const selectBooth = (i) => {
     setActive(i);
     setPhotoIdx(0);
+    if (thumbRailRef.current) thumbRailRef.current.scrollTo({left:0, behavior:"smooth"});
   };
 
   // 表示する写真リスト（photos配列を使用。撮影前でもレイアウト確認できるよう常に6枚分）
-  const photos = (booth.photos && booth.photos.length > 0)
+  const photos = ((booth.photos && booth.photos.length > 0)
     ? booth.photos
-    : [booth.image, booth.image, booth.image, booth.image, booth.image, booth.image];
+    : [booth.image, booth.image, booth.image, booth.image, booth.image, booth.image]).slice(0, 12);
   const mainImage = photos[photoIdx] || booth.image;
 
   // 前後の写真へ
   const nextPhoto = () => setPhotoIdx((prev) => (prev + 1) % photos.length);
   const prevPhoto = () => setPhotoIdx((prev) => (prev - 1 + photos.length) % photos.length);
+  const scrollThumbs = (direction) => {
+    if (!thumbRailRef.current) return;
+    thumbRailRef.current.scrollBy({ left: direction * Math.max(260, thumbRailRef.current.clientWidth * 0.75), behavior:"smooth" });
+  };
+  useEffect(() => {
+    const rail = thumbRailRef.current;
+    const item = rail && rail.children[photoIdx];
+    if (!rail || !item) return;
+    const left = item.offsetLeft - rail.offsetLeft - 8;
+    rail.scrollTo({ left, behavior:"smooth" });
+  }, [photoIdx, active]);
 
   // タッチイベント（スワイプ）
   const onTouchStart = (e) => { touchStartX.current = e.touches[0].clientX; touchEndX.current = e.touches[0].clientX; };
@@ -175,17 +188,21 @@ function BoothShowcase() {
           </div>
         </div>
 
-        {/* 選択中ブースのサンプル写真5枚（クリックでメイン画像切替） */}
-        <div className="booth-grid-mini">
-          {photos.map((p, i) => (
-            <div key={i}
-                 className={`booth-mini booth-mini-photo ${i===photoIdx?"active":""}`}
-                 onClick={() => setPhotoIdx(i)}>
-              <img src={p} alt={`${booth.name}のサンプル写真 ${i+1}`}
-                   onError={(e) => { if (e.target.src.indexOf(booth.image) === -1) e.target.src = booth.image; }} />
-              <span className="booth-mini-label">PHOTO {i+1}</span>
-            </div>
-          ))}
+        {/* 最大12枚・1列横スクロールのサムネイル */}
+        <div className="booth-thumb-carousel">
+          <button type="button" className="booth-thumb-nav" onClick={() => scrollThumbs(-1)} aria-label="写真一覧を左へ">‹</button>
+          <div className="booth-grid-mini" ref={thumbRailRef}>
+            {photos.map((p, i) => (
+              <div key={i}
+                   className={`booth-mini booth-mini-photo ${i===photoIdx?"active":""}`}
+                   onClick={() => setPhotoIdx(i)}>
+                <img src={p} alt={`${booth.name}のサンプル写真 ${i+1}`}
+                     onError={(e) => { if (e.target.src.indexOf(booth.image) === -1) e.target.src = booth.image; }} />
+                <span className="booth-mini-label">PHOTO {i+1}</span>
+              </div>
+            ))}
+          </div>
+          <button type="button" className="booth-thumb-nav" onClick={() => scrollThumbs(1)} aria-label="写真一覧を右へ">›</button>
         </div>
         <div className="booth-care-note">
           <strong>装飾・壁面の取り扱いについて</strong>

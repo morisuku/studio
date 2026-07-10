@@ -691,6 +691,13 @@ function FAQ() {
             </div>
           ))}
         </div>
+        <div className="line-contact-card">
+          <div>
+            <strong>ご質問・お問い合わせ</strong>
+            <p>お問い合わせは公式LINEからのご連絡が最も早く返信できます。ご予約前の確認やご不明点も、お気軽にご相談ください。</p>
+          </div>
+          <a href="https://lin.ee/xu4F3wW" target="_blank" rel="noopener noreferrer" className="line-contact-btn">公式LINEで問い合わせる</a>
+        </div>
       </div>
     </section>
   );
@@ -721,7 +728,7 @@ function Access() {
               <div className="access-row"><span className="k">ACCESS</span><span>琴電空港通駅から徒歩7分<br />駐車場8台あり</span></div>
               <div className="access-row"><span className="k">HOURS</span><span>09:00 – 22:30（完全予約制）</span></div>
               <div className="access-row"><span className="k">OPEN</span><span>2026年7月 オープン予定</span></div>
-              <div className="access-row"><span className="k">CONTACT</span><span>info@morisuku-studio.com</span></div>
+              <div className="access-row"><span className="k">CONTACT</span><span><a href="mailto:info@morisuku-studio.com">info@morisuku-studio.com</a><br /><a href="https://lin.ee/xu4F3wW" target="_blank" rel="noopener noreferrer">公式LINE（返信が最も早いです）</a></span></div>
             </div>
             <a href="#booking" className="btn btn-pink">今すぐ予約する →</a>
           </div>
@@ -807,6 +814,7 @@ function Footer() {
           <h5>CONTACT</h5>
           <ul>
             <li><a href="mailto:info@morisuku-studio.com" style={{color:"inherit"}}>info@morisuku-studio.com</a></li>
+            <li><a href="https://lin.ee/xu4F3wW" target="_blank" rel="noopener noreferrer" style={{color:"inherit"}}>公式LINE（お問い合わせ）</a></li>
             <li><a href="https://www.instagram.com/morisuku_studio/" target="_blank" rel="noopener noreferrer" style={{color:"inherit"}}>Instagram @morisuku_studio</a></li>
             <li><a href="https://x.com/morisuku_studio" target="_blank" rel="noopener noreferrer" style={{color:"inherit"}}>X @morisuku_studio</a></li>
           </ul>

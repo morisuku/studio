@@ -975,6 +975,23 @@ section { padding: 72px 0; position: relative; }
 }
 .faq-item.open .faq-a { max-height: 300px; padding-bottom: 20px; }
 .faq-a .inner { padding-left: 36px; padding-right: 36px; }
+.line-contact-card {
+  max-width:800px; margin:32px auto 0; padding:22px 24px;
+  display:flex; align-items:center; justify-content:space-between; gap:24px;
+  background:#F2FFF6; border:1px solid #BCE8C9; border-radius:16px;
+}
+.line-contact-card strong { display:block; margin-bottom:6px; color:var(--ink); }
+.line-contact-card p { margin:0; color:var(--sub); font-size:13px; line-height:1.8; }
+.line-contact-btn {
+  flex-shrink:0; display:inline-flex; align-items:center; justify-content:center;
+  padding:12px 18px; border-radius:999px; background:#06C755; color:#fff;
+  font-size:13px; font-weight:700; text-decoration:none;
+}
+.line-contact-btn:hover { filter:brightness(.94); transform:translateY(-1px); }
+@media (max-width:640px) {
+  .line-contact-card { flex-direction:column; align-items:stretch; text-align:center; }
+  .line-contact-btn { width:100%; }
+}
 
 /* ───────── ACCESS ───────── */
 #access {
@@ -1533,3 +1550,29 @@ footer {
   .booth-example-arrow { justify-content:center; transform:rotate(90deg); }
 }
 @media (max-width:420px) { .booth-checkbox-grid { grid-template-columns:1fr; } }
+
+/* Booth thumbnail carousel: always one horizontal row, up to 12 photos */
+.booth-thumb-carousel {
+  display:grid; grid-template-columns:42px minmax(0,1fr) 42px;
+  align-items:center; gap:10px; margin-top:36px;
+}
+.booth-grid-mini {
+  display:flex !important; grid-template-columns:none !important; justify-content:flex-start;
+  gap:12px; margin:0; padding:8px 5px 14px; overflow-x:auto; overflow-y:hidden;
+  scroll-snap-type:x mandatory; scrollbar-width:none; -ms-overflow-style:none;
+}
+.booth-grid-mini::-webkit-scrollbar { display:none; }
+.booth-grid-mini .booth-mini {
+  flex:0 0 clamp(125px, 15vw, 170px); scroll-snap-align:start;
+}
+.booth-thumb-nav {
+  width:42px; height:42px; display:flex; align-items:center; justify-content:center;
+  border-radius:50%; border:1px solid #FFD6E8; background:#fff; color:var(--pink-deep);
+  font-size:28px; line-height:1; box-shadow:0 6px 18px rgba(180,100,140,.12);
+}
+.booth-thumb-nav:hover { background:#FFF0F5; transform:translateY(-1px); }
+@media (max-width:640px) {
+  .booth-thumb-carousel { grid-template-columns:34px minmax(0,1fr) 34px; gap:6px; margin-top:26px; }
+  .booth-thumb-nav { width:34px; height:34px; font-size:22px; }
+  .booth-grid-mini .booth-mini { flex-basis:112px; }
+}
