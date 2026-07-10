@@ -94,6 +94,10 @@ function BoothShowcase() {
   const [active, setActive] = useState(0);
   const [photoIdx, setPhotoIdx] = useState(0);
   const thumbRailRef = useRef(null);
+  const thumbDraggingRef = useRef(false);
+  const thumbDragStartXRef = useRef(0);
+  const thumbDragStartScrollRef = useRef(0);
+  const thumbDragMovedRef = useRef(false);
   const booth = BOOTHS[active];
 
   // スワイプ検出用
@@ -104,7 +108,7 @@ function BoothShowcase() {
   const selectBooth = (i) => {
     setActive(i);
     setPhotoIdx(0);
-    if (thumbRailRef.current) thumbRailRef.current.scrollTo({left:0, behavior:"smooth"});
+    if (thumbRailRef.current) thumbRailRef.current.scrollLeft = 0;
   };
 
   // 表示する写真リスト（photos配列を使用。撮影前でもレイアウト確認できるよう常に6枚分）
@@ -116,17 +120,48 @@ function BoothShowcase() {
   // 前後の写真へ
   const nextPhoto = () => setPhotoIdx((prev) => (prev + 1) % photos.length);
   const prevPhoto = () => setPhotoIdx((prev) => (prev - 1 + photos.length) % photos.length);
-  const scrollThumbs = (direction) => {
-    if (!thumbRailRef.current) return;
-    thumbRailRef.current.scrollBy({ left: direction * Math.max(260, thumbRailRef.current.clientWidth * 0.75), behavior:"smooth" });
-  };
   useEffect(() => {
     const rail = thumbRailRef.current;
-    const item = rail && rail.children[photoIdx];
-    if (!rail || !item) return;
-    const left = item.offsetLeft - rail.offsetLeft - 8;
-    rail.scrollTo({ left, behavior:"smooth" });
-  }, [photoIdx, active]);
+    if (!rail || photos.length < 2) return;
+    let frame;
+    let previousTime;
+    const animate = (time) => {
+      const elapsed = previousTime == null ? 0 : Math.min(32, time - previousTime);
+      previousTime = time;
+      if (!thumbDraggingRef.current) {
+        rail.scrollLeft += elapsed * 0.025;
+        const loopWidth = rail.scrollWidth / 2;
+        if (loopWidth && rail.scrollLeft >= loopWidth) rail.scrollLeft -= loopWidth;
+      }
+      frame = requestAnimationFrame(animate);
+    };
+    frame = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(frame);
+  }, [active, photos.length]);
+
+  const startThumbDrag = (e) => {
+    const rail = thumbRailRef.current;
+    if (!rail) return;
+    thumbDraggingRef.current = true;
+    thumbDragMovedRef.current = false;
+    thumbDragStartXRef.current = e.clientX;
+    thumbDragStartScrollRef.current = rail.scrollLeft;
+    rail.setPointerCapture?.(e.pointerId);
+  };
+  const moveThumbDrag = (e) => {
+    const rail = thumbRailRef.current;
+    if (!rail || !thumbDraggingRef.current) return;
+    const delta = e.clientX - thumbDragStartXRef.current;
+    if (Math.abs(delta) > 4) thumbDragMovedRef.current = true;
+    rail.scrollLeft = thumbDragStartScrollRef.current - delta;
+    const loopWidth = rail.scrollWidth / 2;
+    if (loopWidth && rail.scrollLeft >= loopWidth) rail.scrollLeft -= loopWidth;
+    if (loopWidth && rail.scrollLeft < 0) rail.scrollLeft += loopWidth;
+  };
+  const endThumbDrag = (e) => {
+    thumbDraggingRef.current = false;
+    thumbRailRef.current?.releasePointerCapture?.(e.pointerId);
+  };
 
   // タッチイベント（スワイプ）
   const onTouchStart = (e) => { touchStartX.current = e.touches[0].clientX; touchEndX.current = e.touches[0].clientX; };
@@ -175,19 +210,26 @@ function BoothShowcase() {
 
             {/* 最大12枚・1列横スクロールのサムネイル */}
             <div className="booth-thumb-carousel">
-              <button type="button" className="booth-thumb-nav" onClick={() => scrollThumbs(-1)} aria-label="写真一覧を左へ">‹</button>
-              <div className="booth-grid-mini" ref={thumbRailRef}>
-                {photos.map((p, i) => (
-                  <div key={i}
-                       className={`booth-mini booth-mini-photo ${i===photoIdx?"active":""}`}
-                       onClick={() => setPhotoIdx(i)}>
-                    <img src={p} alt={`${booth.name}のサンプル写真 ${i+1}`}
-                         onError={(e) => { if (e.target.src.indexOf(booth.image) === -1) e.target.src = booth.image; }} />
-                    <span className="booth-mini-label">PHOTO {i+1}</span>
+              <div className="booth-grid-mini" ref={thumbRailRef}
+                   onPointerDown={startThumbDrag} onPointerMove={moveThumbDrag}
+                   onPointerUp={endThumbDrag} onPointerCancel={endThumbDrag}>
+                {[0, 1].map(copy => (
+                  <div className="booth-thumb-set" key={copy} aria-hidden={copy === 1 ? "true" : undefined}>
+                    {photos.map((p, i) => (
+                      <div key={`${copy}-${i}`}
+                           className={`booth-mini booth-mini-photo ${i===photoIdx?"active":""}`}
+                           onClick={() => {
+                             if (thumbDragMovedRef.current) { thumbDragMovedRef.current = false; return; }
+                             setPhotoIdx(i);
+                           }}>
+                        <img src={p} alt={copy === 0 ? `${booth.name}のサンプル写真 ${i+1}` : ""} draggable="false"
+                             onError={(e) => { if (e.target.src.indexOf(booth.image) === -1) e.target.src = booth.image; }} />
+                        <span className="booth-mini-label">PHOTO {i+1}</span>
+                      </div>
+                    ))}
                   </div>
                 ))}
               </div>
-              <button type="button" className="booth-thumb-nav" onClick={() => scrollThumbs(1)} aria-label="写真一覧を右へ">›</button>
             </div>
           </div>
           <div className="booth-info">
