@@ -33,8 +33,8 @@ const BOOTHS = [
     ],
     gradient: "linear-gradient(135deg, #FFD6E8 0%, #FFB8D1 50%, #F5A8C7 100%)",
     accent: "#E6729C",
-    image: "assets/booth-classic-pink.png",
-    photos: ["assets/booth-classic-pink-1.png", "assets/booth-classic-pink-2.png", "assets/booth-classic-pink-3.png", "assets/booth-classic-pink-4.png", "assets/booth-classic-pink-5.png", "assets/booth-classic-pink-6.png"],
+    image: "assets/pink1.webp",
+    photos: ["assets/pink1.webp", "assets/booth-classic-pink-2.png", "assets/booth-classic-pink-3.png", "assets/booth-classic-pink-4.png", "assets/booth-classic-pink-5.png", "assets/booth-classic-pink-6.png"],
     ph: "BOOTH 02 / CLASSIC PINK",
   },
   {
