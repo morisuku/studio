@@ -15,8 +15,8 @@ const BOOTHS = [
     ],
     gradient: "linear-gradient(135deg, #FFD3DC 0%, #F7A6B7 52%, #FFE0A8 100%)",
     accent: "#D97A8F",
-    image: "assets/booth-chinese.png",
-    photos: ["assets/booth-chinese-1.png", "assets/booth-chinese-2.png", "assets/booth-chinese-3.png", "assets/booth-chinese-4.png", "assets/booth-chinese-5.png", "assets/booth-chinese-6.png"],
+    image: "assets/china1.webp",
+    photos: ["assets/china1.webp", "assets/china2.webp", "assets/china3.webp", "assets/china4.webp", "assets/china5.webp", "assets/china6.webp"],
     ph: "BOOTH 01 / CHINOISERIE",
   },
   {
