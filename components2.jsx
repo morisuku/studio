@@ -25,6 +25,35 @@ const occupiedSlotTimes = (booking) => {
   }
   return times;
 };
+const bookingTimeRange = (booking) => {
+  const weekdayEnd = { "09:00":"12:00", "12:30":"15:30", "16:00":"19:00", "19:30":"22:30" };
+  const weekdayDoubleEnd = { "09:00":"15:00", "12:30":"18:30", "16:00":"22:00" };
+  const weekendEnd = { "09:00":"14:00", "14:30":"19:30" };
+  const plan = String(booking.plan || "");
+  const end = plan.endsWith("weekday-2slot")
+    ? weekdayDoubleEnd[booking.time]
+    : plan.endsWith("weekend-1slot")
+      ? weekendEnd[booking.time]
+      : weekdayEnd[booking.time];
+  return end ? `${booking.time}-${end}` : booking.time;
+};
+const bookingBoothNames = (booking) => (booking.booths || []).map(id => {
+  const booth = SELECTABLE_BOOTHS.find(item => item.id === id);
+  return booth ? booth.label.replace("ブース", "") : id;
+}).join("/");
+const planDurationMinutes = (plan) => String(plan || "").endsWith("weekday-2slot") ? 360
+  : String(plan || "").endsWith("weekend-1slot") ? 300 : 180;
+const timeToMinutes = (time) => {
+  const [hour, minute] = String(time || "0:0").split(":").map(Number);
+  return hour * 60 + minute;
+};
+const bookingOverlaps = (booking, candidateTime, candidatePlan) => {
+  const firstStart = timeToMinutes(booking.time);
+  const firstEnd = firstStart + planDurationMinutes(booking.plan);
+  const secondStart = timeToMinutes(candidateTime);
+  const secondEnd = secondStart + planDurationMinutes(candidatePlan);
+  return firstStart < secondEnd && secondStart < firstEnd;
+};
 
 // ───────── BOOKING: CALENDAR ─────────
 function Calendar({ selectedDate, onSelect, bookings, holidays, closedDays }) {
@@ -170,16 +199,13 @@ function Calendar({ selectedDate, onSelect, bookings, holidays, closedDays }) {
               <ul className="cal-popup-list">
                 {popup.items.map(b => (
                   <li key={b.id}>
-                    <span className="cal-popup-time">{b.time}</span>
+                    <span className="cal-popup-time">{bookingTimeRange(b)}</span>
                     {isPrivatePlan(b.plan) ? (
-                      <span className="cal-popup-name cal-popup-private">全ブース・完全貸切</span>
+                      <span className="cal-popup-name cal-popup-private">全ブース 予約済（完全貸切）</span>
                     ) : isSharedPlan(b.plan) ? (
                       <span className="cal-popup-reservation">
-                        {(b.booths || []).map(id => {
-                          const booth = SELECTABLE_BOOTHS.find(item => item.id === id);
-                          return <span key={id} className="cal-popup-booth-chip">{booth ? booth.label.replace("ブース", "") : id}</span>;
-                        })}
-                        <span className="cal-popup-name">ブース確保</span>
+                        <span className="cal-popup-booth-chip">{bookingBoothNames(b) || "ブース情報なし"}</span>
+                        <span className="cal-popup-name">予約済</span>
                       </span>
                     ) : (
                       <span className="cal-popup-name">予約済み</span>
@@ -308,11 +334,8 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
     }
   }, [people]);
 
-  const relevantTimes = plan.endsWith("weekday-2slot")
-    ? [time, WEEKDAY_SLOTS[WEEKDAY_SLOTS.indexOf(time) + 1]].filter(Boolean)
-    : [time];
   const reservedBooths = new Set(dayBookings
-    .filter(b => relevantTimes.some(t => occupiedSlotTimes(b).includes(t)))
+    .filter(b => bookingOverlaps(b, time, plan))
     .flatMap(b => b.booths || []));
   const toggleBooth = (boothId) => {
     if (reservedBooths.has(boothId)) return;

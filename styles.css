@@ -1264,7 +1264,7 @@ footer {
 }
 .cal-popup-list li {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto 1fr;
   gap: 8px;
   align-items: center;
   padding: 8px 10px;
@@ -1275,6 +1275,7 @@ footer {
 .cal-popup-time {
   font-weight: 700; color: var(--pink-deep);
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 .cal-popup-booth { color: var(--ink); }
 .cal-popup-name { color: var(--sub); font-size: 11px; }
