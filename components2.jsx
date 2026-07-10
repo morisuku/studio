@@ -171,7 +171,19 @@ function Calendar({ selectedDate, onSelect, bookings, holidays, closedDays }) {
                 {popup.items.map(b => (
                   <li key={b.id}>
                     <span className="cal-popup-time">{b.time}</span>
-                    <span className="cal-popup-name">{isPrivatePlan(b.plan) ? "完全貸切" : isSharedPlan(b.plan) ? "2ブース確保" : "予約"}</span>
+                    {isPrivatePlan(b.plan) ? (
+                      <span className="cal-popup-name cal-popup-private">全ブース・完全貸切</span>
+                    ) : isSharedPlan(b.plan) ? (
+                      <span className="cal-popup-reservation">
+                        {(b.booths || []).map(id => {
+                          const booth = SELECTABLE_BOOTHS.find(item => item.id === id);
+                          return <span key={id} className="cal-popup-booth-chip">{booth ? booth.label.replace("ブース", "") : id}</span>;
+                        })}
+                        <span className="cal-popup-name">ブース確保</span>
+                      </span>
+                    ) : (
+                      <span className="cal-popup-name">予約済み</span>
+                    )}
                   </li>
                 ))}
               </ul>
