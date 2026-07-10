@@ -1579,3 +1579,28 @@ footer {
   .booth-thumb-carousel { margin-top:14px; }
   .booth-grid-mini .booth-mini { flex-basis:112px; }
 }
+
+/* Desktop: main photo and description share the first row; thumbnails span below both. */
+.booth-showcase {
+  grid-template-areas:
+    "booth-photo booth-info"
+    "booth-thumbs booth-thumbs";
+  align-items:center;
+}
+.booth-media-column { grid-area:booth-photo; }
+.booth-info { grid-area:booth-info; }
+.booth-showcase > .booth-thumb-carousel {
+  grid-area:booth-thumbs; width:100%; margin-top:-18px;
+}
+@media (max-width:880px) {
+  .booth-showcase {
+    grid-template-columns:1fr;
+    grid-template-areas:
+      "booth-photo"
+      "booth-thumbs"
+      "booth-info";
+    gap:18px;
+    align-items:start;
+  }
+  .booth-showcase > .booth-thumb-carousel { margin-top:-8px; }
+}

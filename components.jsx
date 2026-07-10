@@ -208,29 +208,6 @@ function BoothShowcase() {
               </div>
             </div>
 
-            {/* 最大12枚・1列横スクロールのサムネイル */}
-            <div className="booth-thumb-carousel">
-              <div className="booth-grid-mini" ref={thumbRailRef}
-                   onPointerDown={startThumbDrag} onPointerMove={moveThumbDrag}
-                   onPointerUp={endThumbDrag} onPointerCancel={endThumbDrag}>
-                {[0, 1].map(copy => (
-                  <div className="booth-thumb-set" key={copy} aria-hidden={copy === 1 ? "true" : undefined}>
-                    {photos.map((p, i) => (
-                      <div key={`${copy}-${i}`}
-                           className={`booth-mini booth-mini-photo ${i===photoIdx?"active":""}`}
-                           onClick={() => {
-                             if (thumbDragMovedRef.current) { thumbDragMovedRef.current = false; return; }
-                             setPhotoIdx(i);
-                           }}>
-                        <img src={p} alt={copy === 0 ? `${booth.name}のサンプル写真 ${i+1}` : ""} draggable="false"
-                             onError={(e) => { if (e.target.src.indexOf(booth.image) === -1) e.target.src = booth.image; }} />
-                        <span className="booth-mini-label">PHOTO {i+1}</span>
-                      </div>
-                    ))}
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
           <div className="booth-info">
             <h3>
@@ -244,6 +221,30 @@ function BoothShowcase() {
             <ul className="booth-features">
               {booth.features.map((f,i) => <li key={i}>{f}</li>)}
             </ul>
+          </div>
+
+          {/* 最大12枚・1列・無限ループのサムネイル */}
+          <div className="booth-thumb-carousel">
+            <div className="booth-grid-mini" ref={thumbRailRef}
+                 onPointerDown={startThumbDrag} onPointerMove={moveThumbDrag}
+                 onPointerUp={endThumbDrag} onPointerCancel={endThumbDrag}>
+              {[0, 1].map(copy => (
+                <div className="booth-thumb-set" key={copy} aria-hidden={copy === 1 ? "true" : undefined}>
+                  {photos.map((p, i) => (
+                    <div key={`${copy}-${i}`}
+                         className={`booth-mini booth-mini-photo ${i===photoIdx?"active":""}`}
+                         onClick={() => {
+                           if (thumbDragMovedRef.current) { thumbDragMovedRef.current = false; return; }
+                           setPhotoIdx(i);
+                         }}>
+                      <img src={p} alt={copy === 0 ? `${booth.name}のサンプル写真 ${i+1}` : ""} draggable="false"
+                           onError={(e) => { if (e.target.src.indexOf(booth.image) === -1) e.target.src = booth.image; }} />
+                      <span className="booth-mini-label">PHOTO {i+1}</span>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
         <div className="booth-care-note">
