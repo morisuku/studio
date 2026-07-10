@@ -1500,10 +1500,10 @@ footer {
   }
 }
 
-/* ブース：スマホではサムネイルを隠しスワイプ操作に集約 */
+/* ブース：スマホでもサムネイルを表示 */
 @media (max-width: 640px) {
   .booth-grid-mini {
-    display: none;
+    display: flex;
   }
   .booth-arrow {
     width: 34px;
@@ -1582,8 +1582,16 @@ footer {
 }
 .booth-thumb-nav:hover { background:#FFF0F5; transform:translateY(-1px); }
 @media (max-width:640px) {
-  .booth-thumb-carousel { margin-top:14px; }
-  .booth-grid-mini .booth-mini { flex-basis:112px; }
+  .booth-thumb-carousel {
+    display:block !important; visibility:visible !important;
+    width:100%; min-height:116px; margin-top:14px; overflow:hidden;
+  }
+  .booth-grid-mini {
+    display:flex !important; visibility:visible !important;
+    width:100%; min-height:108px;
+  }
+  .booth-thumb-set { display:flex !important; min-height:92px; }
+  .booth-grid-mini .booth-mini { display:block; flex-basis:112px; min-width:112px; height:88px; }
 }
 
 /* Desktop: main photo and description share the first row; thumbnails span below both. */
@@ -1608,5 +1616,5 @@ footer {
     gap:18px;
     align-items:start;
   }
-  .booth-showcase > .booth-thumb-carousel { margin-top:-8px; }
+  .booth-showcase > .booth-thumb-carousel { display:block !important; margin-top:-8px; }
 }
