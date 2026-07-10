@@ -66,7 +66,7 @@ function Hero({ showSparkles }) {
             <span className="accent-font">morisuku studio</span>
           </h1>
           <p className="lead">
-            パステルピンクの洋館から、ネオンきらめく夜の街、朱色の中華門まで。
+            クラシックな可愛いピンクブースから、ネオンきらめくアメリカンダイナーブース、そして朱色の中華部屋まで。
             ひとつのスタジオで、5つの世界観を自由に行き来できるコスプレ専用スタジオです。
           </p>
           <div className="hero-ctas">
@@ -132,7 +132,7 @@ function BoothShowcase() {
         <div className="sec-head">
           <div className="kicker">— Booths —</div>
           <h2>5つの世界観を<br />自由に行き来する</h2>
-          <p>どれもフル装飾・小道具付き。<br />5つのブースを自由にお使いいただけます。</p>
+          <p>どれもフル装飾・小道具付き。<br />2ブース確保プランでは選択したブースを、完全貸切プランでは全ブースをご利用いただけます。</p>
         </div>
 
         <div className="booth-tabs">
@@ -186,6 +186,10 @@ function BoothShowcase() {
               <span className="booth-mini-label">PHOTO {i+1}</span>
             </div>
           ))}
+        </div>
+        <div className="booth-care-note">
+          <strong>装飾・壁面の取り扱いについて</strong>
+          <p>装飾や壁面は大変繊細なため、触れる・もたれる・寄りかかる行為は原則禁止です。動かしてよい物、座ったり乗ったりできる物は、当日スタッフからご案内します。判断に迷う場合は、撮影前にその都度お気軽にスタッフへお声がけください。</p>
         </div>
       </div>
     </section>
