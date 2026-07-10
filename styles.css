@@ -940,7 +940,7 @@ section { padding: 72px 0; position: relative; }
   font-size: 18px;
   margin-bottom: 8px;
 }
-.flow-step p { font-size: 13px; color: var(--sub); text-wrap:pretty; word-break:auto-phrase; }
+.flow-step p { font-size: 13px; color: var(--sub); }
 
 /* ───────── FAQ ───────── */
 .faq-list { max-width: 800px; margin: 0 auto; }
@@ -1564,7 +1564,6 @@ footer {
   .pricing-plan-card .mobile-nowrap { font-size:clamp(12px, 3.5vw, 14px); letter-spacing:-.04em; }
   .cal-legend { gap:7px; flex-wrap:wrap; font-size:10px; }
   .cal-legend span { gap:3px; }
-  .flow-step p { text-wrap:pretty; word-break:auto-phrase; line-height:1.9; }
 }
 
 /* Booth thumbnail carousel: always one horizontal row, up to 12 photos */
