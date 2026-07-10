@@ -818,6 +818,7 @@ section { padding: 72px 0; position: relative; }
   color: var(--sub);
 }
 .cal-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.cal-legend > span { white-space:nowrap; }
 .cal-legend .sym { font-weight: 700; font-size: 14px; }
 
 /* Booking form */
@@ -939,7 +940,7 @@ section { padding: 72px 0; position: relative; }
   font-size: 18px;
   margin-bottom: 8px;
 }
-.flow-step p { font-size: 13px; color: var(--sub); }
+.flow-step p { font-size: 13px; color: var(--sub); text-wrap:pretty; word-break:auto-phrase; }
 
 /* ───────── FAQ ───────── */
 .faq-list { max-width: 800px; margin: 0 auto; }
@@ -1556,6 +1557,15 @@ footer {
   .booth-example-arrow { justify-content:center; transform:rotate(90deg); }
 }
 @media (max-width:420px) { .booth-checkbox-grid { grid-template-columns:1fr; } }
+.mobile-br { display:none; }
+@media (max-width:640px) {
+  .mobile-br { display:block; }
+  .mobile-nowrap { white-space:nowrap; }
+  .pricing-plan-card .mobile-nowrap { font-size:clamp(12px, 3.5vw, 14px); letter-spacing:-.04em; }
+  .cal-legend { gap:7px; flex-wrap:wrap; font-size:10px; }
+  .cal-legend span { gap:3px; }
+  .flow-step p { text-wrap:pretty; word-break:auto-phrase; line-height:1.9; }
+}
 
 /* Booth thumbnail carousel: always one horizontal row, up to 12 photos */
 .booth-thumb-carousel {
