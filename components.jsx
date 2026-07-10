@@ -58,11 +58,11 @@ function Hero({ showSparkles }) {
       <div className="hero-inner">
         <div className="hero-copy">
           <div className="hero-eyebrow">
-            <span>morisuku studio · 2026.7 OPEN<br />香川県高松市一宮町151-1</span>
+            <span>morisuku studio · 2026.8 OPEN<br />香川県高松市一宮町151-1</span>
           </div>
           <h1>
             ときめきを<br />
-            <span style={{whiteSpace:"nowrap"}}><em>そのまま</em>、写真に。</span>
+            <span className="hero-title-line"><em>そのまま</em>、写真に。</span>
             <span className="accent-font">morisuku studio</span>
           </h1>
           <p className="lead">
@@ -289,7 +289,7 @@ function Pricing() {
           <article className="pricing-plan-card shared">
             <div className="pricing-plan-badge">同時間帯 最大2組</div>
             <h3>2ブース確保プラン</h3>
-            <p>中華・ピンク・ゲーミング・ネオンの4ブースから、予約時に1〜2ブースを選択。確保したブースは予約時間中、そのグループ専用です。</p>
+            <p>中華・ピンク・ゲーミング・ネオンの4ブースから、予約時に1〜2ブースを選択。確保したブースは予約時間中、そのグループ専用です。背景紙ブースも共用でご利用いただけます。</p>
             <div className="pricing-price-list">
               <div><span>平日3時間</span><b>¥7,000</b></div>
               <div><span>平日6時間</span><b>¥12,000</b></div>
@@ -342,8 +342,8 @@ function Pricing() {
               <div style={{
                 width:36, height:36, borderRadius:"50%",
                 background:"linear-gradient(135deg,#FF8FB8,#FFB8D1)",
-                display:"flex", alignItems:"center", justifyContent:"center",
-                fontSize:18, flexShrink:0
+                display:"grid", placeItems:"center",
+                fontSize:18, lineHeight:1, flexShrink:0
               }}>📷</div>
               <div style={{fontWeight:"bold", color:"#D97A8F", fontSize:14}}>撮影サービス（写真）</div>
             </div>
@@ -370,8 +370,8 @@ function Pricing() {
               <div style={{
                 width:36, height:36, borderRadius:"50%",
                 background:"linear-gradient(135deg,#8899DD,#AABBEE)",
-                display:"flex", alignItems:"center", justifyContent:"center",
-                fontSize:18, flexShrink:0
+                display:"grid", placeItems:"center",
+                fontSize:18, lineHeight:1, flexShrink:0
               }}>🎬</div>
               <div style={{fontWeight:"bold", color:"#6677BB", fontSize:14, whiteSpace:"nowrap"}}>撮影サービス（動画編集込）</div>
             </div>
