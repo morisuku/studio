@@ -157,20 +157,37 @@ function BoothShowcase() {
         </div>
 
         <div className="booth-showcase">
-          <div className="booth-visual booth-photo-visual" style={{"--booth-accent": booth.accent}}
-               onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
-            <img src={mainImage} alt={`${booth.name}のサンプル写真 ${photoIdx+1}`}
-                 onError={(e) => { if (e.target.src.indexOf(booth.image) === -1) e.target.src = booth.image; }} />
-            {/* 左右の切り替え矢印 */}
-            <button className="booth-arrow booth-arrow-prev" onClick={prevPhoto} aria-label="前の写真">‹</button>
-            <button className="booth-arrow booth-arrow-next" onClick={nextPhoto} aria-label="次の写真">›</button>
-            {/* ドットインジケーター */}
-            <div className="booth-dots">
-              {photos.map((_, i) => (
-                <span key={i}
-                      className={`booth-dot ${i===photoIdx?"active":""}`}
-                      onClick={() => setPhotoIdx(i)}></span>
-              ))}
+          <div className="booth-media-column">
+            <div className="booth-visual booth-photo-visual" style={{"--booth-accent": booth.accent}}
+                 onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
+              <img src={mainImage} alt={`${booth.name}のサンプル写真 ${photoIdx+1}`}
+                   onError={(e) => { if (e.target.src.indexOf(booth.image) === -1) e.target.src = booth.image; }} />
+              <button className="booth-arrow booth-arrow-prev" onClick={prevPhoto} aria-label="前の写真">‹</button>
+              <button className="booth-arrow booth-arrow-next" onClick={nextPhoto} aria-label="次の写真">›</button>
+              <div className="booth-dots">
+                {photos.map((_, i) => (
+                  <span key={i}
+                        className={`booth-dot ${i===photoIdx?"active":""}`}
+                        onClick={() => setPhotoIdx(i)}></span>
+                ))}
+              </div>
+            </div>
+
+            {/* 最大12枚・1列横スクロールのサムネイル */}
+            <div className="booth-thumb-carousel">
+              <button type="button" className="booth-thumb-nav" onClick={() => scrollThumbs(-1)} aria-label="写真一覧を左へ">‹</button>
+              <div className="booth-grid-mini" ref={thumbRailRef}>
+                {photos.map((p, i) => (
+                  <div key={i}
+                       className={`booth-mini booth-mini-photo ${i===photoIdx?"active":""}`}
+                       onClick={() => setPhotoIdx(i)}>
+                    <img src={p} alt={`${booth.name}のサンプル写真 ${i+1}`}
+                         onError={(e) => { if (e.target.src.indexOf(booth.image) === -1) e.target.src = booth.image; }} />
+                    <span className="booth-mini-label">PHOTO {i+1}</span>
+                  </div>
+                ))}
+              </div>
+              <button type="button" className="booth-thumb-nav" onClick={() => scrollThumbs(1)} aria-label="写真一覧を右へ">›</button>
             </div>
           </div>
           <div className="booth-info">
@@ -186,23 +203,6 @@ function BoothShowcase() {
               {booth.features.map((f,i) => <li key={i}>{f}</li>)}
             </ul>
           </div>
-        </div>
-
-        {/* 最大12枚・1列横スクロールのサムネイル */}
-        <div className="booth-thumb-carousel">
-          <button type="button" className="booth-thumb-nav" onClick={() => scrollThumbs(-1)} aria-label="写真一覧を左へ">‹</button>
-          <div className="booth-grid-mini" ref={thumbRailRef}>
-            {photos.map((p, i) => (
-              <div key={i}
-                   className={`booth-mini booth-mini-photo ${i===photoIdx?"active":""}`}
-                   onClick={() => setPhotoIdx(i)}>
-                <img src={p} alt={`${booth.name}のサンプル写真 ${i+1}`}
-                     onError={(e) => { if (e.target.src.indexOf(booth.image) === -1) e.target.src = booth.image; }} />
-                <span className="booth-mini-label">PHOTO {i+1}</span>
-              </div>
-            ))}
-          </div>
-          <button type="button" className="booth-thumb-nav" onClick={() => scrollThumbs(1)} aria-label="写真一覧を右へ">›</button>
         </div>
         <div className="booth-care-note">
           <strong>装飾・壁面の取り扱いについて</strong>
