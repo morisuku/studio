@@ -176,7 +176,7 @@ function Calendar({ selectedDate, onSelect, bookings, holidays, closedDays }) {
         <span><span className="sym" style={{color:"#3BA37A"}}>○</span> 空きあり</span>
         <span><span className="sym" style={{color:"#E09F3E"}}>△</span> 残りわずか</span>
         <span><span className="sym" style={{color:"var(--china)"}}>×</span> 満席</span>
-        <span><span className="sym" style={{background:"#FF8FB8", display:"inline-block", width:12, height:12, borderRadius:3}}></span> ご予約済</span>
+        <span><span className="sym" style={{background:"#FF8FB8", display:"inline-block", width:12, height:12, borderRadius:"50%"}}></span> ご予約済</span>
       </div>
 
       {popup && (
