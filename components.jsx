@@ -125,13 +125,20 @@ function BoothShowcase() {
     if (!rail || photos.length < 2) return;
     let frame;
     let previousTime;
+    let initialized = false;
     const animate = (time) => {
       const elapsed = previousTime == null ? 0 : Math.min(32, time - previousTime);
       previousTime = time;
+      const firstSet = rail.querySelector(".booth-thumb-set");
+      const setWidth = firstSet ? firstSet.getBoundingClientRect().width : 0;
+      if (!initialized && setWidth) {
+        rail.scrollLeft = setWidth;
+        initialized = true;
+      }
       if (!thumbDraggingRef.current) {
-        rail.scrollLeft += elapsed * 0.025;
-        const loopWidth = rail.scrollWidth / 2;
-        if (loopWidth && rail.scrollLeft >= loopWidth) rail.scrollLeft -= loopWidth;
+        rail.scrollLeft += elapsed * 0.04;
+        if (setWidth && rail.scrollLeft >= setWidth * 2) rail.scrollLeft -= setWidth;
+        if (setWidth && rail.scrollLeft < setWidth * 0.5) rail.scrollLeft += setWidth;
       }
       frame = requestAnimationFrame(animate);
     };
@@ -154,9 +161,10 @@ function BoothShowcase() {
     const delta = e.clientX - thumbDragStartXRef.current;
     if (Math.abs(delta) > 4) thumbDragMovedRef.current = true;
     rail.scrollLeft = thumbDragStartScrollRef.current - delta;
-    const loopWidth = rail.scrollWidth / 2;
-    if (loopWidth && rail.scrollLeft >= loopWidth) rail.scrollLeft -= loopWidth;
-    if (loopWidth && rail.scrollLeft < 0) rail.scrollLeft += loopWidth;
+    const firstSet = rail.querySelector(".booth-thumb-set");
+    const setWidth = firstSet ? firstSet.getBoundingClientRect().width : 0;
+    if (setWidth && rail.scrollLeft >= setWidth * 2) rail.scrollLeft -= setWidth;
+    if (setWidth && rail.scrollLeft < setWidth * 0.5) rail.scrollLeft += setWidth;
   };
   const endThumbDrag = (e) => {
     thumbDraggingRef.current = false;
@@ -228,8 +236,8 @@ function BoothShowcase() {
             <div className="booth-grid-mini" ref={thumbRailRef}
                  onPointerDown={startThumbDrag} onPointerMove={moveThumbDrag}
                  onPointerUp={endThumbDrag} onPointerCancel={endThumbDrag}>
-              {[0, 1].map(copy => (
-                <div className="booth-thumb-set" key={copy} aria-hidden={copy === 1 ? "true" : undefined}>
+              {[0, 1, 2].map(copy => (
+                <div className="booth-thumb-set" key={copy} aria-hidden={copy !== 1 ? "true" : undefined}>
                   {photos.map((p, i) => (
                     <div key={`${copy}-${i}`}
                          className={`booth-mini booth-mini-photo ${i===photoIdx?"active":""}`}
@@ -237,7 +245,7 @@ function BoothShowcase() {
                            if (thumbDragMovedRef.current) { thumbDragMovedRef.current = false; return; }
                            setPhotoIdx(i);
                          }}>
-                      <img src={p} alt={copy === 0 ? `${booth.name}のサンプル写真 ${i+1}` : ""} draggable="false"
+                      <img src={p} alt={copy === 1 ? `${booth.name}のサンプル写真 ${i+1}` : ""} draggable="false"
                            onError={(e) => { if (e.target.src.indexOf(booth.image) === -1) e.target.src = booth.image; }} />
                       <span className="booth-mini-label">PHOTO {i+1}</span>
                     </div>
