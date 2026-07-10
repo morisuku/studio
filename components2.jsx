@@ -338,6 +338,7 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
         onBooked(booking);
         setName(""); setKana(""); setAge("");
         setEmail(""); setPhone(""); setNote(""); setShooting("none"); setBooths([]); setAgreed(false);
+        if (result.warning) alert(result.warning);
       } else {
         alert("送信に失敗しました: " + (result.message || "不明なエラー"));
       }
