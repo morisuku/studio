@@ -334,6 +334,9 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
   const reservedBooths = new Set(dayBookings
     .filter(b => bookingOverlaps(b, time, plan))
     .flatMap(b => b.booths || []));
+  const shootingUnavailable = dayBookings.some(b =>
+    bookingOverlaps(b, time, plan) && b.shooting && b.shooting !== "none"
+  );
   const toggleBooth = (boothId) => {
     if (reservedBooths.has(boothId)) return;
     setBooths(current => current.includes(boothId)
@@ -344,7 +347,12 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
   const canSubmit = selectedDate && name && kana && age && people && email && phone && agreed
     && (isPrivatePlan(plan) || (booths.length >= 1 && booths.length <= 2))
     && SLOTS.find(s => s.time === time) && !SLOTS.find(s => s.time === time)?.disabled
-    && (!plan.endsWith("weekday-2slot") || currentSlot?.allow6h);
+    && (!plan.endsWith("weekday-2slot") || currentSlot?.allow6h)
+    && (!shootingUnavailable || shooting === "none");
+
+  React.useEffect(() => {
+    if (shootingUnavailable && shooting !== "none") setShooting("none");
+  }, [shootingUnavailable, time, plan, selectedISO]);
 
   const changePlan = (nextPlan) => {
     setPlan(nextPlan);
@@ -491,13 +499,18 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
           <label>撮影サービス</label>
           <select value={shooting} onChange={e => setShooting(e.target.value)}>
             <option value="none">希望しない</option>
-            {isPreopen && <option value="free-photo-3h">無料撮影サービス（写真3h）/ ¥0</option>}
-            <option value="photo-1h">写真 1h / ¥4,000</option>
-            <option value="photo-2h">写真 2h / ¥7,000</option>
-            <option value="photo-3h">写真 3h / ¥10,000</option>
-            <option value="video-1h">動画（編集込）1h / ¥8,000</option>
-            <option value="video-2h">動画（編集込）2h / ¥12,000</option>
+            {isPreopen && <option value="free-photo-3h" disabled={shootingUnavailable}>無料撮影サービス（写真3h）/ ¥0</option>}
+            <option value="photo-1h" disabled={shootingUnavailable}>写真 1h / ¥4,000</option>
+            <option value="photo-2h" disabled={shootingUnavailable}>写真 2h / ¥7,000</option>
+            <option value="photo-3h" disabled={shootingUnavailable}>写真 3h / ¥10,000</option>
+            <option value="video-1h" disabled={shootingUnavailable}>動画（編集込）1h / ¥8,000</option>
+            <option value="video-2h" disabled={shootingUnavailable}>動画（編集込）2h / ¥12,000</option>
           </select>
+          {shootingUnavailable && (
+            <p style={{fontSize:12, color:"var(--china)", marginTop:6, fontWeight:"bold"}}>
+              ※この時間帯は先約があるため、撮影サービスをお選びいただけません。スタジオのみご予約可能です。
+            </p>
+          )}
           {isPreopen && (
             <p style={{fontSize:12, color:"var(--pink-deep)", marginTop:6, fontWeight:"bold"}}>
               ※各日先着1組様限定。2組目以降のお申込みは通常料金でのご案内となります。
@@ -575,6 +588,7 @@ function Booking() {
             email: b["メールアドレス"],
             phone: b["電話番号"],
             note: b["メモ"],
+            shooting: b["撮影サービスコード"] || (b["撮影サービス"] && b["撮影サービス"] !== "希望なし" ? "reserved" : "none"),
             submittedAt: b["送信日時"],
           };
         });
