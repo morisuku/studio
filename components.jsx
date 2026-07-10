@@ -97,6 +97,7 @@ function BoothShowcase() {
   const thumbDraggingRef = useRef(false);
   const thumbDragLastXRef = useRef(0);
   const thumbDragDistanceRef = useRef(0);
+  const thumbPressedIndexRef = useRef(null);
   const booth = BOOTHS[active];
 
   // スワイプ検出用
@@ -152,6 +153,8 @@ function BoothShowcase() {
     thumbDraggingRef.current = true;
     thumbDragDistanceRef.current = 0;
     thumbDragLastXRef.current = e.clientX;
+    const pressed = e.target.closest?.(".booth-mini[data-photo-index]");
+    thumbPressedIndexRef.current = pressed ? Number(pressed.dataset.photoIndex) : null;
     rail.setPointerCapture?.(e.pointerId);
   };
   const moveThumbDrag = (e) => {
@@ -169,13 +172,13 @@ function BoothShowcase() {
     if (setWidth && rail.scrollLeft <= setWidth) rail.scrollLeft += setWidth * 2;
   };
   const endThumbDrag = (e) => {
-    const selected = e.target.closest?.(".booth-mini[data-photo-index]");
-    if (selected && thumbDragDistanceRef.current <= 12) {
-      const index = Number(selected.dataset.photoIndex);
-      if (Number.isInteger(index)) setPhotoIdx(index);
+    const index = thumbPressedIndexRef.current;
+    if (e.type === "pointerup" && thumbDragDistanceRef.current <= 12 && Number.isInteger(index)) {
+      setPhotoIdx(index);
     }
+    thumbPressedIndexRef.current = null;
     thumbDraggingRef.current = false;
-    thumbRailRef.current?.releasePointerCapture?.(e.pointerId);
+    try { thumbRailRef.current?.releasePointerCapture?.(e.pointerId); } catch (_) {}
   };
 
   // タッチイベント（スワイプ）
