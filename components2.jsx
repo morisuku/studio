@@ -525,7 +525,7 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
 
         <div className="form-row">
           <label>ご要望・メッセージ</label>
-          <textarea value={note} onChange={e=>setNote(e.target.value)} placeholder="撮影サービスを希望、商用利用、など" />
+          <textarea value={note} onChange={e=>setNote(e.target.value)} placeholder="撮影サービスを希望、商用利用、未成年〇名、など" />
         </div>
 
         <div className="terms-check">
@@ -785,7 +785,7 @@ function Footer() {
       <div className="footer-inner">
         <div>
           <div className="footer-logo">もりすくスタジオ</div>
-          <div className="footer-tag">〒761-8084 香川県高松市一宮町151-1<br />2026年8月1日 OPEN</div>
+          <div className="footer-tag">〒761-8084 香川県高松市一宮町151-1<br />2026年7月オープン予定。</div>
           <div style={{marginTop: 20, fontSize: 11, opacity: 0.6}}>
             <a href="privacy.html" style={{color:"inherit"}}>プライバシーポリシー</a>
             {" · "}
