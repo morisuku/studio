@@ -247,10 +247,10 @@ button { font-family: inherit; cursor: pointer; border: 0; background: 0; }
 .hero p.lead {
   font-size: 16px;
   color: var(--sub);
-  margin: 0 auto 36px;
+  margin: 0 0 36px;
   max-width: 480px;
   text-wrap: pretty;
-  text-align: center;
+  text-align: left;
 }
 
 .hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
