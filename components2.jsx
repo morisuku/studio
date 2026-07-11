@@ -240,6 +240,7 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
   const [shooting, setShooting] = useState2("none");
   const [booths, setBooths] = useState2([]);
   const [agreed, setAgreed] = useState2(false);
+  const [confirmOpen, setConfirmOpen] = useState2(false);
 
   const av = selectedDate ? availByDate(selectedDate) : null;
 
@@ -365,8 +366,39 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
 
   const [submitting, setSubmitting] = useState2(false);
 
-  const submit = async (e) => {
+  const planDetails = {
+    "shared-weekday-1slot": { label:"2ブース確保・平日3時間", price:7000 },
+    "shared-weekday-2slot": { label:"2ブース確保・平日6時間", price:12000 },
+    "shared-weekend-1slot": { label:"2ブース確保・休日5時間", price:14000 },
+    "private-weekday-1slot": { label:"完全貸切・平日3時間", price:12000 },
+    "private-weekday-2slot": { label:"完全貸切・平日6時間", price:20000 },
+    "private-weekend-1slot": { label:"完全貸切・休日5時間", price:24000 },
+  };
+  const shootingDetails = {
+    "none": { label:"希望しない", price:0 },
+    "free-photo-3h": { label:"無料撮影サービス（写真3時間）", price:0 },
+    "photo-1h": { label:"写真撮影 1時間", price:4000 },
+    "photo-2h": { label:"写真撮影 2時間", price:7000 },
+    "photo-3h": { label:"写真撮影 3時間", price:10000 },
+    "video-1h": { label:"動画撮影・編集 1時間", price:8000 },
+    "video-2h": { label:"動画撮影・編集 2時間", price:12000 },
+  };
+  const addHours = (start, hours) => {
+    const minutes = toMin(start) + hours * 60;
+    return `${String(Math.floor(minutes / 60)).padStart(2,"0")}:${String(minutes % 60).padStart(2,"0")}`;
+  };
+  const selectedPlan = planDetails[plan] || { label:plan, price:0 };
+  const selectedShooting = shootingDetails[shooting] || { label:shooting, price:0 };
+  const totalPrice = selectedPlan.price + selectedShooting.price;
+  const boothLabels = booths.map(id => SELECTABLE_BOOTHS.find(b => b.id === id)?.label).filter(Boolean);
+
+  const submit = (e) => {
     e.preventDefault();
+    if (!canSubmit || submitting) return;
+    setConfirmOpen(true);
+  };
+
+  const confirmBooking = async () => {
     if (!canSubmit || submitting) return;
     const booking = {
       id: "B-" + Date.now().toString(36).toUpperCase(),
@@ -385,6 +417,7 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
       });
       const result = await res.json();
       if (result.status === "ok") {
+        setConfirmOpen(false);
         onBooked(booking);
         setName(""); setKana(""); setAge("");
         setEmail(""); setPhone(""); setNote(""); setShooting("none"); setBooths([]); setAgreed(false);
@@ -543,9 +576,36 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
         </div>
 
         <button className="submit-btn" type="submit" disabled={!canSubmit || submitting}>
-          {submitting ? "送信中..." : "この内容で予約する →"}
+          この内容を確認する →
         </button>
       </form>
+
+      {confirmOpen && (
+        <div className="booking-confirm-overlay" role="dialog" aria-modal="true" aria-labelledby="booking-confirm-title">
+          <div className="booking-confirm-modal">
+            <button type="button" className="booking-confirm-close" onClick={() => !submitting && setConfirmOpen(false)} aria-label="閉じる">×</button>
+            <h3 id="booking-confirm-title">ご予約内容の確認</h3>
+            <p className="booking-confirm-lead">内容をご確認のうえ、「予約を確定する」を押してください。</p>
+            <dl className="booking-confirm-list">
+              <div><dt>利用日時</dt><dd>{selectedDate.getFullYear()}年{selectedDate.getMonth()+1}月{selectedDate.getDate()}日（{["日","月","火","水","木","金","土"][selectedDate.getDay()]}）<br />{time}〜{addHours(time, planHours[plan])}</dd></div>
+              <div><dt>プラン</dt><dd>{selectedPlan.label}</dd></div>
+              <div><dt>利用ブース</dt><dd>{isPrivatePlan(plan) ? "全ブース（完全貸切）" : boothLabels.join("・")}</dd></div>
+              <div><dt>利用人数</dt><dd>{people}名</dd></div>
+              <div><dt>撮影サービス</dt><dd>{selectedShooting.label}</dd></div>
+              <div className="booking-confirm-total"><dt>料金合計</dt><dd>¥{totalPrice.toLocaleString()}<small>（当日現金払い）</small></dd></div>
+              <div><dt>お名前</dt><dd>{name}（{kana}）</dd></div>
+              <div><dt>年齢</dt><dd>{age}歳</dd></div>
+              <div><dt>メール</dt><dd>{email}</dd></div>
+              <div><dt>電話番号</dt><dd>{phone}</dd></div>
+              <div><dt>ご要望</dt><dd>{note || "なし"}</dd></div>
+            </dl>
+            <div className="booking-confirm-actions">
+              <button type="button" className="booking-confirm-edit" onClick={() => setConfirmOpen(false)} disabled={submitting}>内容を修正する</button>
+              <button type="button" className="booking-confirm-submit" onClick={confirmBooking} disabled={submitting}>{submitting ? "送信中..." : "予約を確定する"}</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -936,6 +936,39 @@ section { padding: 72px 0; position: relative; }
 .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 30px color-mix(in srgb, var(--ink) 35%, transparent); }
 .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
+/* 予約内容確認モーダル */
+.booking-confirm-overlay {
+  position:fixed; inset:0; z-index:1000; padding:24px;
+  display:flex; align-items:center; justify-content:center;
+  background:rgba(43,32,48,.58); backdrop-filter:blur(4px);
+}
+.booking-confirm-modal {
+  position:relative; width:min(620px,100%); max-height:calc(100vh - 48px); overflow-y:auto;
+  padding:34px; border-radius:24px; background:#fff; box-shadow:0 24px 80px rgba(43,32,48,.3);
+}
+.booking-confirm-modal h3 { margin:0 0 8px; text-align:center; font-size:24px; }
+.booking-confirm-lead { margin:0 0 24px; text-align:center; color:var(--sub); font-size:13px; }
+.booking-confirm-close { position:absolute; top:14px; right:16px; width:36px; height:36px; font-size:25px; color:var(--sub); }
+.booking-confirm-list { margin:0; border-top:1px solid #eee; }
+.booking-confirm-list > div { display:grid; grid-template-columns:130px 1fr; gap:16px; padding:12px 4px; border-bottom:1px solid #eee; }
+.booking-confirm-list dt { color:var(--sub); font-size:12px; font-weight:700; }
+.booking-confirm-list dd { margin:0; font-size:14px; overflow-wrap:anywhere; }
+.booking-confirm-total dd { color:var(--pink-deep); font-size:20px; font-weight:800; }
+.booking-confirm-total small { display:block; color:var(--sub); font-size:11px; }
+.booking-confirm-actions { display:grid; grid-template-columns:1fr 1.3fr; gap:12px; margin-top:24px; }
+.booking-confirm-actions button { padding:15px 12px; border-radius:999px; font-weight:700; }
+.booking-confirm-edit { border:1.5px solid var(--ink); color:var(--ink); }
+.booking-confirm-submit { background:var(--ink); color:#fff; }
+.booking-confirm-actions button:disabled { opacity:.55; cursor:not-allowed; }
+@media (max-width:640px) {
+  .booking-confirm-overlay { padding:12px; align-items:flex-end; }
+  .booking-confirm-modal { max-height:92vh; padding:28px 20px 20px; border-radius:22px 22px 12px 12px; }
+  .booking-confirm-modal h3 { font-size:20px; }
+  .booking-confirm-list > div { grid-template-columns:92px 1fr; gap:10px; padding:10px 2px; }
+  .booking-confirm-actions { position:sticky; bottom:0; margin:20px -4px -4px; padding-top:10px; background:#fff; }
+  .booking-confirm-actions button { font-size:12px; }
+}
+
 /* ───────── FLOW ───────── */
 .flow-grid {
   display: grid;
