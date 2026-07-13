@@ -141,13 +141,21 @@ function Calendar({ selectedDate, onSelect, bookings, holidays, closedDays }) {
     return "ok";
   };
 
+  const changeMonth = (offset) => {
+    const nextMonth = utilAddMonths(month, offset);
+    const firstDay = new Date(nextMonth.getFullYear(), nextMonth.getMonth(), 1);
+    setPopup(null);
+    setMonth(firstDay);
+    onSelect(firstDay);
+  };
+
   return (
     <div className="calendar" style={{position:'relative'}}>
       <div className="cal-head">
         <h3>{monthLabel}</h3>
         <div className="cal-nav">
-          <button onClick={() => { setPopup(null); setMonth(utilAddMonths(month, -1)); }}>‹</button>
-          <button onClick={() => { setPopup(null); setMonth(utilAddMonths(month, 1)); }}>›</button>
+          <button onClick={() => changeMonth(-1)}>‹</button>
+          <button onClick={() => changeMonth(1)}>›</button>
         </div>
       </div>
       <div className="cal-grid">
