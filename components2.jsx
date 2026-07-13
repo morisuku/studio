@@ -57,7 +57,16 @@ const bookingOverlaps = (booking, candidateTime, candidatePlan) => {
 
 // ───────── BOOKING: CALENDAR ─────────
 function Calendar({ selectedDate, onSelect, bookings, holidays, closedDays }) {
-  const [month, setMonth] = useState2(() => { const d = new Date(); d.setDate(1); d.setHours(0,0,0,0); return d; });
+  const [month, setMonth] = useState2(() => {
+    const d = new Date();
+    // 2026年7月だけは、オープン月の2026年8月を初期表示する
+    if (d.getFullYear() === 2026 && d.getMonth() === 6) {
+      return new Date(2026, 7, 1);
+    }
+    d.setDate(1);
+    d.setHours(0,0,0,0);
+    return d;
+  });
   const [popup, setPopup] = useState2(null);
   const today = utilTodayISO();               // Dateオブジェクト（既存処理用に残す）
   const todayStr = utilToISO(today);          // yyyy-MM-dd 文字列（日付比較用）
