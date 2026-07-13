@@ -37,7 +37,10 @@ const BOOTHS = [
     gradient: "linear-gradient(135deg, #FFD6E8 0%, #FFB8D1 50%, #F5A8C7 100%)",
     accent: "#E6729C",
     image: "assets/pink1.webp",
-    photos: ["assets/pink1.webp", ...Array(11).fill("assets/pink12.webp")],
+    photos: [
+      "assets/pink1.webp", "assets/pink2.webp", "assets/pink3.webp", "assets/pink4.webp", "assets/pink5.webp", "assets/pink6.webp",
+      "assets/pink12.webp", "assets/pink12.webp", "assets/pink12.webp", "assets/pink12.webp", "assets/pink12.webp", "assets/pink12.webp",
+    ],
     ph: "BOOTH 02 / CLASSIC PINK",
   },
   {
