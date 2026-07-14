@@ -116,9 +116,14 @@ function BoothShowcase() {
     : [booth.image, booth.image, booth.image, booth.image, booth.image, booth.image]).slice(0, 12);
   const mainImage = photos[photoIdx] || booth.image;
 
-  // 前後の写真へ
-  const nextPhoto = () => setPhotoIdx((prev) => (prev + 1) % photos.length);
-  const prevPhoto = () => setPhotoIdx((prev) => (prev - 1 + photos.length) % photos.length);
+  // 写真切替時にスマホのスクロール位置が先頭へ戻らないよう保持する
+  const changePhoto = (nextIndex) => {
+    const scrollY = window.scrollY;
+    setPhotoIdx(nextIndex);
+    requestAnimationFrame(() => window.scrollTo({ top: scrollY, left: 0, behavior: "auto" }));
+  };
+  const nextPhoto = () => changePhoto((photoIdx + 1) % photos.length);
+  const prevPhoto = () => changePhoto((photoIdx - 1 + photos.length) % photos.length);
   useEffect(() => {
     const rail = thumbRailRef.current;
     if (!rail || photos.length < 2) return;
@@ -173,7 +178,7 @@ function BoothShowcase() {
   const endThumbDrag = (e) => {
     const index = thumbPressedIndexRef.current;
     if (e.type === "pointerup" && thumbDragDistanceRef.current <= 12 && Number.isInteger(index)) {
-      setPhotoIdx(index);
+      changePhoto(index);
     }
     thumbPressedIndexRef.current = null;
     thumbDraggingRef.current = false;
@@ -220,7 +225,7 @@ function BoothShowcase() {
                 {photos.map((_, i) => (
                   <span key={i}
                         className={`booth-dot ${i===photoIdx?"active":""}`}
-                        onClick={() => setPhotoIdx(i)}></span>
+                        onClick={() => changePhoto(i)}></span>
                 ))}
               </div>
             </div>
