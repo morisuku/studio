@@ -1570,11 +1570,13 @@ footer {
   .booth-photo-visual {
     padding: 7px;
     border-radius: 22px;
+    aspect-ratio: auto;
   }
   .booth-photo-visual img {
     border-radius: 16px;
     object-fit: contain;
     background: #fff;
+    height: auto;
   }
   .booth-grid-mini {
     grid-template-columns: repeat(2, 1fr);
