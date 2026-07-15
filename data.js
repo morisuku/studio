@@ -37,10 +37,7 @@ const BOOTHS = [
     gradient: "linear-gradient(135deg, #FFD6E8 0%, #FFB8D1 50%, #F5A8C7 100%)",
     accent: "#E6729C",
     image: "assets/pink1.webp",
-    photos: [
-      "assets/pink1.webp", "assets/pink2.webp", "assets/pink3.webp", "assets/pink4.webp", "assets/pink5.webp", "assets/pink6.webp",
-      "assets/pink12.webp", "assets/pink12.webp", "assets/pink12.webp", "assets/pink12.webp", "assets/pink12.webp", "assets/pink12.webp",
-    ],
+    photos: Array.from({ length: 12 }, (_, i) => `assets/pink${i + 1}.webp`),
     ph: "BOOTH 02 / CLASSIC PINK",
   },
   {
@@ -101,6 +98,10 @@ const BOOTHS = [
     ph: "BOOTH 05 / COLOR PAPER",
   },
 ];
+
+// HP上のブース表示順
+const BOOTH_DISPLAY_ORDER = ["classic-pink", "chinese", "neon", "gaming", "paper"];
+BOOTHS.sort((a, b) => BOOTH_DISPLAY_ORDER.indexOf(a.id) - BOOTH_DISPLAY_ORDER.indexOf(b.id));
 
 const FAQS = [
   { q: "初めてでも利用できますか？", a: "もちろんです。ご予約のお客様の中に初めての方が一名でもいらっしゃる場合、ご入室後に約10分間、ブースの使い方や撮影時の注意点などをご案内いたします（ご利用時間に含まれます）。なお、予約開始時間の10分前からご入室いただけます。" },
