@@ -1573,6 +1573,8 @@ footer {
   }
   .booth-photo-visual img {
     border-radius: 16px;
+    object-fit: contain;
+    background: #fff;
   }
   .booth-grid-mini {
     grid-template-columns: repeat(2, 1fr);
