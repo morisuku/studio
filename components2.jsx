@@ -255,16 +255,29 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
   const [kana, setKana] = useState2("");
   const [age, setAge] = useState2("");
   const [groupHasMinor, setGroupHasMinor] = useState2(false);
+  const [validatedAge, setValidatedAge] = useState2("");
+  const [minorAutoChecked, setMinorAutoChecked] = useState2(false);
   const [shooting, setShooting] = useState2("none");
   const [booths, setBooths] = useState2([]);
   const [agreed, setAgreed] = useState2(false);
   const [confirmOpen, setConfirmOpen] = useState2(false);
-  const reservationHolderIsMinor = age !== "" && Number(age) <= 18;
+  const reservationHolderIsMinor = validatedAge !== "" && Number(validatedAge) <= 18;
 
   const changeAge = (value) => {
     const nextAge = value.replace(/[^0-9]/g, "");
     setAge(nextAge);
-    if (nextAge !== "" && Number(nextAge) <= 18) setGroupHasMinor(true);
+    setValidatedAge("");
+  };
+
+  const validateAge = () => {
+    setValidatedAge(age);
+    if (age !== "" && Number(age) <= 18) {
+      setGroupHasMinor(true);
+      setMinorAutoChecked(true);
+    } else if (minorAutoChecked) {
+      setGroupHasMinor(false);
+      setMinorAutoChecked(false);
+    }
   };
 
   const av = selectedDate ? availByDate(selectedDate) : null;
@@ -444,7 +457,8 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
       if (result.status === "ok") {
         setConfirmOpen(false);
         onBooked(booking);
-        setName(""); setKana(""); setAge(""); setGroupHasMinor(false);
+        setName(""); setKana(""); setAge(""); setValidatedAge("");
+        setGroupHasMinor(false); setMinorAutoChecked(false);
         setEmail(""); setPhone(""); setNote(""); setShooting("none"); setBooths([]); setAgreed(false);
         if (result.warning) alert(result.warning);
       } else {
@@ -524,13 +538,16 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
         <div className="form-grid-2">
           <div className="form-row">
             <label>年齢 <span className="req">*</span></label>
-            <input type="text" value={age} onChange={e=>changeAge(e.target.value)} placeholder="22" inputMode="numeric" />
+            <input type="text" value={age} onChange={e=>changeAge(e.target.value)} onBlur={validateAge} placeholder="22" inputMode="numeric" />
             <label className="minor-checkbox">
               <input
                 type="checkbox"
                 checked={groupHasMinor}
                 disabled={reservationHolderIsMinor}
-                onChange={e=>setGroupHasMinor(e.target.checked)}
+                onChange={e=>{
+                  setGroupHasMinor(e.target.checked);
+                  setMinorAutoChecked(false);
+                }}
               />
               <span>グループ内に未成年がいる</span>
             </label>
