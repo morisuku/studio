@@ -259,6 +259,13 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
   const [booths, setBooths] = useState2([]);
   const [agreed, setAgreed] = useState2(false);
   const [confirmOpen, setConfirmOpen] = useState2(false);
+  const reservationHolderIsMinor = age !== "" && Number(age) <= 18;
+
+  const changeAge = (value) => {
+    const nextAge = value.replace(/[^0-9]/g, "");
+    setAge(nextAge);
+    if (nextAge !== "" && Number(nextAge) <= 18) setGroupHasMinor(true);
+  };
 
   const av = selectedDate ? availByDate(selectedDate) : null;
 
@@ -517,16 +524,21 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
         <div className="form-grid-2">
           <div className="form-row">
             <label>年齢 <span className="req">*</span></label>
-            <input type="text" value={age} onChange={e=>setAge(e.target.value.replace(/[^0-9]/g, ""))} placeholder="22" inputMode="numeric" />
+            <input type="text" value={age} onChange={e=>changeAge(e.target.value)} placeholder="22" inputMode="numeric" />
             <label className="minor-checkbox">
               <input
                 type="checkbox"
                 checked={groupHasMinor}
+                disabled={reservationHolderIsMinor}
                 onChange={e=>setGroupHasMinor(e.target.checked)}
               />
               <span>グループ内に未成年がいる</span>
             </label>
-            <p className="form-help minor-help">チェックした場合、予約確認メールに親権者同意書を添付します。</p>
+            <p className="form-help minor-help">
+              {reservationHolderIsMinor
+                ? "予約者が18歳以下のため、自動でチェックされています。確認メールに親権者同意書を添付します。"
+                : "チェックした場合、予約確認メールに親権者同意書を添付します。"}
+            </p>
           </div>
           <div className="form-row">
             <label>ご利用人数 <span className="req">*</span></label>
