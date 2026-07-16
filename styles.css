@@ -129,13 +129,15 @@ button { font-family: inherit; cursor: pointer; border: 0; background: 0; }
   letter-spacing: 0.04em;
   display: flex; align-items: center; gap: 10px;
 }
-.nav .logo .brand-logo {
-  width:28px;
-  height:28px;
-  object-fit:contain;
+.nav .logo .dot {
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:var(--pink-deep);
+  display:inline-block;
   flex:0 0 auto;
-  border-radius:6px;
 }
+[data-theme="b"] .nav .logo .dot { border-radius:0; transform:rotate(45deg); }
 
 .nav-links {
   display: flex; gap: 24px; align-items: center;
@@ -1224,11 +1226,11 @@ footer {
   gap:10px;
 }
 .footer-logo img {
-  width:34px;
-  height:34px;
+  width:68px;
+  height:68px;
   object-fit:contain;
   flex:0 0 auto;
-  border-radius:7px;
+  border-radius:12px;
 }
 .footer-tag { font-size: 13px; }
 .footer-col h5 {
