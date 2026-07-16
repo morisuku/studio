@@ -129,12 +129,13 @@ button { font-family: inherit; cursor: pointer; border: 0; background: 0; }
   letter-spacing: 0.04em;
   display: flex; align-items: center; gap: 10px;
 }
-.nav .logo .dot {
-  width: 10px; height: 10px; border-radius: 50%;
-  background: var(--pink-deep);
-  display: inline-block;
+.nav .logo .brand-logo {
+  width:28px;
+  height:28px;
+  object-fit:contain;
+  flex:0 0 auto;
+  border-radius:6px;
 }
-[data-theme="b"] .nav .logo .dot { border-radius: 0; transform: rotate(45deg); }
 
 .nav-links {
   display: flex; gap: 24px; align-items: center;
@@ -894,6 +895,31 @@ section { padding: 72px 0; position: relative; }
 }
 .form-row textarea { min-height: 80px; resize: vertical; }
 .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-row label.minor-checkbox {
+  display:flex;
+  align-items:center;
+  gap:9px;
+  margin-top:12px;
+  margin-bottom:0;
+  font-size:13px;
+  font-weight:700;
+  line-height:18px;
+  cursor:pointer;
+}
+.form-row label.minor-checkbox input {
+  width:18px;
+  height:18px;
+  padding:0;
+  margin:0;
+  flex:0 0 auto;
+  accent-color:var(--pink-deep);
+}
+.minor-checkbox span {
+  display:flex;
+  align-items:center;
+  min-height:18px;
+}
+.minor-help { margin-top:5px; }
 .form-booth-pick {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -1193,6 +1219,16 @@ footer {
   color: var(--bg);
   margin-bottom: 8px;
   white-space: nowrap;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.footer-logo img {
+  width:34px;
+  height:34px;
+  object-fit:contain;
+  flex:0 0 auto;
+  border-radius:7px;
 }
 .footer-tag { font-size: 13px; }
 .footer-col h5 {

@@ -35,7 +35,8 @@ function Nav() {
     <nav className="nav">
       <div className="nav-inner">
         <a href="#top" className="logo">
-          <span className="dot"></span>もりすくスタジオ
+          <img className="brand-logo" src="assets/Logo_square512.png" alt="" />
+          <span>もりすくスタジオ</span>
         </a>
         <div className="nav-links">
           <a href="#booths">ブース</a>

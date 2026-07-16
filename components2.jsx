@@ -254,6 +254,7 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
   const [note, setNote] = useState2("");
   const [kana, setKana] = useState2("");
   const [age, setAge] = useState2("");
+  const [groupHasMinor, setGroupHasMinor] = useState2(false);
   const [shooting, setShooting] = useState2("none");
   const [booths, setBooths] = useState2([]);
   const [agreed, setAgreed] = useState2(false);
@@ -421,7 +422,7 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
       id: "B-" + Date.now().toString(36).toUpperCase(),
       date: utilToISO(selectedDate),
       time, plan, people,
-      name, kana, age,
+      name, kana, age, groupHasMinor,
       email, phone, note, shooting, booths,
       submittedAt: new Date().toISOString(),
     };
@@ -436,7 +437,7 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
       if (result.status === "ok") {
         setConfirmOpen(false);
         onBooked(booking);
-        setName(""); setKana(""); setAge("");
+        setName(""); setKana(""); setAge(""); setGroupHasMinor(false);
         setEmail(""); setPhone(""); setNote(""); setShooting("none"); setBooths([]); setAgreed(false);
         if (result.warning) alert(result.warning);
       } else {
@@ -517,6 +518,15 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
           <div className="form-row">
             <label>年齢 <span className="req">*</span></label>
             <input type="text" value={age} onChange={e=>setAge(e.target.value.replace(/[^0-9]/g, ""))} placeholder="22" inputMode="numeric" />
+            <label className="minor-checkbox">
+              <input
+                type="checkbox"
+                checked={groupHasMinor}
+                onChange={e=>setGroupHasMinor(e.target.checked)}
+              />
+              <span>グループ内に未成年がいる</span>
+            </label>
+            <p className="form-help minor-help">チェックした場合、予約確認メールに親権者同意書を添付します。</p>
           </div>
           <div className="form-row">
             <label>ご利用人数 <span className="req">*</span></label>
@@ -575,7 +585,7 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
 
         <div className="form-row">
           <label>ご要望・メッセージ</label>
-          <textarea value={note} onChange={e=>setNote(e.target.value)} placeholder="撮影サービスを希望、商用利用、未成年〇名、など" />
+          <textarea value={note} onChange={e=>setNote(e.target.value)} placeholder="撮影サービスを希望、商用利用、など" />
         </div>
 
         <div className="terms-check">
@@ -612,6 +622,7 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
               <div className="booking-confirm-total"><dt>料金合計</dt><dd>¥{totalPrice.toLocaleString()}<small>（当日現金払い）</small></dd></div>
               <div><dt>お名前</dt><dd>{name}（{kana}）</dd></div>
               <div><dt>年齢</dt><dd>{age}歳</dd></div>
+              <div><dt>未成年者利用</dt><dd>{groupHasMinor ? "あり（同意書をメールに添付）" : "なし"}</dd></div>
               <div><dt>メール</dt><dd>{email}</dd></div>
               <div><dt>電話番号</dt><dd>{phone}</dd></div>
               <div><dt>ご要望</dt><dd>{note || "なし"}</dd></div>
@@ -861,7 +872,10 @@ function Footer() {
     <footer>
       <div className="footer-inner">
         <div>
-          <div className="footer-logo">もりすくスタジオ</div>
+          <div className="footer-logo">
+            <img src="assets/Logo_square512.png" alt="" />
+            <span>もりすくスタジオ</span>
+          </div>
           <div className="footer-tag">〒761-8084 香川県高松市一宮町151-1<br />2026年8月1日オープン</div>
           <div style={{marginTop: 20, fontSize: 11, opacity: 0.6}}>
             <a href="privacy.html" style={{color:"inherit"}}>プライバシーポリシー</a>
