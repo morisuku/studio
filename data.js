@@ -16,10 +16,7 @@ const BOOTHS = [
     gradient: "linear-gradient(135deg, #FFD3DC 0%, #F7A6B7 52%, #FFE0A8 100%)",
     accent: "#D97A8F",
     image: "assets/china1.webp",
-    photos: [
-      "assets/china1.webp", "assets/china2.webp", "assets/china3.webp", "assets/china4.webp", "assets/china5.webp", "assets/china6.webp",
-      "assets/china12.webp", "assets/china12.webp", "assets/china12.webp", "assets/china12.webp", "assets/china12.webp", "assets/china12.webp",
-    ],
+    photos: Array.from({ length: 12 }, (_, i) => `assets/china${i + 1}.webp`),
     ph: "BOOTH 01 / CHINOISERIE",
   },
   {
