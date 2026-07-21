@@ -73,10 +73,7 @@ const BOOTHS = [
     gradient: "linear-gradient(135deg, #0F172A 0%, #0EA5E9 45%, #EF4444 100%)",
     accent: "#38BDF8",
     image: "assets/game1.webp",
-    photos: [
-      "assets/game1.webp", "assets/game2.webp", "assets/game3.webp", "assets/game4.webp", "assets/game5.webp", "assets/game6.webp",
-      "assets/game12.webp", "assets/game12.webp", "assets/game12.webp", "assets/game12.webp", "assets/game12.webp", "assets/game12.webp",
-    ],
+    photos: Array.from({ length: 12 }, (_, i) => `assets/game${i + 1}.webp`),
     ph: "BOOTH 04 / GAMING ROOM",
   },
   {
