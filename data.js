@@ -91,7 +91,11 @@ const BOOTHS = [
     gradient: "linear-gradient(135deg, #FFD6E8 0%, #D6EAFF 33%, #FFF0B8 66%, #FAFAFA 100%)",
     accent: "#FF8FB8",
     image: "assets/paper1.webp",
-    photos: Array(12).fill("assets/paper1.webp"),
+    photos: [
+      "assets/paper1.webp", "assets/paper2.webp", "assets/paper3.webp",
+      "assets/paper4.webp", "assets/paper5.webp", "assets/paper6.webp",
+      ...Array(6).fill("assets/paper12.webp"),
+    ],
     ph: "BOOTH 05 / COLOR PAPER",
   },
 ];
