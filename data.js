@@ -52,10 +52,7 @@ const BOOTHS = [
     gradient: "linear-gradient(135deg, #2B1A4A 0%, #FF3FA4 50%, #1FC8F5 100%)",
     accent: "#FF3FA4",
     image: "assets/neon1.webp",
-    photos: [
-      "assets/neon1.webp", "assets/neon2.webp", "assets/neon3.webp", "assets/neon4.webp", "assets/neon5.webp", "assets/neon6.webp",
-      "assets/neon12.webp", "assets/neon12.webp", "assets/neon12.webp", "assets/neon12.webp", "assets/neon12.webp", "assets/neon12.webp",
-    ],
+    photos: Array.from({ length: 12 }, (_, i) => `assets/neon${i + 1}.webp`),
     ph: "BOOTH 03 / NEON DISTRICT",
   },
   {
