@@ -248,6 +248,7 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
   const [name, setName] = useState2("");
   const [email, setEmail] = useState2("");
   const [phone, setPhone] = useState2("");
+  const [xAccount, setXAccount] = useState2("");
   const [people, setPeople] = useState2(2);
   const [plan, setPlan] = useState2("shared-weekday-1slot");
   const [time, setTime] = useState2("10:00");
@@ -262,6 +263,7 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
   const [agreed, setAgreed] = useState2(false);
   const [confirmOpen, setConfirmOpen] = useState2(false);
   const reservationHolderIsMinor = validatedAge !== "" && Number(validatedAge) <= 18;
+  const xAccountValid = /^@[A-Za-z0-9_]{1,15}$/.test(xAccount);
 
   const changeAge = (value) => {
     const nextAge = value.replace(/[^0-9]/g, "");
@@ -383,7 +385,7 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
       : current.length < 2 ? [...current, boothId] : current);
   };
 
-  const canSubmit = selectedDate && name && kana && age && people && email && phone && agreed
+  const canSubmit = selectedDate && name && kana && age && people && email && phone && xAccountValid && agreed
     && (isPrivatePlan(plan) || (booths.length >= 1 && booths.length <= 2))
     && SLOTS.find(s => s.time === time) && !SLOTS.find(s => s.time === time)?.disabled
     && (!plan.endsWith("weekday-2slot") || currentSlot?.allow6h)
@@ -442,7 +444,7 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
       id: "B-" + Date.now().toString(36).toUpperCase(),
       date: utilToISO(selectedDate),
       time, plan, people,
-      name, kana, age, groupHasMinor,
+      name, kana, age, groupHasMinor, xAccount,
       email, phone, note, shooting, booths,
       submittedAt: new Date().toISOString(),
     };
@@ -459,7 +461,7 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
         onBooked(booking);
         setName(""); setKana(""); setAge(""); setValidatedAge("");
         setGroupHasMinor(false); setMinorAutoChecked(false);
-        setEmail(""); setPhone(""); setNote(""); setShooting("none"); setBooths([]); setAgreed(false);
+        setEmail(""); setPhone(""); setXAccount(""); setNote(""); setShooting("none"); setBooths([]); setAgreed(false);
         if (result.warning) alert(result.warning);
       } else {
         alert("送信に失敗しました: " + (result.message || "不明なエラー"));
@@ -585,6 +587,23 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
         </div>
 
         <div className="form-row">
+          <label>XアカウントID（@から始まるユーザー名） <span className="req">*</span></label>
+          <input
+            type="text"
+            value={xAccount}
+            onChange={e=>setXAccount(e.target.value.replace(/\s/g, ""))}
+            placeholder="@morisuku_studio"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck="false"
+          />
+          <p className="form-help">
+            予約者確認、無断キャンセル・キャンセル料未払い・規約違反等の防止、および予約管理のために使用します。表示名ではなく@から始まるIDをご入力ください。鍵アカウントでも問題ありません。Xを利用していない方は、予約前に<a href="https://lin.ee/xu4F3wW" target="_blank" rel="noopener noreferrer">公式LINE</a>からご相談ください。
+          </p>
+          {xAccount && !xAccountValid && <p className="form-help" style={{color:"var(--china)", fontWeight:"bold"}}>※ @から始まる半角英数字・アンダーバーのIDを入力してください。</p>}
+        </div>
+
+        <div className="form-row">
           <label>撮影サービス</label>
           <select value={shooting} onChange={e => setShooting(e.target.value)}>
             <option value="none">希望しない</option>
@@ -654,6 +673,7 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
               <div><dt>未成年者利用</dt><dd>{groupHasMinor ? "あり（同意書をメールに添付）" : "なし"}</dd></div>
               <div><dt>メール</dt><dd>{email}</dd></div>
               <div><dt>電話番号</dt><dd>{phone}</dd></div>
+              <div><dt>XアカウントID</dt><dd>{xAccount}</dd></div>
               <div><dt>ご要望</dt><dd>{note || "なし"}</dd></div>
             </dl>
             <div className="booking-confirm-actions">
