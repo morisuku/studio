@@ -598,7 +598,7 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
             spellCheck="false"
           />
           <p className="form-help">
-            予約者確認、無断キャンセル・キャンセル料未払い・規約違反等の防止、および予約管理のために使用します。表示名ではなく@から始まるIDをご入力ください。鍵アカウントでも問題ありません。Xを利用していない方は、予約前に<a href="https://lin.ee/xu4F3wW" target="_blank" rel="noopener noreferrer">公式LINE</a>からご相談ください。
+            @から始まる公開アカウントIDをご入力ください（鍵アカウント不可）。詳しくは<a href="terms.html#s15" target="_blank" rel="noopener noreferrer">利用規約</a>をご確認ください。
           </p>
           {xAccount && !xAccountValid && <p className="form-help" style={{color:"var(--china)", fontWeight:"bold"}}>※ @から始まる半角英数字・アンダーバーのIDを入力してください。</p>}
         </div>
