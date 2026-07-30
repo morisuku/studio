@@ -206,6 +206,7 @@
   height:auto;
   border-radius:18px;
 }
+.floor-map-image picture { display:block; }
 
 .equipment-columns { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
 .equipment-panel { padding:34px; border-radius:28px; border:1px solid color-mix(in srgb,var(--ink) 10%,transparent); background:white; }
@@ -418,8 +419,8 @@
   .guide-video-placeholder { min-height:220px; }
   .guide-wide-copy { padding:28px; }
   .floor-placeholder { padding:10px; }
-  .floor-map-image { padding:7px; border-radius:20px; overflow-x:auto; }
-  .floor-map-image img { min-width:760px; border-radius:14px; }
+  .floor-map-image { padding:7px; border-radius:20px; overflow:hidden; }
+  .floor-map-image img { min-width:0; width:100%; border-radius:14px; }
   .floor-paper { min-height:430px; padding:32px 12px 12px; gap:7px; }
   .floor-room { font-size:10px; border-width:1px; padding:5px; }
   .equipment-panel { padding:25px; }
