@@ -146,6 +146,7 @@ button { font-family: inherit; cursor: pointer; border: 0; background: 0; }
   color: color-mix(in srgb, var(--ink) 75%, transparent);
 }
 .nav-links a:hover { color: var(--pink-deep); }
+.nav-guide-mobile { display:none; }
 .nav-dropdown {
   position: relative;
   display: flex;
@@ -230,15 +231,27 @@ button { font-family: inherit; cursor: pointer; border: 0; background: 0; }
 
 @media (max-width: 820px) {
   .nav-inner { padding-left: 16px; padding-right: 16px; gap: 10px; }
-  .nav .logo { font-size: 15px; gap: 8px; }
-  .nav-links a:not(.nav-cta):not(.nav-terms) { display: none; }
+  .nav .logo { font-size: 13px; gap: 6px; letter-spacing: .01em; }
+  .nav .logo .dot { width:8px; height:8px; }
+  .nav-links a:not(.nav-cta):not(.nav-terms):not(.nav-guide-mobile) { display: none; }
   .nav-dropdown { display: none; }
-  .nav-links { gap:7px; }
-  .nav-terms {
-    display:inline-flex; align-items:center; padding:8px 12px;
-    border:1px solid color-mix(in srgb, var(--ink) 25%, transparent);
-    border-radius:999px; font-size:12px;
+  .nav-guide-mobile {
+    display:inline-flex;
+    align-items:center;
+    padding:6px 8px;
+    border:1px solid color-mix(in srgb, var(--pink-deep) 40%, transparent);
+    border-radius:999px;
+    color:var(--ink);
+    font-size:11px;
+    white-space:nowrap;
   }
+  .nav-links { gap:4px; }
+  .nav-terms {
+    display:inline-flex; align-items:center; padding:6px 8px;
+    border:1px solid color-mix(in srgb, var(--ink) 25%, transparent);
+    border-radius:999px; font-size:11px; white-space:nowrap;
+  }
+  .nav-cta { padding:8px 12px; font-size:11px; white-space:nowrap; }
 }
 
 /* ───────── HERO ───────── */

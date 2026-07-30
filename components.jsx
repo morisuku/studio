@@ -52,6 +52,7 @@ function Nav() {
               <a href="guide.html#service"><small>04</small>撮影サービス</a>
             </div>
           </div>
+          <a href="guide.html" className="nav-guide-mobile">ガイド</a>
           <a href="terms.html?v=header-v70" className="nav-terms">規約</a>
           <a href="#booking" className="nav-cta">ご予約</a>
         </div>
