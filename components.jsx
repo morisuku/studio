@@ -43,7 +43,16 @@ function Nav() {
           <a href="#flow">ご利用の流れ</a>
           <a href="#faq">FAQ</a>
           <a href="#access">アクセス</a>
-          <a href="terms.html" className="nav-terms">規約</a>
+          <div className="nav-dropdown">
+            <a href="guide.html" className="nav-dropdown-trigger">ご利用ガイド<span aria-hidden="true">⌄</span></a>
+            <div className="nav-dropdown-menu">
+              <a href="guide.html#access-guide"><small>01</small>アクセス・道案内</a>
+              <a href="guide.html#floor-map"><small>02</small>フロアマップ</a>
+              <a href="guide.html#equipment"><small>03</small>貸出機材</a>
+              <a href="guide.html#service"><small>04</small>撮影サービス</a>
+            </div>
+          </div>
+          <a href="terms.html?v=header-v70" className="nav-terms">規約</a>
           <a href="#booking" className="nav-cta">ご予約</a>
         </div>
       </div>

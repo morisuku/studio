@@ -598,7 +598,7 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
             spellCheck="false"
           />
           <p className="form-help">
-            @から始まる公開アカウントIDをご入力ください（鍵アカウント不可）。詳しくは<a href="terms.html#s15" target="_blank" rel="noopener noreferrer">利用規約</a>をご確認ください。
+            @から始まる公開アカウントIDをご入力ください（鍵アカウント不可）。詳しくは<a href="terms.html?v=header-v70#s15" target="_blank" rel="noopener noreferrer">利用規約</a>をご確認ください。
           </p>
           {xAccount && !xAccountValid && <p className="form-help" style={{color:"var(--china)", fontWeight:"bold"}}>※ @から始まる半角英数字・アンダーバーのIDを入力してください。</p>}
         </div>
@@ -644,7 +644,7 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
               onChange={e => setAgreed(e.target.checked)}
             />
             <span>
-              <a href="terms.html" target="_blank" rel="noopener noreferrer">利用規約・キャンセル規定</a>を確認しました。
+              <a href="terms.html?v=header-v70" target="_blank" rel="noopener noreferrer">利用規約・キャンセル規定</a>を確認しました。
             </span>
           </label>
           <p>ご予約前に、利用時間・更衣・靴養生・動画撮影・未成年利用・キャンセル料について必ずご確認ください。</p>
@@ -840,6 +840,29 @@ function FAQ() {
   );
 }
 
+// ───────── FIRST VISIT GUIDE ─────────
+function GuideTeaser() {
+  return (
+    <section id="guide">
+      <div className="wrap">
+        <a href="guide.html" className="guide-teaser">
+          <div className="guide-teaser-copy">
+            <div className="kicker">— First Visit Guide —</div>
+            <h2>初めてご利用の方へ</h2>
+            <p>外観・アクセス・フロアマップ・貸出機材など、<br className="guide-pc-break" />ご来店前に役立つ情報をご案内します。</p>
+            <span className="guide-teaser-link">ご利用ガイドを見る <b>→</b></span>
+          </div>
+          <div className="guide-teaser-icons" aria-hidden="true">
+            <span><i>⌖</i><small>ACCESS</small></span>
+            <span><i>⌂</i><small>FLOOR MAP</small></span>
+            <span><i>✦</i><small>EQUIPMENT</small></span>
+          </div>
+        </a>
+      </div>
+    </section>
+  );
+}
+
 // ───────── ACCESS ─────────
 function Access() {
   return (
@@ -931,7 +954,7 @@ function Footer() {
             {" · "}
             <a href="tokutei.html" style={{color:"inherit"}}>特定商取引法に基づく表記</a>
             {" · "}
-            <a href="terms.html" style={{color:"inherit"}}>利用規約</a>
+            <a href="terms.html?v=header-v70" style={{color:"inherit"}}>利用規約</a>
           </div>
         </div>
         <div className="footer-col">
@@ -946,6 +969,7 @@ function Footer() {
             <li><a href="#pricing">料金・プラン</a></li>
             <li><a href="#flow">ご利用の流れ</a></li>
             <li><a href="#faq">よくある質問</a></li>
+            <li><a href="guide.html">ご利用ガイド</a></li>
             <li><a href="#access">アクセス</a></li>
             <li><a href="#booking">ご予約</a></li>
           </ul>
@@ -971,6 +995,7 @@ function Footer() {
 window.Booking = Booking;
 window.Flow = Flow;
 window.FAQ = FAQ;
+window.GuideTeaser = GuideTeaser;
 window.Access = Access;
 window.SNS = SNS;
 window.Footer = Footer;
