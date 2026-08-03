@@ -900,20 +900,28 @@ function Access() {
 
 // ───────── SNS ─────────
 function SNS() {
-  const colors = [
-    "linear-gradient(135deg, #FFD6E8, #FFB8D1)",
-    "linear-gradient(135deg, #D6EAFF, #A8CCF5)",
-    "linear-gradient(135deg, #2B1A4A, #FF3FA4)",
-    "linear-gradient(135deg, #8B1A28, #C9304A)",
-    "linear-gradient(135deg, #3D2A3B, #2B2030)",
-    "linear-gradient(135deg, #FFF0B8, #FFD96B)",
-    "linear-gradient(135deg, #FFB8D1, #FFF0B8)",
-    "linear-gradient(135deg, #A8CCF5, #C9A8E0)",
-    "linear-gradient(135deg, #FFD6E8, #D6EAFF)",
-    "linear-gradient(135deg, #C9304A, #E6A84A)",
-    "linear-gradient(135deg, #2B2030, #C9A8E0)",
-    "linear-gradient(135deg, #FFB8D1, #FF3FA4)",
-  ];
+  const galleryImages = Array.from({length:12}, (_, i) => `assets/gallery/gallery${i + 1}.webp`);
+  const [activeImage, setActiveImage] = useState2(null);
+
+  useEffect2(() => {
+    if (activeImage === null) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") setActiveImage(null);
+      if (event.key === "ArrowLeft") setActiveImage(i => (i + galleryImages.length - 1) % galleryImages.length);
+      if (event.key === "ArrowRight") setActiveImage(i => (i + 1) % galleryImages.length);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [activeImage]);
+
+  const showPrevious = () => setActiveImage(i => (i + galleryImages.length - 1) % galleryImages.length);
+  const showNext = () => setActiveImage(i => (i + 1) % galleryImages.length);
+
   return (
     <section id="sns">
       <div className="wrap">
@@ -927,13 +935,24 @@ function SNS() {
           <a href="https://x.com/morisuku_studio" target="_blank" rel="noopener noreferrer" className="btn btn-outline" style={{fontSize:13}}>X @morisuku_studio</a>
         </div>
         <div className="sns-grid">
-          {colors.map((bg, i) => (
-            <div key={i} className="sns-cell" style={{background: bg}}>
-              <div className="ph">PHOTO #{String(i+1).padStart(2,"0")}</div>
-            </div>
+          {galleryImages.map((src, i) => (
+            <button key={src} type="button" className="sns-cell" onClick={() => setActiveImage(i)} aria-label={`写真${i + 1}を拡大表示`}>
+              <img src={src} alt={`もりすくスタジオ 撮影事例 ${i + 1}`} loading="lazy" />
+            </button>
           ))}
         </div>
       </div>
+      {activeImage !== null && (
+        <div className="gallery-lightbox" role="dialog" aria-modal="true" aria-label="写真の拡大表示" onClick={() => setActiveImage(null)}>
+          <button type="button" className="gallery-close" aria-label="閉じる" onClick={() => setActiveImage(null)}>×</button>
+          <button type="button" className="gallery-nav gallery-prev" aria-label="前の写真" onClick={(event) => { event.stopPropagation(); showPrevious(); }}>‹</button>
+          <div className="gallery-lightbox-inner" onClick={(event) => event.stopPropagation()}>
+            <img src={galleryImages[activeImage]} alt={`もりすくスタジオ 撮影事例 ${activeImage + 1}`} />
+            <span>{activeImage + 1} / {galleryImages.length}</span>
+          </div>
+          <button type="button" className="gallery-nav gallery-next" aria-label="次の写真" onClick={(event) => { event.stopPropagation(); showNext(); }}>›</button>
+        </div>
+      )}
     </section>
   );
 }
