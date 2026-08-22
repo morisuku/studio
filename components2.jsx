@@ -259,11 +259,14 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
   const [validatedAge, setValidatedAge] = useState2("");
   const [minorAutoChecked, setMinorAutoChecked] = useState2(false);
   const [shooting, setShooting] = useState2("none");
+  const [couponCode, setCouponCode] = useState2("");
+  const [couponStatus, setCouponStatus] = useState2({ state:"idle", message:"", discount:0, remaining:null, name:"" });
   const [booths, setBooths] = useState2([]);
   const [agreed, setAgreed] = useState2(false);
   const [confirmOpen, setConfirmOpen] = useState2(false);
   const reservationHolderIsMinor = validatedAge !== "" && Number(validatedAge) <= 18;
   const xAccountValid = /^@[A-Za-z0-9_]{1,15}$/.test(xAccount);
+  const normalizedCouponCode = couponCode.trim().toUpperCase();
 
   const changeAge = (value) => {
     const nextAge = value.replace(/[^0-9]/g, "");
@@ -389,11 +392,18 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
     && (isPrivatePlan(plan) || (booths.length >= 1 && booths.length <= 2))
     && SLOTS.find(s => s.time === time) && !SLOTS.find(s => s.time === time)?.disabled
     && (!plan.endsWith("weekday-2slot") || currentSlot?.allow6h)
-    && (!shootingUnavailable || shooting === "none");
+    && (!shootingUnavailable || shooting === "none")
+    && (!normalizedCouponCode || couponStatus.state === "valid");
 
   React.useEffect(() => {
     if (shootingUnavailable && shooting !== "none") setShooting("none");
   }, [shootingUnavailable, time, plan, selectedISO]);
+
+  React.useEffect(() => {
+    if (couponStatus.state !== "idle") {
+      setCouponStatus({ state:"idle", message:"日付または撮影サービスを変更したため、もう一度クーポンを適用してください。", discount:0, remaining:null, name:"" });
+    }
+  }, [selectedISO, shooting]);
 
   const changePlan = (nextPlan) => {
     setPlan(nextPlan);
@@ -429,13 +439,41 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
   };
   const selectedPlan = planDetails[plan] || { label:plan, price:0 };
   const selectedShooting = shootingDetails[shooting] || { label:shooting, price:0 };
-  const totalPrice = selectedPlan.price + selectedShooting.price;
+  const couponDiscount = couponStatus.state === "valid" ? couponStatus.discount : 0;
+  const totalPrice = selectedPlan.price + selectedShooting.price - couponDiscount;
   const boothLabels = booths.map(id => SELECTABLE_BOOTHS.find(b => b.id === id)?.label).filter(Boolean);
 
   const submit = (e) => {
     e.preventDefault();
     if (!canSubmit || submitting) return;
     setConfirmOpen(true);
+  };
+
+  const applyCoupon = async () => {
+    if (!normalizedCouponCode) {
+      setCouponStatus({ state:"invalid", message:"クーポンコードを入力してください。", discount:0, remaining:null, name:"" });
+      return;
+    }
+    if (!selectedDate) {
+      setCouponStatus({ state:"invalid", message:"先にカレンダーから利用日を選択してください。", discount:0, remaining:null, name:"" });
+      return;
+    }
+    setCouponStatus({ state:"checking", message:"クーポンを確認しています…", discount:0, remaining:null, name:"" });
+    try {
+      const params = new URLSearchParams({
+        action:"couponStatus", code:normalizedCouponCode, date:selectedISO, shooting:shooting
+      });
+      const res = await fetch(GAS_URL + "?" + params.toString() + "&t=" + Date.now());
+      const result = await res.json();
+      if (result.valid) {
+        setCouponCode(normalizedCouponCode);
+        setCouponStatus({ state:"valid", message:result.message, discount:Number(result.discount || 0), remaining:result.remaining, name:result.name || "" });
+      } else {
+        setCouponStatus({ state:"invalid", message:result.message || "クーポンを利用できません。", discount:0, remaining:null, name:"" });
+      }
+    } catch (err) {
+      setCouponStatus({ state:"invalid", message:"クーポンを確認できませんでした。時間をおいて再度お試しください。", discount:0, remaining:null, name:"" });
+    }
   };
 
   const confirmBooking = async () => {
@@ -446,6 +484,7 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
       time, plan, people,
       name, kana, age, groupHasMinor, xAccount,
       email, phone, note, shooting, booths,
+      couponCode: couponStatus.state === "valid" ? normalizedCouponCode : "",
       submittedAt: new Date().toISOString(),
     };
     setSubmitting(true);
@@ -462,6 +501,7 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
         setName(""); setKana(""); setAge(""); setValidatedAge("");
         setGroupHasMinor(false); setMinorAutoChecked(false);
         setEmail(""); setPhone(""); setXAccount(""); setNote(""); setShooting("none"); setBooths([]); setAgreed(false);
+        setCouponCode(""); setCouponStatus({ state:"idle", message:"", discount:0, remaining:null, name:"" });
         if (result.warning) alert(result.warning);
       } else {
         alert("送信に失敗しました: " + (result.message || "不明なエラー"));
@@ -631,9 +671,32 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
           )}
         </div>
 
+        <div className="form-row coupon-field">
+          <label>クーポンコード（お持ちの方のみ）</label>
+          <div className="coupon-input-row">
+            <input
+              type="text"
+              value={couponCode}
+              onChange={e=>{
+                setCouponCode(e.target.value.replace(/\s/g, "").toUpperCase());
+                setCouponStatus({ state:"idle", message:"", discount:0, remaining:null, name:"" });
+              }}
+              placeholder="クーポンコードを入力"
+              autoCapitalize="characters"
+              autoCorrect="off"
+              spellCheck="false"
+            />
+            <button type="button" onClick={applyCoupon} disabled={couponStatus.state === "checking"}>適用する</button>
+          </div>
+          {couponStatus.message && (
+            <p className={`coupon-message ${couponStatus.state}`}>{couponStatus.message}</p>
+          )}
+          <p className="form-help">対象の利用日と写真撮影サービスを選択してから適用してください。</p>
+        </div>
+
         <div className="form-row">
           <label>ご要望・メッセージ</label>
-          <textarea value={note} onChange={e=>setNote(e.target.value)} placeholder="撮影サービスを希望、商用利用、など" />
+          <textarea value={note} onChange={e=>setNote(e.target.value)} placeholder="撮影サービスの詳細、商用利用について、など" />
         </div>
 
         <div className="terms-check">
@@ -667,6 +730,7 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
               <div><dt>利用ブース</dt><dd>{isPrivatePlan(plan) ? "全ブース（完全貸切）" : boothLabels.join("・")}</dd></div>
               <div><dt>利用人数</dt><dd>{people}名</dd></div>
               <div><dt>撮影サービス</dt><dd>{selectedShooting.label}</dd></div>
+              {couponStatus.state === "valid" && <div><dt>クーポン</dt><dd>{couponStatus.name}<br /><span className="coupon-confirm-discount">−¥{couponDiscount.toLocaleString()}</span></dd></div>}
               <div className="booking-confirm-total"><dt>料金合計</dt><dd>¥{totalPrice.toLocaleString()}<small>（当日現金払い）</small></dd></div>
               <div><dt>お名前</dt><dd>{name}（{kana}）</dd></div>
               <div><dt>年齢</dt><dd>{age}歳</dd></div>
