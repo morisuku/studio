@@ -4,6 +4,15 @@ const { useState: useState2, useEffect: useEffect2, useMemo: useMemo2 } = React;
 // ───────── 予約設定 ─────────
 // 予約受付開始日（この日より前は予約不可）。
 const BOOKING_START_ISO = "2026-08-01";
+// 移行時は2026年12月末まで公開し、その後は常に2か月先の月末まで自動公開する。
+const BOOKING_SPECIAL_END_ISO = "2026-12-31";
+const getBookingEndDate = (baseDate = new Date()) => {
+  const rollingEnd = new Date(baseDate.getFullYear(), baseDate.getMonth() + 3, 0);
+  rollingEnd.setHours(0, 0, 0, 0);
+  const specialEnd = new Date(BOOKING_SPECIAL_END_ISO + "T00:00:00");
+  return rollingEnd > specialEnd ? rollingEnd : specialEnd;
+};
+const getBookingEndISO = () => utilToISO(getBookingEndDate());
 // プレオープン特典（無料撮影サービス）の対象期間。この期間の予約だけ無料撮影の選択肢を表示。
 // ※現在は無効（過去日を設定して特典を非表示にしている）。再度使う場合は対象期間を設定する。
 const PREOPEN_START_ISO = "2000-01-01";
@@ -70,6 +79,9 @@ function Calendar({ selectedDate, onSelect, bookings, holidays, closedDays }) {
   const [popup, setPopup] = useState2(null);
   const today = utilTodayISO();               // Dateオブジェクト（既存処理用に残す）
   const todayStr = utilToISO(today);          // yyyy-MM-dd 文字列（日付比較用）
+  const bookingEndDate = getBookingEndDate(today);
+  const bookingEndStr = utilToISO(bookingEndDate);
+  const bookingEndMonth = new Date(bookingEndDate.getFullYear(), bookingEndDate.getMonth(), 1);
 
   const cells = useMemo2(() => {
     const first = new Date(month.getFullYear(), month.getMonth(), 1);
@@ -144,10 +156,13 @@ function Calendar({ selectedDate, onSelect, bookings, holidays, closedDays }) {
   const changeMonth = (offset) => {
     const nextMonth = utilAddMonths(month, offset);
     const firstDay = new Date(nextMonth.getFullYear(), nextMonth.getMonth(), 1);
+    if (firstDay > bookingEndMonth) return;
     setPopup(null);
     setMonth(firstDay);
     onSelect(firstDay);
   };
+
+  const canGoNext = new Date(month.getFullYear(), month.getMonth() + 1, 1) <= bookingEndMonth;
 
   return (
     <div className="calendar" style={{position:'relative'}}>
@@ -155,7 +170,7 @@ function Calendar({ selectedDate, onSelect, bookings, holidays, closedDays }) {
         <h3>{monthLabel}</h3>
         <div className="cal-nav">
           <button onClick={() => changeMonth(-1)}>‹</button>
-          <button onClick={() => changeMonth(1)}>›</button>
+          <button onClick={() => changeMonth(1)} disabled={!canGoNext} aria-label={canGoNext ? "次の月" : "現在公開中の最終月です"}>›</button>
         </div>
       </div>
       <div className="cal-grid">
@@ -163,8 +178,9 @@ function Calendar({ selectedDate, onSelect, bookings, holidays, closedDays }) {
         {cells.map((c, i) => {
           const iso = utilToISO(c.date);
           const isClosed = (closedDays || []).includes(iso);
-          // 今日より前、予約受付開始日より前、または休業日は予約不可
-          const isPast = (iso < todayStr) || (iso < BOOKING_START_ISO) || isClosed;
+          const isOutsideBookingWindow = iso > bookingEndStr;
+          // 今日より前、予約受付開始日より前、受付期間外、または休業日は予約不可
+          const isPast = (iso < todayStr) || (iso < BOOKING_START_ISO) || isOutsideBookingWindow || isClosed;
           const av = isClosed ? "full" : availByBookings(iso);
           const isSel = selectedDate && utilSameDay(c.date, selectedDate);
           const hasBooking = !!bookingsByDate[iso];
@@ -181,7 +197,7 @@ function Calendar({ selectedDate, onSelect, bookings, holidays, closedDays }) {
             <div key={i} className={classes.join(" ")}
                  onClick={(e) => handleCellClick(e, c, isPast, iso)}>
               <span className="day-num">{c.date.getDate()}</span>
-              {!c.outMonth && (isClosed || (iso >= todayStr && iso >= BOOKING_START_ISO)) && (
+              {!c.outMonth && !isOutsideBookingWindow && (isClosed || (iso >= todayStr && iso >= BOOKING_START_ISO)) && (
                 <span className={`avail ${av}`}>{av==="ok"?"○":av==="few"?"△":"×"}</span>
               )}
               {hasBooking && <span className="booking-dot" aria-hidden="true"></span>}
@@ -195,6 +211,7 @@ function Calendar({ selectedDate, onSelect, bookings, holidays, closedDays }) {
         <span><span className="sym" style={{color:"var(--china)"}}>×</span> 満席</span>
         <span><span className="sym" style={{background:"#FF8FB8", display:"inline-block", width:12, height:12, borderRadius:"50%"}}></span> ご予約済</span>
       </div>
+      <p className="booking-window-note">現在、{bookingEndDate.getFullYear()}年{bookingEndDate.getMonth()+1}月{bookingEndDate.getDate()}日までご予約いただけます。</p>
 
       {popup && (
         <div className="cal-popup"
@@ -388,7 +405,8 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
       : current.length < 2 ? [...current, boothId] : current);
   };
 
-  const canSubmit = selectedDate && name && kana && age && people && email && phone && xAccountValid && agreed
+  const selectedDateInBookingWindow = selectedDate && selectedISO >= utilToISO(utilTodayISO()) && selectedISO >= BOOKING_START_ISO && selectedISO <= getBookingEndISO();
+  const canSubmit = selectedDateInBookingWindow && name && kana && age && people && email && phone && xAccountValid && agreed
     && (isPrivatePlan(plan) || (booths.length >= 1 && booths.length <= 2))
     && SLOTS.find(s => s.time === time) && !SLOTS.find(s => s.time === time)?.disabled
     && (!plan.endsWith("weekday-2slot") || currentSlot?.allow6h)

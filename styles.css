@@ -876,6 +876,11 @@ section { padding: 72px 0; position: relative; }
   transition: background .2s;
 }
 .cal-nav button:hover { background: var(--pink); }
+.cal-nav button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  background: var(--bg-alt);
+}
 
 .cal-grid {
   display: grid;
@@ -939,6 +944,13 @@ section { padding: 72px 0; position: relative; }
 .cal-legend span { display: inline-flex; align-items: center; gap: 6px; }
 .cal-legend > span { white-space:nowrap; }
 .cal-legend .sym { font-weight: 700; font-size: 14px; }
+.booking-window-note {
+  margin: 12px 0 0;
+  text-align: center;
+  color: var(--sub);
+  font-size: 11px;
+  line-height: 1.7;
+}
 
 /* Booking form */
 .booking-form {
