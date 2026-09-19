@@ -664,7 +664,7 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
         <div className="form-row">
           <label>撮影サービス</label>
           <select value={shooting} onChange={e => setShooting(e.target.value)} disabled>
-            <option value="none">希望しない</option>
+            <option value="none">現在受付停止中</option>
             {isPreopen && <option value="free-photo-3h" disabled={shootingUnavailable}>無料撮影サービス（写真3h）/ ¥0</option>}
             <option value="photo-1h" disabled={shootingUnavailable}>写真 1h / ¥4,000</option>
             <option value="photo-2h" disabled={shootingUnavailable}>写真 2h / ¥7,000</option>
