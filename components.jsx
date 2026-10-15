@@ -78,6 +78,11 @@ function Hero({ showSparkles }) {
             クラシックな可愛いピンクブースから、ネオンきらめくアメリカンダイナーブース、そして朱色の中華部屋まで。
             ひとつのスタジオで、5つの世界観を自由に行き来できるコスプレ専用スタジオです。
           </p>
+          <div style={{margin:"20px 0", padding:"16px 20px", background:"#FFF0F5", border:"1px solid #E6729C", borderRadius:12, lineHeight:1.8}}>
+            <strong style={{color:"#9B365D"}}>クリスマスツリー設置のお知らせ</strong>
+            <p style={{margin:"6px 0 0"}}>2026年10月17日〜12月25日（予定）、クラシックピンクブースにクリスマスツリーを設置します。</p>
+            <a href="#booths" style={{color:"#9B365D", textDecoration:"underline"}}>ブース写真のPHOTO 11・12に掲載中 →</a>
+          </div>
           <div className="hero-ctas">
             <a href="#booths" className="btn btn-outline">ブースを覗く</a>
             <a href="#booking" className="btn btn-primary">予約カレンダーを見る →</a>
@@ -243,6 +248,15 @@ function BoothShowcase() {
               {booth.name}
             </h3>
             <p className="desc">{booth.desc}</p>
+            {booth.id === "classic-pink" && (
+              <div style={{margin:"16px 0", padding:16, background:"#FFF0F5", border:"1px solid #E6729C", borderRadius:12, lineHeight:1.8}}>
+                <strong style={{color:"#9B365D"}}>期間限定・クリスマスツリー</strong>
+                <p style={{margin:"6px 0 10px"}}>設置期間：2026年10月17日〜12月25日（予定）<br />クリスマスツリーの写真はPHOTO 11・12をご覧ください。</p>
+                {[10, 11].map(index => (
+                  <button key={index} type="button" className="btn btn-outline" style={{margin:"0 8px 6px 0", padding:"8px 12px"}} onClick={() => changePhoto(index)}>PHOTO {index + 1}を見る</button>
+                ))}
+              </div>
+            )}
             <div className="booth-tags">
               {booth.tags.map(t => <span key={t} className="booth-tag">#{t}</span>)}
             </div>
