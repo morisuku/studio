@@ -17,6 +17,11 @@ const getBookingEndISO = () => utilToISO(getBookingEndDate());
 // ※現在は無効（過去日を設定して特典を非表示にしている）。再度使う場合は対象期間を設定する。
 const PREOPEN_START_ISO = "2000-01-01";
 const PREOPEN_END_ISO   = "2000-01-01";
+// 撮影サービス（写真のみ・1日1組限定）の受付開始日。この日以降の利用日だけ撮影を選べる。
+const PHOTO_SERVICE_START_ISO = "2026-12-01";
+// 12月限定「選べる冬の特典」の対象利用日。この期間の日を選ぶと、ご要望欄の上に案内を表示。
+const WINTER_PERK_START_ISO = "2026-12-01";
+const WINTER_PERK_END_ISO   = "2026-12-31";
 const SELECTABLE_BOOTHS = [
   { id:"chinese", label:"中華ブース" },
   { id:"pink", label:"ピンクブース" },
@@ -320,6 +325,10 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
   const selectedISO = selectedDate ? utilToISO(selectedDate) : "";
   // プレオープン特典期間（無料撮影サービス対象）かどうか
   const isPreopen = selectedISO >= PREOPEN_START_ISO && selectedISO <= PREOPEN_END_ISO;
+  // 撮影サービス（写真のみ）を受け付ける日かどうか
+  const isPhotoServiceOpen = selectedISO !== "" && selectedISO >= PHOTO_SERVICE_START_ISO;
+  // 12月限定「選べる冬の特典」の対象日かどうか
+  const isWinterPerk = selectedISO >= WINTER_PERK_START_ISO && selectedISO <= WINTER_PERK_END_ISO;
   const isWeekend = selectedDate
     ? [0, 6].includes(selectedDate.getDay()) || (holidays || []).includes(selectedISO)
     : false;
@@ -395,9 +404,8 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
   const reservedBooths = new Set(dayBookings
     .filter(b => bookingOverlaps(b, time, plan))
     .flatMap(b => b.booths || []));
-  const shootingUnavailable = dayBookings.some(b =>
-    bookingOverlaps(b, time, plan) && b.shooting && b.shooting !== "none"
-  );
+  // 撮影サービスは1日1組限定：その日に撮影付きの予約が1件でもあれば受付不可
+  const shootingUnavailable = dayBookings.some(b => b.shooting && b.shooting !== "none");
   const toggleBooth = (boothId) => {
     if (reservedBooths.has(boothId)) return;
     setBooths(current => current.includes(boothId)
@@ -411,11 +419,12 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
     && SLOTS.find(s => s.time === time) && !SLOTS.find(s => s.time === time)?.disabled
     && (!plan.endsWith("weekday-2slot") || currentSlot?.allow6h)
     && (!shootingUnavailable || shooting === "none")
+    && (isPhotoServiceOpen || shooting === "none")
     && (!normalizedCouponCode || couponStatus.state === "valid");
 
   React.useEffect(() => {
-    if (shootingUnavailable && shooting !== "none") setShooting("none");
-  }, [shootingUnavailable, time, plan, selectedISO]);
+    if ((shootingUnavailable || !isPhotoServiceOpen) && shooting !== "none") setShooting("none");
+  }, [shootingUnavailable, isPhotoServiceOpen, time, plan, selectedISO]);
 
   React.useEffect(() => {
     if (couponStatus.state !== "idle") {
@@ -663,18 +672,25 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
 
         <div className="form-row">
           <label>撮影サービス</label>
-          <select value={shooting} onChange={e => setShooting(e.target.value)} disabled>
-            <option value="none">現在受付停止中</option>
+          <select value={shooting} onChange={e => setShooting(e.target.value)} disabled={!isPhotoServiceOpen || shootingUnavailable}>
+            <option value="none">
+              {!selectedDate ? "先に日付を選択してください"
+                : !isPhotoServiceOpen ? "2026年12月1日以降のご利用日から受付"
+                : shootingUnavailable ? "この日は受付終了（1日1組限定）"
+                : "希望しない"}
+            </option>
             {isPreopen && <option value="free-photo-3h" disabled={shootingUnavailable}>無料撮影サービス（写真3h）/ ¥0</option>}
             <option value="photo-1h" disabled={shootingUnavailable}>写真 1h / ¥4,000</option>
             <option value="photo-2h" disabled={shootingUnavailable}>写真 2h / ¥7,000</option>
             <option value="photo-3h" disabled={shootingUnavailable}>写真 3h / ¥10,000</option>
-            <option value="video-1h" disabled={shootingUnavailable}>動画（編集込）1h / ¥8,000</option>
-            <option value="video-2h" disabled={shootingUnavailable}>動画（編集込）2h / ¥12,000</option>
+            {/* 動画は現在停止中のため選択不可 */}
+            <option value="video-1h" disabled>動画（編集込）1h / ¥8,000（現在停止中）</option>
+            <option value="video-2h" disabled>動画（編集込）2h / ¥12,000（現在停止中）</option>
           </select>
-          {shootingUnavailable && (
+          <p className="form-help">撮影サービスは写真撮影のみ・1日1組様限定です（2026年12月1日〜）。動画は現在停止中です。</p>
+          {isPhotoServiceOpen && shootingUnavailable && (
             <p style={{fontSize:12, color:"var(--china)", marginTop:6, fontWeight:"bold"}}>
-              ※この時間帯は先約があるため、撮影サービスをお選びいただけません。スタジオのみご予約可能です。
+              ※この日の撮影サービスはご予約済みのため、お選びいただけません。スタジオのみご予約可能です。
             </p>
           )}
           {isPreopen && (
@@ -714,7 +730,20 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
 
         <div className="form-row">
           <label>ご要望・メッセージ</label>
-          <textarea value={note} onChange={e=>setNote(e.target.value)} placeholder="撮影サービスの詳細、商用利用について、など" />
+          {isWinterPerk && (
+            <div style={{margin:"0 0 10px", padding:"12px 14px", background:"#FFF0F5", border:"1px solid #E6729C", borderRadius:12, fontSize:13, lineHeight:1.8}}>
+              <strong style={{color:"#9B365D"}}>🎁 12月限定「選べる冬の特典」</strong>
+              <p style={{margin:"4px 0 0"}}>
+                12月ご利用の方は、次の3つから<b>1つ</b>お選びいただけます（1予約につき1つ）。<br />
+                ① 有料ライト無料　② 撮影サービス1時間無料　③ 次回1,000円OFF
+              </p>
+              <p style={{margin:"6px 0 0"}}>
+                <b style={{color:"#9B365D"}}>①③をご希望の方：</b>ご希望の特典を下の欄にご記入ください。<br />
+                <b style={{color:"#9B365D"}}>②をご希望の方：</b>上の撮影サービス欄で写真（1h〜3h）を選び、クーポンコード<b>「WINTER2026」</b>を入力して「適用する」を押してください（4,000円引き）。
+              </p>
+            </div>
+          )}
+          <textarea value={note} onChange={e=>setNote(e.target.value)} placeholder={isWinterPerk ? "例）冬の特典：有料ライト無料 希望" : "撮影サービスの詳細、商用利用について、など"} />
         </div>
 
         <div className="terms-check">

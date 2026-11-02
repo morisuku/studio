@@ -362,7 +362,7 @@ function Pricing() {
             border:"2px solid #FFD6E8", boxShadow:"0 2px 12px rgba(255,143,184,0.1)",
             display:"flex", flexDirection:"column", alignItems:"center"
           }}>
-            <div style={{display:"flex", alignItems:"center", gap:10, marginBottom:16}}>
+            <div style={{display:"flex", alignItems:"center", gap:10, marginBottom:8}}>
               <div style={{
                 width:36, height:36, borderRadius:"50%",
                 background:"linear-gradient(135deg,#FF8FB8,#FFB8D1)",
@@ -370,6 +370,9 @@ function Pricing() {
                 fontSize:18, flexShrink:0
               }}>📷</div>
               <div style={{fontWeight:"bold", color:"#D97A8F", fontSize:14}}>撮影サービス（写真）</div>
+            </div>
+            <div style={{fontSize:12, fontWeight:"bold", color:"#9B365D", background:"#FFF0F5", borderRadius:999, padding:"4px 12px", marginBottom:14, textAlign:"center"}}>
+              2026年12月1日〜 再開・1日1組様限定
             </div>
             <div style={{display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:0, width:"100%", marginTop:"auto"}}>
               {[{h:"1h",p:"¥4,000"},{h:"2h",p:"¥7,000"},{h:"3h",p:"¥10,000"}].map((item,k) => (
@@ -384,13 +387,13 @@ function Pricing() {
             </div>
           </div>
 
-          {/* 動画 */}
-          <div style={{
-            background:"#ffffff", borderRadius:16, padding:"20px",
-            border:"2px solid #C8D8F8", boxShadow:"0 2px 12px rgba(100,150,220,0.08)",
+          {/* 動画（現在停止中：グレーアウト表示） */}
+          <div aria-disabled="true" style={{
+            background:"#F4F4F5", borderRadius:16, padding:"20px",
+            border:"2px solid #E4E4E7",
             display:"flex", flexDirection:"column", alignItems:"center"
           }}>
-            <div style={{display:"flex", alignItems:"center", gap:10, marginBottom:16}}>
+            <div style={{display:"flex", alignItems:"center", gap:10, marginBottom:8, filter:"grayscale(1)", opacity:0.5}}>
               <div style={{
                 width:36, height:36, borderRadius:"50%",
                 background:"linear-gradient(135deg,#8899DD,#AABBEE)",
@@ -399,7 +402,10 @@ function Pricing() {
               }}>🎬</div>
               <div style={{fontWeight:"bold", color:"#6677BB", fontSize:14, whiteSpace:"nowrap"}}>撮影サービス（動画編集込）</div>
             </div>
-            <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:0, width:"100%", marginTop:"auto"}}>
+            <div style={{fontSize:12, fontWeight:"bold", color:"#ffffff", background:"#71717A", borderRadius:999, padding:"4px 12px", marginBottom:14, textAlign:"center"}}>
+              現在停止中
+            </div>
+            <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:0, width:"100%", marginTop:"auto", filter:"grayscale(1)", opacity:0.5}}>
               {[{h:"1h",p:"¥8,000"},{h:"2h",p:"¥12,000"}].map((item,k) => (
                 <div key={k} style={{
                   textAlign:"center", padding:"8px 4px",
