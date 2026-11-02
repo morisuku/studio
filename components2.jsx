@@ -735,12 +735,23 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
               <strong style={{color:"#9B365D"}}>🎁 12月限定「選べる冬の特典」</strong>
               <p style={{margin:"4px 0 0"}}>
                 12月ご利用の方は、次の3つから<b>1つ</b>お選びいただけます（1予約につき1つ）。<br />
-                ① 有料ライト無料　② 撮影サービス1時間無料　③ 次回1,000円OFF
+                {"① 有料ライト無料　"}
+                {shootingUnavailable
+                  ? <span style={{color:"#9CA3AF"}}><s>② 撮影サービス1時間無料</s>（この日は受付終了）</span>
+                  : "② 撮影サービス1時間無料"}
+                {"　③ 次回1,000円OFF"}
               </p>
-              <p style={{margin:"6px 0 0"}}>
-                <b style={{color:"#9B365D"}}>①③をご希望の方：</b>ご希望の特典を下の欄にご記入ください。<br />
-                <b style={{color:"#9B365D"}}>②をご希望の方：</b>上の撮影サービス欄で写真（1h〜3h）を選び、クーポンコード<b>「WINTER2026」</b>を入力して「適用する」を押してください（4,000円引き）。
-              </p>
+              {shootingUnavailable ? (
+                <p style={{margin:"6px 0 0"}}>
+                  撮影サービスは1日1組様限定のため、この日は②をお選びいただけません。<br />
+                  <b style={{color:"#9B365D"}}>①または③のご希望の特典を下の欄にご記入ください。</b>
+                </p>
+              ) : (
+                <p style={{margin:"6px 0 0"}}>
+                  <b style={{color:"#9B365D"}}>①③をご希望の方：</b>ご希望の特典を下の欄にご記入ください。<br />
+                  <b style={{color:"#9B365D"}}>②をご希望の方：</b>上の撮影サービス欄で写真（1h〜3h）を選び、クーポンコード<b>「WINTER2026」</b>を入力して「適用する」を押してください（4,000円引き）。
+                </p>
+              )}
             </div>
           )}
           <textarea value={note} onChange={e=>setNote(e.target.value)} placeholder={isWinterPerk ? "例）冬の特典：有料ライト無料 希望" : "撮影サービスの詳細、商用利用について、など"} />
