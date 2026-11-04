@@ -324,7 +324,7 @@ function Pricing() {
           <article className="pricing-plan-card private">
             <div className="pricing-plan-badge">全ブース使用可能</div>
             <h3>完全貸切プラン</h3>
-            <p>スタジオ全体を1グループで貸し切り。背景紙を含む全5ブースを自由に利用でき、<span className="mobile-nowrap">他グループとの同時利用はありません。</span>カラーペーパーブースのゴシックアイテムも<span className="mobile-nowrap">ご利用いただけます。</span></p>
+            <p>スタジオ全体を1グループで貸し切り。背景紙を含む全5ブースを自由に利用でき、<span className="mobile-nowrap">他グループとの同時利用はありません。</span>カラーペーパーブースでは、ゴシックアイテムやスモーク・ミラーシートも<span className="mobile-nowrap">ご利用いただけます。</span></p>
             <div className="pricing-price-list">
               <div><span>平日貸切3時間</span><b>¥12,000</b></div>
               <div><span>平日貸切6時間</span><b>¥20,000</b></div>
@@ -344,7 +344,8 @@ function Pricing() {
             <div className="paper-shared"><b>A組・B組</b><span>背景紙ブースは共用</span></div>
           </div>
           <p>背景紙ブースは共用です。他グループの利用希望がある場合は、1回30分を目安に交代をお願いいたします。他に利用希望がない場合は、<span className="mobile-nowrap">続けてご利用いただけます。</span><br />
-          ※ゴシックアイテムは設置・片付けに時間がかかるため、<span className="mobile-nowrap">完全貸切プランのみご利用いただけます。</span></p>
+          ※ゴシックアイテムは設置・片付けに時間がかかるため、<span className="mobile-nowrap">完全貸切プランのみご利用いただけます。</span><br />
+          ※スモーク・ミラーシートも、完全貸切プランでカラーペーパーブースを<span className="mobile-nowrap">ご利用の場合のみ使用できます。</span></p>
         </div>
 
         {/* 撮影サービス */}

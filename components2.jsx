@@ -589,7 +589,7 @@ function BookingForm({ selectedDate, onBooked, bookings, holidays }) {
                 );
               })}
             </div>
-            <p className="form-help">1〜2ブースを選択してください。選択したブースは予約時間中、他グループと共用しません。背景紙ブースは共用です（ゴシックアイテムは完全貸切プランのみ）。</p>
+            <p className="form-help">1〜2ブースを選択してください。選択したブースは予約時間中、他グループと共用しません。背景紙ブースは共用です（ゴシックアイテム・スモーク・ミラーシートは完全貸切プランのみ）。</p>
           </div>
         )}
 
