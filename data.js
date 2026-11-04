@@ -92,8 +92,8 @@ const BOOTHS = [
     photos: [
       "assets/paper1.webp", "assets/paper2.webp", "assets/paper3.webp",
       "assets/paper4.webp", "assets/paper5.webp", "assets/paper6.webp",
-      "assets/paper7.webp",
-      ...Array(5).fill("assets/paper12.webp"),
+      "assets/paper7.webp", "assets/paper8.webp", "assets/paper9.webp",
+      ...Array(3).fill("assets/paper12.webp"),
     ],
     ph: "BOOTH 05 / COLOR PAPER",
   },
